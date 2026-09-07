@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           SteamGifts Theme Picker
 // @namespace      https://github.com/ExtraPotions/super-octo-parakeet
-// @version        2.12.0
+// @version        2.13.0
 // @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/assets/steamgifts-favicon.ico
 // @description    Theme palettes + settings for SteamGifts / SteamTrades / SGTools (ESGST-compatible).
 // @author         ExtraPotions
@@ -13,7 +13,7 @@
 // @match          *://www.steamtrades.com/*
 // @match          *://www.sgtools.info/*
 // @license        CC-BY-NC-4.0
-// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/theme-picker-2.12.0/theme-picker-common.js
+// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/theme-picker-2.13.0/theme-picker-common.js
 // @grant          GM.info
 // @grant          GM_getValue
 // @grant          GM_setValue

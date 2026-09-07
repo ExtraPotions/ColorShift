@@ -16,5 +16,5 @@ const api = context.ThemePicker;
 for (const method of ['registerMenus', 'mountSettingsFab', 'rootCss', 'get', 'set']) {
   if (typeof api[method] !== 'function') throw new Error(`Missing ThemePicker API: ${method}`);
 }
-if (api.version !== '1.25.0') throw new Error(`Unexpected helper version: ${api.version}`);
+if (api.version !== '1.26.0') throw new Error(`Unexpected helper version: ${api.version}`);
 console.log(`ThemePicker common smoke test passed (${api.version})`);

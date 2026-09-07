@@ -1,6 +1,6 @@
 /**
  * Theme Picker common helpers (Tampermonkey @require)
- * Version: 1.25.0
+ * Version: 1.26.0
  * Author: ExtraPotions
  * License: CC-BY-NC-4.0
  * Homepage: https://github.com/ExtraPotions/super-octo-parakeet
@@ -25,7 +25,7 @@
   'use strict';
 
   var PREFIX = 'ge-';
-  var COMMON_VERSION = '1.25.0';
+  var COMMON_VERSION = '1.26.0';
   var RAIL_ID = 'theme-picker-settings-rail';
   var FAB_ID = 'theme-picker-fab';
   var siteActions = {};

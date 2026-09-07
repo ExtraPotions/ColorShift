@@ -1,14 +1,13 @@
 // ==UserScript==
 // @name           SteamGifts Theme Picker
 // @namespace      https://github.com/ExtraPotions/super-octo-parakeet
-// @version        2.1.1
+// @version        2.2.0
 // @description    Theme palettes + settings for SteamGifts / SteamTrades / SGTools (ESGST-compatible).
 // @author         ExtraPotions
 // @homepageURL    https://github.com/ExtraPotions/super-octo-parakeet
 // @downloadURL    https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js
 // @updateURL      https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js
 // @supportURL     https://github.com/ExtraPotions/super-octo-parakeet/issues
-// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/steamgifts-theme-picker-icon.svg
 // @match          *://www.steamgifts.com/*
 // @match          *://www.steamtrades.com/*
 // @match          *://www.sgtools.info/*
@@ -20,7 +19,6 @@
 // @grant          GM_registerMenuCommand
 // @run-at         document-start
 // @noframes
-// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/steamgifts-theme-picker-icon.svg
 // ==/UserScript==
 
 function addCss() {
@@ -8427,8 +8425,8 @@ Docobserver.observe(document.documentElement, { childList: true });
     var GE = (typeof globalThis !== 'undefined' && (globalThis.ThemePicker)) || (typeof window !== 'undefined' && (window.ThemePicker));
     if (!GE) return;
     if (typeof GE.applyDocumentFlags === 'function') GE.applyDocumentFlags('steamgifts');
-    if (typeof GE.registerMenus === 'function') GE.registerMenus('steamgifts', 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/steamgifts-theme-picker-icon.svg');
-    else if (typeof GE.mountSettingsFab === 'function') GE.mountSettingsFab('steamgifts', 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/steamgifts-theme-picker-icon.svg');
+    if (typeof GE.registerMenus === 'function') GE.registerMenus('steamgifts');
+    else if (typeof GE.mountSettingsFab === 'function') GE.mountSettingsFab('steamgifts');
     // Always inject feature flags (hide entered/ended etc.) even on Original
     if (typeof GE.rootCss === 'function') {
       var extra = GE.rootCss();

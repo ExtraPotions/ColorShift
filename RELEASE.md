@@ -19,7 +19,7 @@ Attach **all four** files every time (even unchanged), so `releases/latest/downl
 - `scryfall-theme-picker.user.js`
 - `steamgifts-theme-picker.user.js`
 - `theme-picker-common.js`
-- `theme-picker-icon.svg` and the three site-specific `*-icon.svg` files
+- Site favicon URLs are used directly; the FAB adds its plus badge in CSS.
 
 Site scripts `@downloadURL` / `@updateURL` / `@require` already point at those latest-release URLs.
 

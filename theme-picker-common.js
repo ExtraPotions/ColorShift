@@ -25,18 +25,14 @@
   'use strict';
 
   var PREFIX = 'ge-';
-  var COMMON_VERSION = '1.15.1';
+  var COMMON_VERSION = '1.16.0';
   var RAIL_ID = 'theme-picker-settings-rail';
   var FAB_ID = 'theme-picker-fab';
   var siteActions = {};
   var PANEL_ID = 'theme-picker-fab-panel';
   var STYLE_ID = 'theme-picker-fab-style';
 
-  var SITE_ICONS = {
-    manapool: 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/manapool-theme-picker-icon.svg',
-    scryfall: 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/scryfall-theme-picker-icon.svg',
-    steamgifts: 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/steamgifts-theme-picker-icon.svg'
-  };
+  var SITE_ICONS = {};
 
   var SITE_TITLES = {
     manapool: 'ManaPool',
@@ -541,12 +537,11 @@
       '  background: var(--ge-rail-btn-hover, #1a1a1a) !important;',
       '  border-color: var(--ge-rail-accent, #aeaeae) !important;',
       '}',
-      '#' + FAB_ID + ' img {',
-      '  width: 26px !important;',
-      '  height: 26px !important;',
-      '  object-fit: contain !important;',
-      '  display: block !important;',
-      '  pointer-events: none !important;',
+      '#' + FAB_ID + ' .ge-plus-icon {',
+      '  width: 100% !important; height: 100% !important; border-radius: 12px !important;',
+      '  display: flex !important; align-items: center !important; justify-content: center !important;',
+      '  background: #f3c95b !important; color: #17344a !important;',
+      '  font: 700 42px/42px system-ui, sans-serif !important; box-shadow: none !important;',
       '}',
       /* Never all:unset the panel — it resets display/stacking and Scryfall site CSS flattens the menu. */
       '#' + PANEL_ID + ', html body #' + PANEL_ID + ' {',
@@ -1092,7 +1087,7 @@
 
   function mountSettingsFab(site, iconUrl) {
     site = site || (document.documentElement && document.documentElement.getAttribute('data-ge-site')) || '';
-    iconUrl = iconUrl || 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/theme-picker-icon.svg';
+      iconUrl = iconUrl || SITE_ICONS[site] || '';
 
     function mount() {
       if (!document.body) return false;
@@ -1129,19 +1124,11 @@
       btn.setAttribute('aria-expanded', 'false');
       applyTheme(btn);
 
-      if (iconUrl) {
-        var img = document.createElement('img');
-        img.src = iconUrl;
-        img.alt = '';
-        img.width = 26;
-        img.height = 26;
-        btn.appendChild(img);
-      } else {
-        btn.textContent = 'GE';
-        btn.style.color = th.accent;
-        btn.style.fontWeight = '700';
-        btn.style.fontSize = '11px';
-      }
+      var plusIcon = document.createElement('span');
+      plusIcon.className = 'ge-plus-icon';
+      plusIcon.textContent = '+';
+      plusIcon.setAttribute('aria-hidden', 'true');
+      btn.appendChild(plusIcon);
 
       function clampTop(y) {
         var max = Math.max(8, (window.innerHeight || 600) - 56);

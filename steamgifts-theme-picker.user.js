@@ -15,6 +15,10 @@
 // @grant          GM_getValue
 // @grant          GM_setValue
 // @grant          GM_registerMenuCommand
+// @match          *://steamtrades.com/*
+// @match          *://www.steamtrades.com/*
+// @match          *://sgtools.info/*
+// @match          *://www.sgtools.info/*
 // ==/UserScript==
 if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
     const warn=()=>{const box=document.createElement('div');box.setAttribute('role','alert');box.textContent='Theme Picker could not load its shared helper. Reinstall the latest release in your userscript manager.';box.style.cssText='position:fixed;bottom:16px;right:16px;padding:16px;background:#421;color:white;z-index:2147483647';document.body.append(box);};

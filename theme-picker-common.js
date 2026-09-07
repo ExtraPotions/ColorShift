@@ -163,7 +163,7 @@ var ThemePicker = (() => {
       });
       document.addEventListener('pointerdown',e=>{if(open&&!e.composedPath().includes(host))setOpen(false);});
       window.addEventListener('resize',position);motion.addEventListener('change',apply);contrast.addEventListener('change',apply);
-      if(typeof GM_registerMenuCommand==='function')GM_registerMenuCommand('Theme Picker settings',()=>setOpen(true));
+      try {if(typeof GM_registerMenuCommand==='function')GM_registerMenuCommand('Theme Picker settings',()=>setOpen(true));}catch(error){console.warn('Theme Picker: extension menu registration unavailable',error);}
       site.mount?.(api);apply();
       const observer=new MutationObserver(records=>{
         if(records.every(r=>r.target===style||r.target===host||(r.type==='attributes'&&!r.target.matches('#pfh-fab,.pfh-fab,#adpb-settings-fab'))))return;

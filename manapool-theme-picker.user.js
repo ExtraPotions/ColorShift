@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           ManaPool Theme Picker
 // @namespace      https://github.com/ExtraPotions/super-octo-parakeet
-// @version        2.7.0
+// @version        2.8.0
 // @icon           https://manapool.com/favicon.svg
 // @description    Theme palettes + settings for Mana Pool — collapsible sections, hide sold out, compact prices, denser grid
 // @author         ExtraPotions
@@ -12,7 +12,7 @@
 // @run-at         document-start
 // @downloadURL    https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js
 // @updateURL      https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js
-// @require        https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/theme-picker-common.js
+// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/theme-picker-common.js
 // @grant          GM_getValue
 // @grant          GM_setValue
 // @grant          GM_registerMenuCommand

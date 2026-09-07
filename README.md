@@ -17,7 +17,7 @@
   <a href="https://creativecommons.org/licenses/by-nc/4.0/"><img alt="License: CC BY-NC 4.0" src="https://img.shields.io/badge/license-CC%20BY--NC%204.0-lightgrey?style=flat-square" /></a>
 </p>
 
-**Author:** [ExtraPotions](https://github.com/ExtraPotions) · **Next release:** `theme-picker-2.13.0`
+**Author:** [ExtraPotions](https://github.com/ExtraPotions) · **Latest:** `theme-picker-2.13.0` · **Next release:** `theme-picker-2.14.0`
 
 | Stat | Value |
 |------|-------|
@@ -36,10 +36,10 @@
 
 | Script | Version (in 2.13.0) | Install |
 | --- | --- | --- |
-| **ManaPool Theme Picker** | 2.11.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
-| **SteamGifts Theme Picker** | 2.11.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
-| Theme Picker common (`@require`) | 1.24.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/theme-picker-common.js) |
-| Scryfall Theme Picker | 2.11.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
+| **ManaPool Theme Picker** | 2.13.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
+| **SteamGifts Theme Picker** | 2.13.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
+| Theme Picker common (`@require`) | 1.26.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/theme-picker-common.js) |
+| Scryfall Theme Picker | 2.13.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
 
 Each site script `@require`s the version-pinned `theme-picker-common.js` from `raw.githubusercontent.com` for reliable userscript-manager loading. The helper and all site scripts are published together in each release.
 
@@ -80,6 +80,8 @@ See [GitHub Releases](https://github.com/ExtraPotions/super-octo-parakeet/releas
 
 Recent tags:
 
+- **theme-picker-2.13.0** — restored known-good shared helper; site scripts stay complete; common smoke test + pinned `@require` URLs
+- **theme-picker-2.12.0** — pinned common helper to the release, clearer `@require` fallback warning, smoke test
 - **theme-picker-2.11.0** — Prism Highlighter-style grouped panel layout and compact toggle controls
 
 - **theme-picker-2.10.0** — fixed toggle click handling

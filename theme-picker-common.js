@@ -1,6 +1,6 @@
 /**
  * Theme Picker common helpers (Tampermonkey @require)
- * Version: 1.23.0
+ * Version: 1.24.0
  * Author: ExtraPotions
  * License: CC-BY-NC-4.0
  * Homepage: https://github.com/ExtraPotions/super-octo-parakeet
@@ -25,7 +25,7 @@
   'use strict';
 
   var PREFIX = 'ge-';
-  var COMMON_VERSION = '1.23.0';
+  var COMMON_VERSION = '1.24.0';
   var RAIL_ID = 'theme-picker-settings-rail';
   var FAB_ID = 'theme-picker-fab';
   var siteActions = {};
@@ -584,17 +584,16 @@
       '  flex-direction: column !important;',
       '}',
       '#' + PANEL_ID + ' .ge-title {',
-      '  font-weight: 700 !important;',
-      '  font-size: 13px !important;',
-      '  margin: 0 0 10px !important;',
-      '  color: var(--ge-rail-title, #8f9fb3) !important;',
+      '  font-weight: 700 !important; font-size: 16px !important; margin: 0 0 2px !important; color: #f2f4f8 !important;',
       '}',
+      '#' + PANEL_ID + ' .ge-subtitle { margin: 0 0 10px !important; color: rgba(242,244,248,.66) !important; font-size: 12px !important; }',
+      '#' + PANEL_ID + ' .ge-section-title { border-top: 1px solid rgba(255,255,255,.1) !important; padding: 10px 0 4px !important; margin: 4px 0 0 !important; color: rgba(242,244,248,.62) !important; font-size: 11px !important; font-weight: 700 !important; letter-spacing: .08em !important; text-transform: uppercase !important; }',
       '#' + PANEL_ID + ' .ge-row {',
       '  display: flex !important;',
       '  align-items: center !important;',
       '  justify-content: space-between !important;',
       '  gap: 10px !important;',
-      '  margin: 0 0 8px !important;',
+      '  min-height: 30px !important; margin: 0 !important; font-size: 13px !important;',
       '}',
       '#' + PANEL_ID + ' label.ge-switch {',
       '  display: flex !important;',
@@ -602,7 +601,7 @@
       '  justify-content: space-between !important;',
       '  gap: 10px !important;',
       '  width: 100% !important;',
-      '  margin: 6px 0 !important;',
+      '  min-height: 38px !important; margin: 0 !important; border-top: 1px solid rgba(255,255,255,.06) !important;',
       '  color: var(--ge-rail-text, rgba(204,204,204,0.95)) !important;',
       '  cursor: pointer !important;',
       '  user-select: none !important;',
@@ -625,11 +624,8 @@
       '#' + PANEL_ID + ' .ge-toggle {',
       '  position: relative !important;',
       '  flex: none !important;',
-      '  width: 36px !important;',
-      '  height: 18px !important;',
-      '  background: #6b6b6b !important;',
-      '  border: 0 !important;',
-      '  border-radius: 12px !important;',
+      '  width: 36px !important; height: 20px !important; min-width: 36px !important; min-height: 20px !important;',
+      '  background: #596171 !important; border: 1px solid rgba(255,255,255,.2) !important; border-radius: 999px !important;',
       '  cursor: pointer !important;',
       '  box-sizing: border-box !important;',
       '  transition: background .15s ease !important;',
@@ -638,12 +634,7 @@
       '#' + PANEL_ID + ' .ge-toggle::after {',
       '  content: "" !important;',
       '  position: absolute !important;',
-      '  top: 0 !important;',
-      '  left: 0 !important;',
-      '  width: 18px !important;',
-      '  height: 18px !important;',
-      '  border-radius: 12px !important;',
-      '  background: #d4d4d4 !important;',
+      '  top: 2px !important; left: 2px !important; width: 14px !important; height: 14px !important; border-radius: 50% !important; background: #fff !important;',
       '  box-shadow: 0 1px 2px rgba(0,0,0,.35) !important;',
       '  transition: transform .15s ease, background .15s ease !important;',
       '}',
@@ -651,8 +642,7 @@
       '  background: var(--ge-rail-accent, var(--ge-accent, #5eb0ef)) !important;',
       '}',
       '#' + PANEL_ID + ' .ge-switch[aria-checked="true"] .ge-toggle::after {',
-      '  transform: translateX(18px) !important;',
-      '  background: #e8e8e8 !important;',
+      '  transform: translateX(16px) !important; background: #fff !important;',
       '}',
       '#' + PANEL_ID + ' .ge-switch:hover .ge-toggle::after { background: #cfcfcf !important; }',
       '#' + PANEL_ID + ' .ge-switch[aria-checked="true"] .ge-toggle::after,',
@@ -743,17 +733,16 @@
         '  padding: 0;',
         '}',
         '.ge-title {',
-        '  font-weight: 700;',
-        '  font-size: 13px;',
-        '  margin: 0 0 10px;',
-        '  color: var(--ge-rail-title, #8f9fb3);',
+        '  font-weight: 700; font-size: 16px; margin: 0 0 2px; color: #f2f4f8;',
         '}',
+        '.ge-subtitle { margin: 0 0 10px; color: rgba(242,244,248,.66); font-size: 12px; }',
+        '.ge-section-title { border-top: 1px solid rgba(255,255,255,.1); padding: 10px 0 4px; margin: 4px 0 0; color: rgba(242,244,248,.62); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }',
         '.ge-row {',
         '  display: flex;',
         '  align-items: center;',
         '  justify-content: space-between;',
         '  gap: 10px;',
-        '  margin: 0 0 8px;',
+        '  min-height: 30px; margin: 0; font-size: 13px;',
         '}',
         'label.ge-switch {',
         '  display: flex;',
@@ -761,7 +750,7 @@
         '  justify-content: space-between;',
         '  gap: 10px;',
         '  width: 100%;',
-        '  margin: 6px 0;',
+        '  min-height: 38px; margin: 0; border-top: 1px solid rgba(255,255,255,.06);',
         '  color: inherit;',
         '  cursor: pointer;',
         '  user-select: none;',
@@ -777,25 +766,19 @@
         '.ge-toggle {',
         '  position: relative;',
         '  flex: none;',
-        '  width: 36px;',
-        '  height: 18px;',
-        '  background: #6b6b6b;',
-        '  border: 0;',
-        '  border-radius: 12px;',
+        '  width: 36px; height: 20px; min-width: 36px; min-height: 20px;',
+        '  background: #596171; border: 1px solid rgba(255,255,255,.2); border-radius: 999px;',
         '  cursor: pointer;',
         '}',
         '.ge-toggle::after {',
         '  content: "";',
         '  position: absolute;',
-        '  top: 0; left: 0;',
-        '  width: 18px; height: 18px;',
-        '  border-radius: 12px;',
-        '  background: #d4d4d4;',
+        '  top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff;',
         '  box-shadow: 0 1px 2px rgba(0,0,0,.35);',
         '  transition: transform .15s ease;',
         '}',
         '.ge-switch[aria-checked="true"] .ge-toggle { background: var(--ge-rail-accent, #5eb0ef); }',
-        '.ge-switch[aria-checked="true"] .ge-toggle::after { transform: translateX(18px); background: #e8e8e8; }',
+        '.ge-switch[aria-checked="true"] .ge-toggle::after { transform: translateX(16px); background: #fff; }',
         ':host-context(html[data-ge-high-contrast="1"]) .ge-toggle { border: 2px solid #fff; background: #000; }',
         ':host-context(html[data-ge-high-contrast="1"]) .ge-switch[aria-checked="true"] .ge-toggle { background: #fff; }',
         ':host-context(html[data-ge-high-contrast="1"]) .ge-switch[aria-checked="true"] .ge-toggle::after { background: #000; }',
@@ -886,6 +869,16 @@
     title.className = 'ge-title';
     title.textContent = 'Theme Picker · ' + (SITE_TITLES[site] || site);
     panel.appendChild(title);
+    var subtitle = document.createElement('div');
+    subtitle.className = 'ge-subtitle';
+    subtitle.textContent = 'Customize colours and site behaviour.';
+    panel.appendChild(subtitle);
+    function addSectionTitle(textValue) {
+      var heading = document.createElement('div');
+      heading.className = 'ge-section-title';
+      heading.textContent = textValue;
+      panel.appendChild(heading);
+    }
 
     function addToggle(key, labelText, def) {
       var on = !!get(key, def);
@@ -916,6 +909,7 @@
       panel.appendChild(lab);
     }
 
+    addSectionTitle('Appearance');
     // Theme palette
     var rowI = document.createElement('div');
     rowI.className = 'ge-row';
@@ -968,26 +962,31 @@
     rowA.appendChild(selA);
     panel.appendChild(rowA);
 
+    addSectionTitle('Features');
     addToggle('brighterLinks', 'Brighter links', false);
     addToggle('reducedMotion', 'Reduce motion', false);
     addToggle('highContrast', 'High-contrast switches', false);
     addToggle('hideAds', 'Hide ads / promos', false);
     if (site === 'manapool') {
+      addSectionTitle('ManaPool');
       addToggle('dense', 'Denser card grid', false);
       addToggle('hideSoldOut', 'Hide sold out', false);
       addToggle('compactPrices', 'Compact prices', false);
       addToggle('alwaysChips', 'Always show chips', false);
     }
     if (site === 'scryfall') {
+      addSectionTitle('Scryfall');
       addToggle('dimWarnings', 'Dim content warnings', false);
     }
     if (site === 'steamgifts') {
+      addSectionTitle('SteamGifts');
       addToggle('hideEntered', 'Hide entered', false);
       addToggle('hideEnded', 'Hide ended', false);
       addToggle('softHideFeatured', 'Soft-hide featured/pinned', false);
       addToggle('highContrastEnter', 'High-contrast Enter', false);
     }
 
+    addSectionTitle('Settings');
     if (site === 'manapool') {
       var rowC = document.createElement('div');
       rowC.className = 'ge-row';

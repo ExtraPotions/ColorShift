@@ -1,6 +1,6 @@
 /**
  * Theme Picker common helpers (Tampermonkey @require)
- * Version: 1.22.0
+ * Version: 1.23.0
  * Author: ExtraPotions
  * License: CC-BY-NC-4.0
  * Homepage: https://github.com/ExtraPotions/super-octo-parakeet
@@ -25,7 +25,7 @@
   'use strict';
 
   var PREFIX = 'ge-';
-  var COMMON_VERSION = '1.22.0';
+  var COMMON_VERSION = '1.23.0';
   var RAIL_ID = 'theme-picker-settings-rail';
   var FAB_ID = 'theme-picker-fab';
   var siteActions = {};
@@ -905,13 +905,14 @@
       track.className = 'ge-toggle';
       lab.appendChild(text);
       lab.appendChild(track);
-      cb.addEventListener('change', function () {
+      cb.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
         var next = lab.getAttribute('aria-checked') !== 'true';
         lab.setAttribute('aria-checked', next ? 'true' : 'false');
         cb.setAttribute('aria-pressed', next ? 'true' : 'false');
         setSetting(site, key, next);
       });
-      cb.addEventListener('click', function (e) { e.preventDefault(); cb.dispatchEvent(new Event('change')); });
       panel.appendChild(lab);
     }
 

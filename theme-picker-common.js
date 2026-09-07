@@ -25,7 +25,7 @@
   'use strict';
 
   var PREFIX = 'ge-';
-  var COMMON_VERSION = '1.15.0';
+  var COMMON_VERSION = '1.15.1';
   var RAIL_ID = 'theme-picker-settings-rail';
   var FAB_ID = 'theme-picker-fab';
   var siteActions = {};
@@ -1267,6 +1267,36 @@
       document.body.appendChild(panel);
       document.body.appendChild(btn);
       placeFabAvoidingForeignUi();
+
+      // Scryfall's toolbox is a stable, site-native launch surface. Keep a
+      // button there as well as the floating control, like Scrybuy's store
+      // button insertion pattern.
+      if (site === 'scryfall') {
+        var insertScryfallToolboxButton = function () { try {
+          var toolbox = document.querySelector('.toolbox-links');
+          if (toolbox && !toolbox.querySelector('[data-theme-picker-launch]')) {
+            var item = document.createElement('li');
+            var launch = document.createElement('button');
+            launch.type = 'button';
+            launch.className = 'button-n theme-picker-launch';
+            launch.setAttribute('data-theme-picker-launch', '1');
+            launch.textContent = 'Theme Picker settings';
+            launch.addEventListener('click', function (e) {
+              e.preventDefault(); e.stopPropagation(); btn.click();
+            });
+            item.appendChild(launch);
+            toolbox.appendChild(item);
+          }
+          return !!toolbox;
+        } catch (eToolbox) { return false; } };
+        insertScryfallToolboxButton();
+        if (!document.querySelector('.toolbox-links')) {
+          var scryfallToolboxObserver = new MutationObserver(function () {
+            if (insertScryfallToolboxButton()) scryfallToolboxObserver.disconnect();
+          });
+          scryfallToolboxObserver.observe(document.body, { childList: true, subtree: true });
+        }
+      }
 
       // Alt+G toggles panel; Esc closes
       if (!window.__geShortcutBound) {

@@ -17,7 +17,17 @@
   <a href="https://creativecommons.org/licenses/by-nc/4.0/"><img alt="License: CC BY-NC 4.0" src="https://img.shields.io/badge/license-CC%20BY--NC%204.0-lightgrey?style=flat-square" /></a>
 </p>
 
-**Author:** [ExtraPotions](https://github.com/ExtraPotions) · **Next release:** `theme-picker-2.1.0`
+**Author:** [ExtraPotions](https://github.com/ExtraPotions) · **Next release:** `theme-picker-2.1.1`
+
+### Site icons
+
+Each userscript ships with an original site-inspired icon:
+
+![ManaPool Theme Picker icon](manapool-theme-picker-icon.svg) ![Scryfall Theme Picker icon](scryfall-theme-picker-icon.svg) ![SteamGifts Theme Picker icon](steamgifts-theme-picker-icon.svg)
+
+- [ManaPool icon](manapool-theme-picker-icon.svg)
+- [Scryfall icon](scryfall-theme-picker-icon.svg)
+- [SteamGifts icon](steamgifts-theme-picker-icon.svg)
 
 | Stat | Value |
 |------|-------|
@@ -34,11 +44,11 @@
 3. Open each `.user.js` (or drag into the extension dashboard) and save.
 4. Visit the site — the favicon button appears on the right edge.
 
-| Script | Version (in 2.1.0) | Install |
+| Script | Version (in 2.1.1) | Install |
 | --- | --- | --- |
 | **ManaPool Theme Picker** | 2.1.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
 | **SteamGifts Theme Picker** | 2.1.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
-| Theme Picker common (`@require`) | 1.15.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/theme-picker-common.js) |
+| Theme Picker common (`@require`) | 1.15.1 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/theme-picker-common.js) |
 | Scryfall Theme Picker | 2.1.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
 
 Each site script `@require`s `theme-picker-common.js` from the same latest-release URL. Update **common** whenever you update a site script.
@@ -78,7 +88,7 @@ See [GitHub Releases](https://github.com/ExtraPotions/super-octo-parakeet/releas
 
 Recent tags:
 
-- **theme-picker-2.1.0** — slimmer 240px panels, site-inspired custom icons, collision-aware FAB placement, and active Scryfall support
+- **theme-picker-2.1.1** — corrected site-inspired icons and added a Scryfall toolbox launch button with late-page mounting
 
 - **theme-picker-2.0.10** — common `1.14.8` Shadow DOM panel; ManaPool `2.0.8` SPA/FAB polish + sold-out recheck
 - **theme-picker-2.0.9** — common `1.14.7`: settings FAB **48×48**

@@ -1,6 +1,6 @@
 /**
  * Theme Picker common helpers (Tampermonkey @require)
- * Version: 1.21.0
+ * Version: 1.22.0
  * Author: ExtraPotions
  * License: CC-BY-NC-4.0
  * Homepage: https://github.com/ExtraPotions/super-octo-parakeet
@@ -25,7 +25,7 @@
   'use strict';
 
   var PREFIX = 'ge-';
-  var COMMON_VERSION = '1.21.0';
+  var COMMON_VERSION = '1.22.0';
   var RAIL_ID = 'theme-picker-settings-rail';
   var FAB_ID = 'theme-picker-fab';
   var siteActions = {};
@@ -33,9 +33,9 @@
   var STYLE_ID = 'theme-picker-fab-style';
 
   var SITE_ICONS = {
-    manapool: 'https://manapool.com/favicon.svg',
-    scryfall: 'https://scryfall.com/favicon.ico?v=23c9b39069bf',
-    steamgifts: 'https://cdn.steamgifts.com/img/favicon.ico'
+    manapool: 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/assets/manapool-favicon.svg',
+    scryfall: 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/assets/scryfall-favicon.ico',
+    steamgifts: 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/assets/steamgifts-favicon.ico'
   };
 
   var SITE_TITLES = {

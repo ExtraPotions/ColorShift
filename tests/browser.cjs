@@ -20,7 +20,7 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
       await context.addInitScript(()=>{
         window.GM_getValue=(k,d)=>JSON.parse(localStorage.getItem('gm-'+k)||JSON.stringify(d));
         window.GM_setValue=(k,v)=>localStorage.setItem('gm-'+k,JSON.stringify(v));
-        window.GM_registerMenuCommand=()=>{};
+        window.GM_registerMenuCommand=()=>{throw Error('Simulated manager menu failure');};
       });
       const siteCode=fs.readFileSync(path.join(root,site+'-theme-picker.user.js'),'utf8');
       await context.addInitScript({content:helper+'\n'+siteCode});

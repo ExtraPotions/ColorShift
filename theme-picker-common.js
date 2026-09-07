@@ -1,6 +1,6 @@
 /**
  * Theme Picker common helpers (Tampermonkey @require)
- * Version: 1.19.0
+ * Version: 1.20.0
  * Author: ExtraPotions
  * License: CC-BY-NC-4.0
  * Homepage: https://github.com/ExtraPotions/super-octo-parakeet
@@ -25,7 +25,7 @@
   'use strict';
 
   var PREFIX = 'ge-';
-  var COMMON_VERSION = '1.19.0';
+  var COMMON_VERSION = '1.20.0';
   var RAIL_ID = 'theme-picker-settings-rail';
   var FAB_ID = 'theme-picker-fab';
   var siteActions = {};
@@ -647,25 +647,25 @@
       '  box-shadow: 0 1px 2px rgba(0,0,0,.35) !important;',
       '  transition: transform .15s ease, background .15s ease !important;',
       '}',
-      '#' + PANEL_ID + ' .ge-switch-input:checked + .ge-toggle {',
+      '#' + PANEL_ID + ' .ge-switch[aria-checked="true"] .ge-toggle {',
       '  background: var(--ge-rail-accent, var(--ge-accent, #5eb0ef)) !important;',
       '}',
-      '#' + PANEL_ID + ' .ge-switch-input:checked + .ge-toggle::after {',
+      '#' + PANEL_ID + ' .ge-switch[aria-checked="true"] .ge-toggle::after {',
       '  transform: translateX(18px) !important;',
       '  background: #e8e8e8 !important;',
       '}',
       '#' + PANEL_ID + ' .ge-switch:hover .ge-toggle::after { background: #cfcfcf !important; }',
-      '#' + PANEL_ID + ' .ge-switch-input:checked + .ge-toggle::after,',
-      '#' + PANEL_ID + ' .ge-switch:hover .ge-switch-input:checked + .ge-toggle::after {',
+      '#' + PANEL_ID + ' .ge-switch[aria-checked="true"] .ge-toggle::after,',
+      '#' + PANEL_ID + ' .ge-switch:hover .ge-switch[aria-checked="true"] .ge-toggle::after {',
       '  background: #e8e8e8 !important;',
       '}',
-      '#' + PANEL_ID + ' .ge-switch-input:focus-visible + .ge-toggle {',
+      '#' + PANEL_ID + ' .ge-toggle:focus-visible {',
       '  outline: 1px dotted currentColor !important;',
       '  outline-offset: 2px !important;',
       '}',
       'html[data-ge-high-contrast="1"] #' + PANEL_ID + ' .ge-toggle { border: 2px solid #fff !important; background: #000 !important; }',
-      'html[data-ge-high-contrast="1"] #' + PANEL_ID + ' .ge-switch-input:checked + .ge-toggle { background: #fff !important; }',
-      'html[data-ge-high-contrast="1"] #' + PANEL_ID + ' .ge-switch-input:checked + .ge-toggle::after { background: #000 !important; }',
+      'html[data-ge-high-contrast="1"] #' + PANEL_ID + ' .ge-switch[aria-checked="true"] .ge-toggle { background: #fff !important; }',
+      'html[data-ge-high-contrast="1"] #' + PANEL_ID + ' .ge-switch[aria-checked="true"] .ge-toggle::after { background: #000 !important; }',
       '@media (prefers-reduced-motion: reduce), html[data-ge-reduced-motion="1"] {',
       '  #' + FAB_ID + ', #' + FAB_ID + ':hover, #' + PANEL_ID + ' *, #' + PANEL_ID + ' { transition: none !important; animation: none !important; }',
       '}',
@@ -794,11 +794,11 @@
         '  box-shadow: 0 1px 2px rgba(0,0,0,.35);',
         '  transition: transform .15s ease;',
         '}',
-        '.ge-switch-input:checked + .ge-toggle { background: var(--ge-rail-accent, #5eb0ef); }',
-        '.ge-switch-input:checked + .ge-toggle::after { transform: translateX(18px); background: #e8e8e8; }',
+        '.ge-switch[aria-checked="true"] .ge-toggle { background: var(--ge-rail-accent, #5eb0ef); }',
+        '.ge-switch[aria-checked="true"] .ge-toggle::after { transform: translateX(18px); background: #e8e8e8; }',
         ':host-context(html[data-ge-high-contrast="1"]) .ge-toggle { border: 2px solid #fff; background: #000; }',
-        ':host-context(html[data-ge-high-contrast="1"]) .ge-switch-input:checked + .ge-toggle { background: #fff; }',
-        ':host-context(html[data-ge-high-contrast="1"]) .ge-switch-input:checked + .ge-toggle::after { background: #000; }',
+        ':host-context(html[data-ge-high-contrast="1"]) .ge-switch[aria-checked="true"] .ge-toggle { background: #fff; }',
+        ':host-context(html[data-ge-high-contrast="1"]) .ge-switch[aria-checked="true"] .ge-toggle::after { background: #000; }',
         '@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }',
         ':host-context(html[data-ge-reduced-motion="1"]) * { transition: none !important; animation: none !important; }',
         '.ge-row > label:not(.ge-switch) { flex: 1; cursor: default; color: inherit; }',
@@ -894,22 +894,24 @@
       var text = document.createElement('span');
       text.className = 'ge-switch-text';
       text.textContent = labelText;
-      var cb = document.createElement('input');
-      cb.type = 'checkbox';
-      cb.className = 'ge-switch-input';
+      lab.setAttribute('aria-checked', on ? 'true' : 'false');
+      var cb = document.createElement('button');
+      cb.type = 'button';
+      cb.className = 'ge-toggle';
       cb.setAttribute('role', 'switch');
-      cb.checked = on;
-      cb.setAttribute('aria-checked', on ? 'true' : 'false');
-      var track = document.createElement('span');
+      cb.setAttribute('aria-pressed', on ? 'true' : 'false');
+      cb.setAttribute('aria-label', labelText);
+      var track = cb;
       track.className = 'ge-toggle';
-      track.setAttribute('aria-hidden', 'true');
       lab.appendChild(text);
-      lab.appendChild(cb);
       lab.appendChild(track);
       cb.addEventListener('change', function () {
-        cb.setAttribute('aria-checked', cb.checked ? 'true' : 'false');
-        setSetting(site, key, !!cb.checked);
+        var next = lab.getAttribute('aria-checked') !== 'true';
+        lab.setAttribute('aria-checked', next ? 'true' : 'false');
+        cb.setAttribute('aria-pressed', next ? 'true' : 'false');
+        setSetting(site, key, next);
       });
+      cb.addEventListener('click', function (e) { e.preventDefault(); cb.dispatchEvent(new Event('change')); });
       panel.appendChild(lab);
     }
 

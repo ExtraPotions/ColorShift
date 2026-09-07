@@ -11,7 +11,7 @@ Keep this boring and consistent.
 
 ## Tag + assets
 
-Tag format: `theme-picker-X.Y.Z`
+Tag format: `theme-picker-X.Y.Z` (next: `theme-picker-2.1.0`)
 
 Attach **all four** files every time (even unchanged), so `releases/latest/download/…` stays complete:
 
@@ -19,11 +19,12 @@ Attach **all four** files every time (even unchanged), so `releases/latest/downl
 - `scryfall-theme-picker.user.js`
 - `steamgifts-theme-picker.user.js`
 - `theme-picker-common.js`
+- `theme-picker-icon.svg` and the three site-specific `*-icon.svg` files
 
 Site scripts `@downloadURL` / `@updateURL` / `@require` already point at those latest-release URLs.
 
 ## After
 
-Spot-check ManaPool and SteamGifts: FAB opens, panel lays out normally (Shadow DOM), one theme toggle works. Scryfall is frozen — optional smoke only.
+Spot-check ManaPool, Scryfall, and SteamGifts: FAB opens, panel lays out normally (Shadow DOM), one theme toggle works, and the FAB avoids existing fixed/sticky controls.
 
 Do **not** slim or rewrite the SteamGifts CSS blob unless explicitly requested — past attempts broke the theme.

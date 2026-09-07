@@ -25,7 +25,7 @@
   'use strict';
 
   var PREFIX = 'ge-';
-  var COMMON_VERSION = '1.14.8';
+  var COMMON_VERSION = '1.15.0';
   var RAIL_ID = 'theme-picker-settings-rail';
   var FAB_ID = 'theme-picker-fab';
   var siteActions = {};
@@ -33,9 +33,9 @@
   var STYLE_ID = 'theme-picker-fab-style';
 
   var SITE_ICONS = {
-    manapool: 'https://manapool.com/favicon.svg',
-    scryfall: 'https://scryfall.com/favicon.ico',
-    steamgifts: 'https://cdn.steamgifts.com/img/favicon.ico'
+    manapool: 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/manapool-theme-picker-icon.svg',
+    scryfall: 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/scryfall-theme-picker-icon.svg',
+    steamgifts: 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/steamgifts-theme-picker-icon.svg'
   };
 
   var SITE_TITLES = {
@@ -558,7 +558,7 @@
       '  transform: none !important;',
       '  box-sizing: border-box !important;',
       '  z-index: 2147483001 !important;',
-      '  width: 270px !important;',
+      '  width: 240px !important;',
       '  max-width: calc(100vw - 24px) !important;',
       '  max-height: calc(100vh - 96px) !important;',
       '  overflow-x: hidden !important;',
@@ -717,7 +717,7 @@
         '  border-radius: 12px;',
         '  box-shadow: 0 10px 28px rgba(0,0,0,0.5);',
         '  padding: 12px 12px 10px;',
-        '  width: 270px;',
+        '  width: 240px;',
         '  max-width: calc(100vw - 24px);',
         '  max-height: calc(100vh - 96px);',
         '  overflow-x: hidden;',
@@ -1092,7 +1092,7 @@
 
   function mountSettingsFab(site, iconUrl) {
     site = site || (document.documentElement && document.documentElement.getAttribute('data-ge-site')) || '';
-    iconUrl = iconUrl || SITE_ICONS[site] || '';
+    iconUrl = iconUrl || 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/theme-picker-icon.svg';
 
     function mount() {
       if (!document.body) return false;
@@ -1179,6 +1179,28 @@
 
       applyFabTop(loadFabTop());
 
+      // Keep the settings button clear of other fixed/sticky widgets (for
+      // example Prism Pride Highlighter or site utility buttons).
+      function placeFabAvoidingForeignUi() {
+        if (get('fabTop', null) !== null) return;
+        var size = 48, margin = 16, step = 56, obstacles = [];
+        try {
+          document.body.querySelectorAll('*').forEach(function (el) {
+            if (el === btn || el === panel || el.id === FAB_ID || el.id === PANEL_ID) return;
+            var s = getComputedStyle(el), r = el.getBoundingClientRect();
+            if ((s.position !== 'fixed' && s.position !== 'sticky') || s.display === 'none' || s.visibility === 'hidden' || s.opacity === '0') return;
+            if (r.width >= 8 && r.height >= 8 && r.bottom > 0 && r.right > 0 && r.top < innerHeight && r.left < innerWidth) obstacles.push(r);
+          });
+        } catch (err) {}
+        for (var bottom = margin; bottom <= 400; bottom += step) {
+          for (var right = margin; right <= 400; right += step) {
+            var target = { left: innerWidth - right - size, top: innerHeight - bottom - size, right: innerWidth - right, bottom: innerHeight - bottom };
+            var blocked = obstacles.some(function (o) { return !(target.right <= o.left || target.left >= o.right || target.bottom <= o.top || target.top >= o.bottom); });
+            if (!blocked) { applyFabTop(target.top); return; }
+          }
+        }
+      }
+
       var drag = { active: false, moved: false, startY: 0, origTop: 0, pointerId: null };
 
       btn.addEventListener('pointerdown', function (e) {
@@ -1244,6 +1266,7 @@
 
       document.body.appendChild(panel);
       document.body.appendChild(btn);
+      placeFabAvoidingForeignUi();
 
       // Alt+G toggles panel; Esc closes
       if (!window.__geShortcutBound) {

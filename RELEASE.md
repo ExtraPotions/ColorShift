@@ -19,7 +19,7 @@ Attach **all four** files every time (even unchanged), so `releases/latest/downl
 - `scryfall-theme-picker.user.js`
 - `steamgifts-theme-picker.user.js`
 - `theme-picker-common.js`
-- Site favicon URLs are used directly; the FAB adds its plus badge in CSS.
+- Include the site-inspired eye icon source plus the 64×64 and 128×128 variants for ManaPool, Scryfall, and SteamGifts.
 
 Site scripts `@downloadURL` / `@updateURL` / `@require` already point at those latest-release URLs.
 

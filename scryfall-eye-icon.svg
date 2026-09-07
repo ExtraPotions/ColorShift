@@ -1,8 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
   <defs><linearGradient id="bg" x2="0" y2="1"><stop stop-color="#85518f"/><stop offset="1" stop-color="#6595a0"/></linearGradient></defs>
   <rect width="128" height="128" rx="18" fill="url(#bg)"/>
-  <path d="M14 64c13-22 31-33 50-33s37 11 50 33c-13 22-31 33-50 33S27 86 14 64Z" fill="#f8f6f5" stroke="#493252" stroke-width="7"/>
-  <circle cx="64" cy="64" r="24" fill="#85518f" stroke="#6595a0" stroke-width="6"/>
-  <circle cx="64" cy="64" r="10" fill="#f8f6f5"/>
-  <path d="M35 53c10-4 20-8 29-12M31 68c12-5 25-10 38-15M39 82c9-4 18-8 27-12" fill="none" stroke="#85518f" stroke-width="7" stroke-linecap="round"/>
+  <!-- eye mark, intentionally left open behind the card emblem -->
+  <path d="M12 64c14-23 32-35 52-35s38 12 52 35c-14 23-32 35-52 35S26 87 12 64Z" fill="none" stroke="#18354a" stroke-width="9" stroke-linejoin="round"/>
+  <path d="M19 64c12-18 27-27 45-27s33 9 45 27c-12 18-27 27-45 27S31 82 19 64Z" fill="none" stroke="#f7f5f3" stroke-width="5"/>
+  <!-- overlapping Scryfall-like circular emblem -->
+  <circle cx="70" cy="64" r="38" fill="#f7f5f3" stroke="#85518f" stroke-width="7"/>
+  <path d="M50 45c12 6 24 6 38-2M47 58c14 7 27 7 43-2M47 71c14 7 27 7 43-2M51 84c11 6 22 6 33 0" fill="none" stroke="#85518f" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="70" cy="64" r="8" fill="#6595a0"/>
 </svg>

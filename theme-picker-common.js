@@ -25,7 +25,7 @@
   'use strict';
 
   var PREFIX = 'ge-';
-  var COMMON_VERSION = '1.16.0';
+  var COMMON_VERSION = '1.17.0';
   var RAIL_ID = 'theme-picker-settings-rail';
   var FAB_ID = 'theme-picker-fab';
   var siteActions = {};
@@ -197,6 +197,8 @@
     hideEnded: false,
     softHideFeatured: false,
     highContrastEnter: false
+    ,reducedMotion: false
+    ,highContrast: false
   };
 
   var PALETTES = {
@@ -236,6 +238,8 @@
     root.setAttribute('data-ge-hide-ended', bool01(get('hideEnded', false)));
     root.setAttribute('data-ge-soft-hide-featured', bool01(get('softHideFeatured', false)));
     root.setAttribute('data-ge-hc-enter', bool01(get('highContrastEnter', false)));
+    root.setAttribute('data-ge-reduced-motion', bool01(get('reducedMotion', false)));
+    root.setAttribute('data-ge-high-contrast', bool01(get('highContrast', false)));
     var accentColor = resolveAccent(site);
     root.style.setProperty('--ge-accent', accentColor);
   }
@@ -658,6 +662,12 @@
       '  outline: 1px dotted currentColor !important;',
       '  outline-offset: 2px !important;',
       '}',
+      'html[data-ge-high-contrast="1"] #' + PANEL_ID + ' .ge-toggle { border: 2px solid #fff !important; background: #000 !important; }',
+      'html[data-ge-high-contrast="1"] #' + PANEL_ID + ' .ge-switch-input:checked + .ge-toggle { background: #fff !important; }',
+      'html[data-ge-high-contrast="1"] #' + PANEL_ID + ' .ge-switch-input:checked + .ge-toggle::after { background: #000 !important; }',
+      '@media (prefers-reduced-motion: reduce), html[data-ge-reduced-motion="1"] {',
+      '  #' + FAB_ID + ', #' + FAB_ID + ':hover, #' + PANEL_ID + ' *, #' + PANEL_ID + ' { transition: none !important; animation: none !important; }',
+      '}',
       '#' + PANEL_ID + ' > .ge-row > label:not(.ge-switch) {',
       '  color: var(--ge-rail-text, rgba(204,204,204,0.95)) !important;',
       '  cursor: default !important;',
@@ -785,6 +795,11 @@
         '}',
         '.ge-switch-input:checked + .ge-toggle { background: var(--ge-rail-accent, #5eb0ef); }',
         '.ge-switch-input:checked + .ge-toggle::after { transform: translateX(18px); background: #e8e8e8; }',
+        ':host-context(html[data-ge-high-contrast="1"]) .ge-toggle { border: 2px solid #fff; background: #000; }',
+        ':host-context(html[data-ge-high-contrast="1"]) .ge-switch-input:checked + .ge-toggle { background: #fff; }',
+        ':host-context(html[data-ge-high-contrast="1"]) .ge-switch-input:checked + .ge-toggle::after { background: #000; }',
+        '@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }',
+        ':host-context(html[data-ge-reduced-motion="1"]) * { transition: none !important; animation: none !important; }',
         '.ge-row > label:not(.ge-switch) { flex: 1; cursor: default; color: inherit; }',
         'select {',
         '  display: inline-block;',
@@ -948,6 +963,8 @@
     panel.appendChild(rowA);
 
     addToggle('brighterLinks', 'Brighter links', false);
+    addToggle('reducedMotion', 'Reduce motion', false);
+    addToggle('highContrast', 'High-contrast switches', false);
     addToggle('hideAds', 'Hide ads / promos', false);
     if (site === 'manapool') {
       addToggle('dense', 'Denser card grid', false);
@@ -1170,6 +1187,17 @@
       // example Prism Pride Highlighter or site utility buttons).
       function placeFabAvoidingForeignUi() {
         if (get('fabTop', null) !== null) return;
+        var preferred = document.querySelector('#pfh-fab, #adpb-settings-fab, [data-theme-picker-primary-control]');
+        if (preferred) {
+          var pr = preferred.getBoundingClientRect();
+          if (pr.width >= 8 && pr.height >= 8) {
+            var beside = { top: Math.max(16, Math.min(innerHeight - 64, pr.top)), right: Math.max(16, innerWidth - pr.left + 8) };
+            applyFabTop(beside.top);
+            btn.style.setProperty('right', beside.right + 'px', 'important');
+            set('fabDockTarget', preferred.id || preferred.getAttribute('data-theme-picker-primary-control') || 'primary');
+            return;
+          }
+        }
         var size = 48, margin = 16, step = 56, obstacles = [];
         try {
           document.body.querySelectorAll('*').forEach(function (el) {

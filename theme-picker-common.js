@@ -25,14 +25,18 @@
   'use strict';
 
   var PREFIX = 'ge-';
-  var COMMON_VERSION = '1.17.0';
+  var COMMON_VERSION = '1.18.0';
   var RAIL_ID = 'theme-picker-settings-rail';
   var FAB_ID = 'theme-picker-fab';
   var siteActions = {};
   var PANEL_ID = 'theme-picker-fab-panel';
   var STYLE_ID = 'theme-picker-fab-style';
 
-  var SITE_ICONS = {};
+  var SITE_ICONS = {
+    manapool: 'https://manapool.com/favicon.svg',
+    scryfall: 'https://scryfall.com/favicon.ico?v=23c9b39069bf',
+    steamgifts: 'https://cdn.steamgifts.com/img/favicon.ico'
+  };
 
   var SITE_TITLES = {
     manapool: 'ManaPool',
@@ -540,12 +544,6 @@
       '#' + FAB_ID + ':hover {',
       '  background: var(--ge-rail-btn-hover, #1a1a1a) !important;',
       '  border-color: var(--ge-rail-accent, #aeaeae) !important;',
-      '}',
-      '#' + FAB_ID + ' .ge-plus-icon {',
-      '  width: 100% !important; height: 100% !important; border-radius: 12px !important;',
-      '  display: flex !important; align-items: center !important; justify-content: center !important;',
-      '  background: #f3c95b !important; color: #17344a !important;',
-      '  font: 700 42px/42px system-ui, sans-serif !important; box-shadow: none !important;',
       '}',
       /* Never all:unset the panel — it resets display/stacking and Scryfall site CSS flattens the menu. */
       '#' + PANEL_ID + ', html body #' + PANEL_ID + ' {',
@@ -1141,11 +1139,14 @@
       btn.setAttribute('aria-expanded', 'false');
       applyTheme(btn);
 
-      var plusIcon = document.createElement('span');
-      plusIcon.className = 'ge-plus-icon';
-      plusIcon.textContent = '+';
-      plusIcon.setAttribute('aria-hidden', 'true');
-      btn.appendChild(plusIcon);
+      if (iconUrl) {
+        var img = document.createElement('img');
+        img.src = iconUrl;
+        img.alt = '';
+        img.width = 26;
+        img.height = 26;
+        btn.appendChild(img);
+      }
 
       function clampTop(y) {
         var max = Math.max(8, (window.innerHeight || 600) - 56);

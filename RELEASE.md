@@ -11,7 +11,7 @@ Keep this boring and consistent.
 
 ## Tag + assets
 
-Tag format: `theme-picker-X.Y.Z` (next: `theme-picker-2.3.0`)
+Tag format: `theme-picker-X.Y.Z` (next: `theme-picker-2.4.0`)
 
 Attach **all four** files every time (even unchanged), so `releases/latest/download/…` stays complete:
 
@@ -19,7 +19,7 @@ Attach **all four** files every time (even unchanged), so `releases/latest/downl
 - `scryfall-theme-picker.user.js`
 - `steamgifts-theme-picker.user.js`
 - `theme-picker-common.js`
-- Include the site-inspired eye icon source plus the 64×64 and 128×128 variants for ManaPool, Scryfall, and SteamGifts.
+- Use the original site favicon URLs for the three FAB icons; no replacement icon assets are shipped.
 
 Site scripts `@downloadURL` / `@updateURL` / `@require` already point at those latest-release URLs.
 

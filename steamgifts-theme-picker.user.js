@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name           SteamGifts Theme Picker
 // @namespace      https://github.com/ExtraPotions/super-octo-parakeet
-// @version        2.3.0
-// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/steamgifts-eye-icon.svg
+// @version        2.4.0
+// @icon           https://cdn.steamgifts.com/img/favicon.ico
 // @description    Theme palettes + settings for SteamGifts / SteamTrades / SGTools (ESGST-compatible).
 // @author         ExtraPotions
 // @homepageURL    https://github.com/ExtraPotions/super-octo-parakeet
@@ -8426,8 +8426,8 @@ Docobserver.observe(document.documentElement, { childList: true });
     var GE = (typeof globalThis !== 'undefined' && (globalThis.ThemePicker)) || (typeof window !== 'undefined' && (window.ThemePicker));
     if (!GE) return;
     if (typeof GE.applyDocumentFlags === 'function') GE.applyDocumentFlags('steamgifts');
-    if (typeof GE.registerMenus === 'function') GE.registerMenus('steamgifts', 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/steamgifts-eye-icon.svg');
-    else if (typeof GE.mountSettingsFab === 'function') GE.mountSettingsFab('steamgifts', 'https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/main/steamgifts-eye-icon.svg');
+    if (typeof GE.registerMenus === 'function') GE.registerMenus('steamgifts', 'https://cdn.steamgifts.com/img/favicon.ico');
+    else if (typeof GE.mountSettingsFab === 'function') GE.mountSettingsFab('steamgifts', 'https://cdn.steamgifts.com/img/favicon.ico');
     // Always inject feature flags (hide entered/ended etc.) even on Original
     if (typeof GE.rootCss === 'function') {
       var extra = GE.rootCss();

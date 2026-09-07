@@ -17,18 +17,7 @@
   <a href="https://creativecommons.org/licenses/by-nc/4.0/"><img alt="License: CC BY-NC 4.0" src="https://img.shields.io/badge/license-CC%20BY--NC%204.0-lightgrey?style=flat-square" /></a>
 </p>
 
-**Author:** [ExtraPotions](https://github.com/ExtraPotions) · **Next release:** `theme-picker-2.3.0`
-
-### Scryfall icon assets
-
-[64×64 SVG](scryfall-eye-icon-64.svg) · [128×128 SVG](scryfall-eye-icon-128.svg) · [source SVG](scryfall-eye-icon.svg)
-
-![Scryfall eye icon 64px](scryfall-eye-icon-64.svg) ![Scryfall eye icon 128px](scryfall-eye-icon-128.svg)
-
-ManaPool: [64×64](manapool-eye-icon-64.svg) · [128×128](manapool-eye-icon-128.svg) · [source](manapool-eye-icon.svg)
-SteamGifts: [64×64](steamgifts-eye-icon-64.svg) · [128×128](steamgifts-eye-icon-128.svg) · [source](steamgifts-eye-icon.svg)
-
-![ManaPool eye icon](manapool-eye-icon-128.svg) ![Scryfall eye icon](scryfall-eye-icon-128.svg) ![SteamGifts eye icon](steamgifts-eye-icon-128.svg)
+**Author:** [ExtraPotions](https://github.com/ExtraPotions) · **Next release:** `theme-picker-2.4.0`
 
 | Stat | Value |
 |------|-------|
@@ -45,12 +34,12 @@ SteamGifts: [64×64](steamgifts-eye-icon-64.svg) · [128×128](steamgifts-eye-ic
 3. Open each `.user.js` (or drag into the extension dashboard) and save.
 4. Visit the site — the favicon button appears on the right edge.
 
-| Script | Version (in 2.3.0) | Install |
+| Script | Version (in 2.4.0) | Install |
 | --- | --- | --- |
-| **ManaPool Theme Picker** | 2.3.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
-| **SteamGifts Theme Picker** | 2.3.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
-| Theme Picker common (`@require`) | 1.17.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/theme-picker-common.js) |
-| Scryfall Theme Picker | 2.3.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
+| **ManaPool Theme Picker** | 2.4.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
+| **SteamGifts Theme Picker** | 2.4.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
+| Theme Picker common (`@require`) | 1.18.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/theme-picker-common.js) |
+| Scryfall Theme Picker | 2.4.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
 
 Each site script `@require`s `theme-picker-common.js` from the same latest-release URL. Update **common** whenever you update a site script.
 
@@ -89,7 +78,7 @@ See [GitHub Releases](https://github.com/ExtraPotions/super-octo-parakeet/releas
 
 Recent tags:
 
-- **theme-picker-2.3.0** — matching eye-overlap icons for all three sites, accessibility switches, and smarter dock placement
+- **theme-picker-2.4.0** — accessibility switches, smarter dock placement, and the original site favicons restored
 
 - **theme-picker-2.0.10** — common `1.14.8` Shadow DOM panel; ManaPool `2.0.8` SPA/FAB polish + sold-out recheck
 - **theme-picker-2.0.9** — common `1.14.7`: settings FAB **48×48**

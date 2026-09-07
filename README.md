@@ -1,103 +1,39 @@
-# Theme Picker
+# Theme Picker 3.0
 
-<p align="center">
-  Theme palettes and settings for <strong>Mana Pool</strong>, <strong>Scryfall</strong>, and <strong>SteamGifts</strong>.
-</p>
+A new implementation for ManaPool, Scryfall and SteamGifts: a compact Prism-style menu, accessible switches, persistent settings and site themes.
 
-<p align="center">
-  Palettes, accent color, feature toggles, and a floating favicon settings button (<strong>Alt+G</strong> / <strong>Esc</strong>).
-</p>
-
-<p align="center">
-  <a href="https://github.com/ExtraPotions/super-octo-parakeet/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/ExtraPotions/super-octo-parakeet?style=flat-square&label=release" /></a>
-  <a href="https://github.com/ExtraPotions/super-octo-parakeet/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/ExtraPotions/super-octo-parakeet/total?style=flat-square" /></a>
-  <a href="https://github.com/ExtraPotions/super-octo-parakeet/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/ExtraPotions/super-octo-parakeet?style=flat-square" /></a>
-  <a href="https://github.com/ExtraPotions/super-octo-parakeet/network/members"><img alt="Forks" src="https://img.shields.io/github/forks/ExtraPotions/super-octo-parakeet?style=flat-square" /></a>
-  <a href="https://github.com/ExtraPotions/super-octo-parakeet/issues"><img alt="Issues" src="https://img.shields.io/github/issues/ExtraPotions/super-octo-parakeet?style=flat-square" /></a>
-  <a href="https://creativecommons.org/licenses/by-nc/4.0/"><img alt="License: CC BY-NC 4.0" src="https://img.shields.io/badge/license-CC%20BY--NC%204.0-lightgrey?style=flat-square" /></a>
-</p>
-
-**Author:** [ExtraPotions](https://github.com/ExtraPotions) · **Next release:** `theme-picker-2.13.0`
-
-| Stat | Value |
-|------|-------|
-| Active sites | **Mana Pool**, **Scryfall**, **SteamGifts** |
-| Shared helper | `theme-picker-common.js` (`@require`) |
-| Palettes | Original · Light gray · Dark gray · Navy · Black |
-| Shortcuts | **Alt+G** toggle · **Esc** close |
-| License | [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) |
-
-## Install
-
-1. Install [Violentmonkey](https://violentmonkey.github.io/) (preferred) or [Tampermonkey](https://www.tampermonkey.net/).
-2. Open the [latest release](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest) and download the scripts you need (install from the release so download badges count).
-3. Open each `.user.js` (or drag into the extension dashboard) and save.
-4. Visit the site — the favicon button appears on the right edge.
-
-| Script | Version (in 2.13.0) | Install |
+| Site | Icon | Install |
 | --- | --- | --- |
-| **ManaPool Theme Picker** | 2.11.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
-| **SteamGifts Theme Picker** | 2.11.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
-| Theme Picker common (`@require`) | 1.24.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/theme-picker-common.js) |
-| Scryfall Theme Picker | 2.11.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
+| ManaPool | <img src="assets/manapool-favicon.svg" width="32" height="32" alt="ManaPool"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
+| Scryfall | <img src="assets/scryfall-favicon.ico" width="32" height="32" alt="Scryfall"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
+| SteamGifts | <img src="assets/steamgifts-favicon.ico" width="32" height="32" alt="SteamGifts"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
 
-Each site script `@require`s the version-pinned `theme-picker-common.js` from `raw.githubusercontent.com` for reliable userscript-manager loading. The helper and all site scripts are published together in each release.
+All scripts and the common helper are version **3.0.0**. Install using Tampermonkey or Violentmonkey; update existing Theme Picker entries to retain stored settings. Disable older Grey Edition copies to avoid competing themes.
 
-Before publishing, run `node tests/common-smoke.test.js` to validate the helper API independently.
+Click the rounded-square favicon or press **Alt+G** to open settings; **Esc** closes them. Drag the launcher vertically to save its location. Theme Picker stays anchored and displaces overlapping known Prism/ADPB launchers. It does not reposition unrelated website controls.
 
 ## Features
 
-**Shared**
+| Shared | ManaPool | Scryfall | SteamGifts |
+| --- | --- | --- | --- |
+| Original, light gray, dark gray, navy and black palettes | Persistent homepage shelf collapse | Sitewide surfaces and card/gallery theming | Giveaway, comment, navigation and popup theming |
+| Site default, blue, green, amber, violet and rose accents | Collapse all / expand all | Content-warning dimming with hover/focus reveal | Hide entered / ended giveaways |
+| Brighter links; hide ads/promos | Dense grid; hide sold out | Toolbox settings shortcut | Soft-hide featured/pinned giveaways |
+| Export, validated import, reset | Compact prices; always-visible chips | Automatic toolbox discovery | High-contrast Enter button |
+| Reduced motion and high contrast, including system preferences | Automatic discovery of dynamic shelves/cards | Keyboard-accessible menu | Selectors for common ESGST surfaces |
 
-- Theme palettes + accent color  
-- Floating favicon settings button (drag up/down; **Alt+G** / **Esc**)  
-- Settings panel isolated in Shadow DOM (site CSS can’t flatten controls)  
-- Export / Import / Reset  
+Existing GM settings and `ge-` local-storage keys are read. Legacy ManaPool collapse preferences are migrated when shelves are discovered. Original removes theme colours while leaving enabled feature options available.
 
-**ManaPool**
+## Development
 
-- Collapse home sections (including extra shelves beyond the hard-coded list)  
-- Hide sold out · compact prices · denser grid · hide ads  
+- `src/common.js`: rewritten settings engine and isolated menu. Constructed stylesheets work with Scryfall's restrictive inline-style policy.
+- `src/sites.js`: rewritten site selectors, palette styles and feature behaviours.
+- `scripts/build.cjs`: generates all four scripts with matching pinned dependency URLs. Runtime icons are embedded from `assets/`.
+- `tests/browser.cjs`: Chromium tests cover document-start initialization, restrictive style policy, menu layout, toggles, persistence, themes, import, keyboard interaction, mobile fit, DOM replacement and missing-helper warnings.
+- `tests/live.cjs`: public-site spot checks. SteamGifts returned an anti-bot challenge during development; authenticated/ESGST combinations require user-side verification.
 
-**SteamGifts**
+Run `npm install`, `npx playwright install chromium`, `npm run build`, then `npm test`. See [release procedure](RELEASE.md).
 
-- Hide entered / ended  
-- Soft-hide featured / pinned  
-- High-contrast Enter (ESGST-compatible)  
+This is newly written code, including site styles. It preserves the settings feature set; the old 8,000-line SteamGifts third-party stylesheet is not bundled. Styling for every optional third-party extension combination has not been verified.
 
-**Scryfall**
-
-- Still available from releases for existing users  
-- Active development with the shared panel and collision-aware settings button
-
-## License
-
-[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) — attribution to **ExtraPotions** required; non-commercial. Full text in [`LICENSE`](LICENSE).
-
-## Changelog
-
-See [GitHub Releases](https://github.com/ExtraPotions/super-octo-parakeet/releases) for downloadable builds and notes.
-
-Recent tags:
-
-- **theme-picker-2.11.0** — Prism Highlighter-style grouped panel layout and compact toggle controls
-
-- **theme-picker-2.10.0** — fixed toggle click handling
-
-- **theme-picker-2.9.0** — vendored ManaPool, Scryfall, and SteamGifts favicon assets in the repository
-
-- **theme-picker-2.8.0** — load the shared helper from a direct raw GitHub URL so `@require` resolves reliably
-
-- **theme-picker-2.7.0** — fixed dock position; other floating scripts no longer move the Theme Picker
-
-- **theme-picker-2.6.0** — all applicable settings use accessible toggle buttons; no checkbox controls
-
-- **theme-picker-2.5.0** — Pride Highlighter-style rounded button, panel spacing, controls, and menu layout
-
-- **theme-picker-2.4.0** — accessibility switches, smarter dock placement, and the original site favicons restored
-
-- **theme-picker-2.0.10** — common `1.14.8` Shadow DOM panel; ManaPool `2.0.8` SPA/FAB polish + sold-out recheck
-- **theme-picker-2.0.9** — common `1.14.7`: settings FAB **48×48**
-- **theme-picker-2.0.8** — common `1.14.6` panel layout hardening; Scryfall `2.0.7`  
-- **theme-picker-2.0.7** — Esc closes panel; ManaPool section discovery; README/release checklist  
-- **theme-picker-2.0.6** — Scryfall panel select/`all: unset` layout fix  
+Author: [ExtraPotions](https://github.com/ExtraPotions). Code: [CC BY-NC 4.0](LICENSE). Original site favicon ownership remains with the respective sites.

@@ -1,30 +1,13 @@
-# Releasing Theme Picker
+# Release procedure
 
-Keep this boring and consistent.
+1. Set the version in `package.json` and `src/common.js`.
+2. Run `npm install`, `npx playwright install chromium`, `npm run build`, and `npm test`.
+3. Inspect screenshots; run `node tests/live.cjs` for public-site checks. A challenge page is not a successful site check.
+4. Commit source, tests, documentation and generated files. Never manually edit generated scripts.
+5. Push the commit and a new `theme-picker-X.Y.Z` tag. Never move a released tag.
+6. Create a draft release, upload all four generated JavaScript files and three favicon assets, and verify SHA-256 hashes against the build.
+7. Verify versioned raw dependency and favicon URLs exist, then publish the draft after every upload succeeds.
 
-## Before you tag
+The helper owns storage, lifecycle, menus and accessibility. Adapters own site behaviour. The build embeds repository favicons and pins metadata to the release tag.
 
-1. Bump `@version` on each changed site script and `COMMON_VERSION` / header Version in `theme-picker-common.js` when common changes.
-2. Update the version table in `README.md`.
-3. Add a short bullet under README “Changelog” for this release (details live on the GitHub Release).
-4. `node --check` every changed `.js` file (especially after editing CSS inside quoted strings).
-
-## Tag + assets
-
-Tag format: `theme-picker-X.Y.Z` (next: `theme-picker-2.4.0`)
-
-Attach **all four** files every time (even unchanged), so `releases/latest/download/…` stays complete:
-
-- `manapool-theme-picker.user.js`
-- `scryfall-theme-picker.user.js`
-- `steamgifts-theme-picker.user.js`
-- `theme-picker-common.js`
-- Use the original site favicon URLs for the three FAB icons; no replacement icon assets are shipped.
-
-Site scripts `@downloadURL` / `@updateURL` / `@require` already point at those latest-release URLs.
-
-## After
-
-Spot-check ManaPool, Scryfall, and SteamGifts: FAB opens, panel lays out normally (Shadow DOM), one theme toggle works, and the FAB avoids existing fixed/sticky controls.
-
-Do **not** slim or rewrite the SteamGifts CSS blob unless explicitly requested — past attempts broke the theme.
+If the manager aborts execution because a dependency cannot download, only the manager can show that error. The visible fallback covers an absent or incompatible helper when the script is allowed to execute.

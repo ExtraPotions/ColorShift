@@ -1,6 +1,6 @@
 /**
  * Theme Picker common helpers (Tampermonkey @require)
- * Version: 1.26.0
+ * Version: 1.27.0
  * Author: ExtraPotions
  * License: CC-BY-NC-4.0
  * Homepage: https://github.com/ExtraPotions/super-octo-parakeet
@@ -25,7 +25,7 @@
   'use strict';
 
   var PREFIX = 'ge-';
-  var COMMON_VERSION = '1.26.0';
+  var COMMON_VERSION = '1.27.0';
   var RAIL_ID = 'theme-picker-settings-rail';
   var FAB_ID = 'theme-picker-fab';
   var siteActions = {};
@@ -715,6 +715,7 @@
       // Fully self-contained — lives inside the panel shadow root (site CSS cannot reach it).
       return [
         ':host {',
+        '  display: none !important;',
         '  box-sizing: border-box;',
         '  font: 13px/1.35 system-ui, "Open Sans", sans-serif;',
         '  color: var(--ge-rail-text, rgba(204,204,204,0.95));',
@@ -1339,10 +1340,10 @@
     }
   }
 
-  // registerMenus also mounts the FAB
+  // registerMenus also mounts the FAB (always — even if GM menu commands fail)
   var _registerMenus = registerMenus;
   registerMenus = function (site, iconUrl) {
-    _registerMenus(site);
+    try { _registerMenus(site); } catch (eMenus) {}
     mountSettingsFab(site, iconUrl);
   };
 

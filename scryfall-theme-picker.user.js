@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Scryfall Theme Picker
 // @namespace      https://github.com/ExtraPotions/super-octo-parakeet
-// @version        2.4.0
+// @version        2.5.0
 // @icon           https://scryfall.com/favicon.ico?v=23c9b39069bf
 // @description    Theme palettes + settings for Scryfall — readable blues, themed chips, dim warnings, gallery polish
 // @author         ExtraPotions

@@ -1,6 +1,6 @@
 /**
  * Theme Picker common helpers (Tampermonkey @require)
- * Version: 1.14.8
+ * Version: 1.19.0
  * Author: ExtraPotions
  * License: CC-BY-NC-4.0
  * Homepage: https://github.com/ExtraPotions/super-octo-parakeet
@@ -25,7 +25,7 @@
   'use strict';
 
   var PREFIX = 'ge-';
-  var COMMON_VERSION = '1.18.0';
+  var COMMON_VERSION = '1.19.0';
   var RAIL_ID = 'theme-picker-settings-rail';
   var FAB_ID = 'theme-picker-fab';
   var siteActions = {};
@@ -508,7 +508,7 @@
       '#' + FAB_ID + ' {',
       '  all: unset !important;',
       '  position: fixed !important;',
-      '  right: 12px !important;',
+      '  right: 16px !important;',
       '  left: auto !important;',
       '  z-index: 2147483000 !important;',
             '  width: 48px !important;',
@@ -517,12 +517,12 @@
       '  min-height: 48px !important;',
       '  max-width: 48px !important;',
       '  max-height: 48px !important;',
-      '  border-radius: 999px !important;',
-      '  border: 1px solid var(--ge-rail-accent, #aeaeae) !important;',
-      '  background: var(--ge-rail-btn-bg, #111111) !important;',
+      '  border-radius: 13px !important;',
+      '  border: 1px solid rgba(255,255,255,.2) !important;',
+      '  background: #121722 !important;',
       '  background-image: none !important;',
       '  color: var(--ge-rail-accent, #aeaeae) !important;',
-      '  box-shadow: 0 2px 10px rgba(0,0,0,.4), 0 0 0 1px var(--ge-rail-accent-soft, transparent) !important;',
+      '  box-shadow: 0 5px 18px rgba(0,0,0,.3), 0 0 0 1px rgba(0,0,0,.35) !important;',
       '  cursor: grab !important;',
       '  padding: 0 !important;',
       '  margin: 0 !important;',
@@ -538,13 +538,16 @@
       '  filter: none !important;',
       '  opacity: 1 !important;',
       '  pointer-events: auto !important;',
-      '  transition: background .15s ease, border-color .15s ease !important;',
+      '  transition: transform .15s ease, box-shadow .15s ease !important;',
       '}',
       '#' + FAB_ID + '.ge-dragging { cursor: grabbing !important; }',
       '#' + FAB_ID + ':hover {',
-      '  background: var(--ge-rail-btn-hover, #1a1a1a) !important;',
-      '  border-color: var(--ge-rail-accent, #aeaeae) !important;',
+      '  background: #121722 !important;',
+      '  border-color: rgba(255,255,255,.2) !important;',
+      '  transform: translateY(-1px) !important;',
+      '  box-shadow: 0 8px 22px rgba(0,0,0,.38), 0 0 0 2px rgba(122,208,255,.7) !important;',
       '}',
+      '#' + FAB_ID + ' img { display:block !important; width:100% !important; height:100% !important; object-fit:contain !important; pointer-events:none !important; }',
       /* Never all:unset the panel — it resets display/stacking and Scryfall site CSS flattens the menu. */
       '#' + PANEL_ID + ', html body #' + PANEL_ID + ' {',
       '  position: fixed !important;',
@@ -555,17 +558,17 @@
       '  transform: none !important;',
       '  box-sizing: border-box !important;',
       '  z-index: 2147483001 !important;',
-      '  width: 240px !important;',
+      '  width: min(312px, calc(100vw - 24px)) !important;',
       '  max-width: calc(100vw - 24px) !important;',
       '  max-height: calc(100vh - 96px) !important;',
       '  overflow-x: hidden !important;',
       '  overflow-y: auto !important;',
-      '  background: var(--ge-rail-panel-bg, #2a2a28) !important;',
-      '  color: var(--ge-rail-text, rgba(204,204,204,0.95)) !important;',
-      '  border: 1px solid var(--ge-rail-panel-border, rgba(0,0,0,0.75)) !important;',
-      '  border-radius: 12px !important;',
-      '  box-shadow: 0 10px 28px rgba(0,0,0,0.5), 0 0 0 1px var(--ge-rail-accent-soft, transparent) !important;',
-      '  padding: 12px 12px 10px !important;',
+      '  background: #12141a !important;',
+      '  color: #f2f4f8 !important;',
+      '  border: 1px solid rgba(255,255,255,.12) !important;',
+      '  border-radius: 14px !important;',
+      '  box-shadow: 0 16px 40px rgba(0,0,0,.4) !important;',
+      '  padding: 14px 18px 12px !important;',
       '  margin: 0 !important;',
       '  font: 13px/1.35 "Open Sans", system-ui, sans-serif !important;',
       '  flex-direction: column !important;',
@@ -715,12 +718,12 @@
         '  box-sizing: border-box;',
         '  font: 13px/1.35 system-ui, "Open Sans", sans-serif;',
         '  color: var(--ge-rail-text, rgba(204,204,204,0.95));',
-        '  background: var(--ge-rail-panel-bg, #2a2a28);',
-        '  border: 1px solid var(--ge-rail-panel-border, rgba(0,0,0,0.75));',
-        '  border-radius: 12px;',
-        '  box-shadow: 0 10px 28px rgba(0,0,0,0.5);',
-        '  padding: 12px 12px 10px;',
-        '  width: 240px;',
+        '  background: #12141a;',
+        '  border: 1px solid rgba(255,255,255,.12);',
+        '  border-radius: 14px;',
+        '  box-shadow: 0 16px 40px rgba(0,0,0,.4);',
+        '  padding: 14px 18px 12px;',
+        '  width: min(312px, calc(100vw - 24px));',
         '  max-width: calc(100vw - 24px);',
         '  max-height: calc(100vh - 96px);',
         '  overflow-x: hidden;',
@@ -807,8 +810,8 @@
         '  background: #333;',
         '  color: #ccc;',
         '  border: 1px solid #000;',
-        '  border-radius: 6px;',
-        '  padding: 4px 6px;',
+        '  border-radius: 8px;',
+        '  padding: .35rem .55rem;',
         '  margin: 0;',
         '  max-width: 140px;',
         '  height: 28px;',
@@ -824,6 +827,8 @@
         '  background-image: none;',
         '  filter: none;',
         '}',
+        'button:not(.ge-toggle) { border: 1px solid rgba(255,255,255,.18); border-radius: 8px; background: #1c2230; color: #f2f4f8; padding: .35rem .55rem; }',
+        'button:not(.ge-toggle):hover, button:not(.ge-toggle):focus-visible { background: #273044; outline: none; }',
         '.ge-foot {',
         '  margin-top: 8px;',
         '  padding-top: 8px;',

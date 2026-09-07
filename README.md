@@ -8,7 +8,11 @@ A new implementation for ManaPool, Scryfall and SteamGifts: a compact Prism-styl
 | Scryfall | <img src="assets/scryfall-favicon.ico" width="32" height="32" alt="Scryfall"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
 | SteamGifts | <img src="assets/steamgifts-favicon.ico" width="32" height="32" alt="SteamGifts"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
 
-All scripts and the common helper are version **3.0.0**. Install using Tampermonkey or Violentmonkey; update existing Theme Picker entries to retain stored settings. Disable older Grey Edition copies to avoid competing themes.
+All scripts and the common helper are version **3.0.1**. Install using Tampermonkey or Violentmonkey; update existing Theme Picker entries to retain stored settings. Disable older Grey Edition copies to avoid competing themes.
+
+### 3.0.1 contrast fixes
+
+SteamGifts/ESGST filter bars, navigation, statistics and badges now use readable themed surfaces instead of leftover bright gradients. ManaPool and Scryfall controls receive matching palette-aware backgrounds, readable text and placeholders, and visible keyboard focus outlines. Original mode restores native control styling. SteamGifts was verified with ESGST in a signed-in browser and approved by the user; ManaPool and Scryfall receive public-site checks and automated contrast regression tests.
 
 Click the rounded-square favicon or press **Alt+G** to open settings; **Esc** closes them. Drag the launcher vertically to save its location. Theme Picker stays anchored and displaces overlapping known Prism/ADPB launchers. It does not reposition unrelated website controls.
 
@@ -30,7 +34,7 @@ Existing GM settings and `ge-` local-storage keys are read. Legacy ManaPool coll
 - `src/sites.js`: rewritten site selectors, palette styles and feature behaviours.
 - `scripts/build.cjs`: generates all four scripts with matching pinned dependency URLs. Runtime icons are embedded from `assets/`.
 - `tests/browser.cjs`: Chromium tests cover document-start initialization, restrictive style policy, menu layout, toggles, persistence, themes, import, keyboard interaction, mobile fit, DOM replacement and missing-helper warnings.
-- `tests/live.cjs`: public-site spot checks. SteamGifts returned an anti-bot challenge during development; authenticated/ESGST combinations require user-side verification.
+- `tests/live.cjs`: public-site spot checks. Isolated SteamGifts requests may encounter an anti-bot challenge; this is reported as a blocked check, not a pass.
 
 Run `npm install`, `npx playwright install chromium`, `npm run build`, then `npm test`. See [release procedure](RELEASE.md).
 

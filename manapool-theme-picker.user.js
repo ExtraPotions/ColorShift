@@ -1,17 +1,17 @@
 // ==UserScript==
 // @name           ManaPool Theme Picker
 // @namespace      https://github.com/ExtraPotions/super-octo-parakeet
-// @version        3.0.0
+// @version        3.0.1
 // @description    Theme palettes, accessible settings and site enhancements.
 // @author         ExtraPotions
 // @license        CC-BY-NC-4.0
-// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/theme-picker-3.0.0/assets/manapool-favicon.svg
+// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/theme-picker-3.0.1/assets/manapool-favicon.svg
 // @match          *://manapool.com/*
 // @match          *://www.manapool.com/*
 // @run-at         document-start
 // @downloadURL    https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js
 // @updateURL      https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js
-// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/theme-picker-3.0.0/theme-picker-common.js
+// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/theme-picker-3.0.1/theme-picker-common.js
 // @grant          GM_getValue
 // @grant          GM_setValue
 // @grant          GM_registerMenuCommand
@@ -42,6 +42,33 @@ if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
       (state.hideAds?'.hpsgck,.fanatical_container,[id*="google_ads"],.adsbygoogle,[data-ad],.promo-banner,.sponsored,.bot-marketing-panel{display:none!important}':'');
   }
   const sections=new Map();
+  function siteControls(state,colors,accent,selectors) {
+    if(state.palette==='original')return '';
+    return `:is(${selectors}){background:${colors[3]}!important;color:#eee!important;border-color:#858580!important;text-shadow:none!important;box-shadow:none!important}
+      :is(${selectors}):hover{background:${colors[2]}!important;color:#fff!important}
+      :is(${selectors}):focus-visible{outline:2px solid ${accent}!important;outline-offset:2px}
+      input::placeholder,textarea::placeholder{color:#c0c0bc!important;opacity:1!important}`;
+  }
+  function steamControls(state,colors,accent) {
+    if(state.palette==='original')return '';
+    const surface=colors[2],control=colors[3];
+    return `
+      .nav__button,.page__heading__breadcrumbs,.pagination__navigation,.esgst-heading-button,
+      .esgst-gf-button,.giveaway__columns>div,.esgst-gwc,.esgst-gwr{
+        background:${control}!important;color:#d0d0cc!important;border-color:#ffffff30!important;text-shadow:none!important;box-shadow:none!important}
+      .esgst-gf-container,.esgst-gf-box,.esgst-panel,.esgst-popup,.esgst-menu-layer,
+      .fanatical_container,.fanatical_description,.sidebar__search-container{
+        background:${surface}!important;color:#d0d0cc!important;border-color:#ffffff30!important;text-shadow:none!important}
+      .esgst-heading-button:hover,.esgst-gf-button:hover,.nav__button:hover{
+        background:${surface}!important;color:#fff!important}
+      .esgst-heading-button:focus-visible,.esgst-gf-button:focus-visible,.nav__button:focus-visible{
+        outline:2px solid ${accent}!important;outline-offset:2px}
+      .giveaway__columns>div a,.esgst-heading-button a,.pagination__navigation a{color:${accent}!important;text-shadow:none!important}
+      .esgst-gc{background:${control}!important;color:#d0d0cc!important;border:1px solid #ffffff30!important;text-shadow:none!important}
+      .giveaway__column--contributor-level--positive,.fanatical_pricing{background:#254521!important;color:#d8ffc5!important;text-shadow:none!important}
+      .giveaway__column--contributor-level--negative{background:#662626!important;color:#ffdbdb!important;text-shadow:none!important}
+    `;
+  }
   function collapse(api,record,value) {
     record.collapsed=value;
     const map=api.read('sections',{});map[record.title]=value;api.write('sections',map);
@@ -63,6 +90,8 @@ if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
         .gradient-wrapper{height:15px!important;max-height:15px!important;overflow:hidden}.gradient-rare{background:linear-gradient(90deg,#d4af37,#fc0)!important}
         .gradient-mythic{background:linear-gradient(90deg,#b98747,#ffca89)!important}.gradient-uncommon{background:linear-gradient(90deg,#909497,#c0c0c0)!important}
         header a[href="/"]{color:${accent}!important}`)+
+        siteControls(state,colors,accent,'button:not([role=switch]),a[role=button],a.bg-blue-700,a.bg-blue-600,select,input:not([type=checkbox]):not([type=radio]),textarea')+
+        (state.palette==='original'?'':'.text-gray-500,.text-gray-600,.text-gray-700,.text-gray-800,.text-gray-900{color:#d0d0cc!important}')+
         '.tp-section-hidden{display:none!important}.tp-section-heading{display:block!important;visibility:visible!important}.tp-section-button{border-radius:6px;padding:4px 8px;margin-right:8px;cursor:pointer}'+
         (state.dense?'ul.grid,.grid{gap:.5rem!important}article{margin:0!important}':'')+
         (state.hideSoldOut?'[data-tp-sold=true]{display:none!important}':'')+
@@ -94,7 +123,8 @@ if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
     scryfall:{name:'Scryfall',accent:'#7ec8f0',options:[['dimWarnings','Dim content warnings']],
       css(state,colors,accent){return shared(state)+theme(state,colors,accent,
         '#main,.main,.homepage,.card-profile,.card-text,.card-grid,.print-gallery,.prints,.prints-table,.set-details,.reference-block,.rulings,.sidebar,.toolbox,.buybox,.search-info,.search-controls,.autocomplete,.select2-dropdown,.modal,.popover,table,td,th',
-        '.button-n,.select-n{background:#aeaeae!important;color:#1a1a18!important}.button-n.manapool,.button-n.cardkingdom{color:#045206!important}.button-n.tcgplayer{color:#0b3d9e!important}.button-n.cardhoarder{color:#a33a00!important}.card-image,img.card,picture{background:transparent!important}')+
+        '.card-image,img.card,picture{background:transparent!important}')+
+        siteControls(state,colors,accent,'.button-n,.select-n,button:not([role=switch]),select,input:not([type=checkbox]):not([type=radio]),textarea')+
         (state.dimWarnings?'.card-content-warning{opacity:.4;filter:grayscale(.55);max-height:3.5rem;overflow:hidden}.card-content-warning:hover,.card-content-warning:focus-within{opacity:1;filter:none;max-height:none}':'');},
       update(api){const toolbox=document.querySelector('.toolbox-links');if(toolbox&&!toolbox.querySelector('[data-tp-launch]')){
         const item=api.element('li'),button=api.element('button',{type:'button',class:'button-n','data-tp-launch':'true'},'Theme Picker settings');
@@ -105,6 +135,7 @@ if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
       css(state,colors,accent){return shared(state)+theme(state,colors,accent,
         '.page__outer-wrap,.page__inner-wrap,.page__heading,.sidebar,.sidebar__heading,.table,.table__row-outer-wrap,.table__row-inner-wrap,.giveaway__row-inner-wrap,.featured__container,.comment__summary,.comment__description,.comment__entity,.form__row,.form__input-description,.pagination,.popup,.popup__heading,.popup__description,.markdown,.nav__absolute-dropdown,.nav__row,.widget-container,.esgst-popup,.esgst-menu-layer,.esgst-panel,.esgst-gv-popout,#dlg-box,#dlg-body,.ui-dialog,.ui-widget-content',
         '.sidebar__entry-insert,.form__submit-button{background:#315b27!important;color:#d8ffc5!important}.sidebar__entry-delete{background:#7f2828!important;color:#ffdbdb!important}.giveaway__heading__name{color:#c1d8ec!important}.giveaway__columns,.comment__username{color:#bbb!important}.is-faded{opacity:.55}.giveaway__image,.giveaway__image-outer-wrap{background-color:transparent!important}')+
+        steamControls(state,colors,accent)+
         (state.hideEntered?'.giveaway__row-outer-wrap:has(.is-faded),.giveaway__row-outer-wrap:has(.esgst-faded),.giveaway-gridview .faded{display:none!important}':'')+
         (state.hideEnded?'[data-tp-ended=true]{display:none!important}':'')+
         (state.softHideFeatured?'.featured__container,.pinned-giveaways{opacity:.32;max-height:52px;overflow:hidden}.featured__container:hover,.featured__container:focus-within,.pinned-giveaways:hover,.pinned-giveaways:focus-within{opacity:1;max-height:none}':'')+

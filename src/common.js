@@ -1,7 +1,7 @@
 /* Theme Picker 3: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ThemePicker = (() => {
   'use strict';
-  const version = '3.0.0';
+  const version = '3.0.1';
   const palettes = {
     original: ['Original'], lightGray: ['Light gray','#3f3f3c','#4a4a46','#333330'],
     darkGray: ['Dark gray','#252522','#2a2a28','#1c1c1a'],

@@ -10,6 +10,12 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
 <div class="giveaway__row-outer-wrap" id="entered"><div class="giveaway__row-inner-wrap is-faded">Entered</div></div>
 <div class="giveaway__row-outer-wrap" id="ended"><span title="Ended">Ended</span></div>
 <div class="featured__container">Featured</div><button class="sidebar__entry-insert">Enter giveaway</button>
+<div class="esgst-heading-button" style="background:linear-gradient(white,#ccc);color:#6b7a8c">Filters</div>
+<div class="esgst-gf-container" style="background:#e8eaef"><div class="esgst-gf-box">Filter settings</div></div>
+<div class="giveaway__columns"><div class="esgst-gwc" style="background:linear-gradient(white,#ccc);color:#6b7a8c">Chance</div></div>
+<a class="esgst-gc esgst-gc-singleplayer" style="background:#5eb2a1">Singleplayer</a>
+<div class="fanatical_description" style="background:#dde0e7">Promotion</div>
+<a role="button" class="button-n manapool bg-blue-700" id="site-control" style="background:linear-gradient(white,#ccc);color:#444">Shop</a>
 <button id="pfh-fab" style="position:fixed;right:16px;bottom:16px;width:48px;height:48px;padding:0">P</button></body></html>`;
 (async()=>{
   const browser=await chromium.launch({headless:true,...(process.env.TP_BROWSER?{channel:process.env.TP_BROWSER}:{})});
@@ -36,6 +42,22 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
       assert.equal(await page.getByRole('checkbox').count(),0);
       const rowStyle=await panel.locator('.row').first().evaluate(el=>getComputedStyle(el).display);assert.equal(rowStyle,'flex');
       await panel.locator('summary').click();
+      {
+        for(const palette of ['lightGray','darkGray','navy','black']){
+          await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption(palette);
+          for(const selector of (site==='steamgifts'?['.esgst-heading-button','.esgst-gf-container','.esgst-gwc','.esgst-gc','.fanatical_description']:['#site-control'])){
+            const style=await page.locator(selector).evaluate(el=>{const s=getComputedStyle(el);return {bg:s.backgroundColor,fg:s.color,image:s.backgroundImage};});
+            assert.equal(style.image,'none');
+            const luminance=color=>{const c=color.match(/\d+/g).slice(0,3).map(Number).map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return c[0]*.2126+c[1]*.7152+c[2]*.0722;};
+            assert((luminance(style.fg)+.05)/(luminance(style.bg)+.05)>=4.5,`${palette} ${selector} contrast`);
+          }
+        }
+        await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('original');
+        const nativeImage=await page.locator(site==='steamgifts'?'.esgst-heading-button':'#site-control').evaluate(el=>getComputedStyle(el).backgroundImage);
+        if(site==='scryfall')assert.equal(nativeImage,'none'); // CSP rejects fixture inline styles.
+        else assert.match(nativeImage,/linear-gradient/);
+        await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('darkGray');
+      }
       for(const button of await panel.getByRole('switch').all()) {
         const before=await button.getAttribute('aria-checked');await button.click();assert.equal(await button.getAttribute('aria-checked'),String(before!=='true'));
         const size=await button.boundingBox();assert.equal(size.width,36);assert.equal(size.height,20);

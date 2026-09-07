@@ -11,7 +11,7 @@ Keep this boring and consistent.
 
 ## Tag + assets
 
-Tag format: `theme-picker-X.Y.Z` (next: `theme-picker-2.1.0`)
+Tag format: `theme-picker-X.Y.Z` (next: `theme-picker-2.3.0`)
 
 Attach **all four** files every time (even unchanged), so `releases/latest/download/…` stays complete:
 

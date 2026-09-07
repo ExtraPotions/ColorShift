@@ -78,7 +78,7 @@ See [GitHub Releases](https://github.com/ExtraPotions/super-octo-parakeet/releas
 
 Recent tags:
 
-- **theme-picker-2.2.0** — rounded-square plus FAB with no icon assets; Scryfall toolbox launch button retained
+- **theme-picker-2.3.0** — Scryfall eye icon combining the supplied eye mark with Scryfall-inspired colors
 
 - **theme-picker-2.0.10** — common `1.14.8` Shadow DOM panel; ManaPool `2.0.8` SPA/FAB polish + sold-out recheck
 - **theme-picker-2.0.9** — common `1.14.7`: settings FAB **48×48**

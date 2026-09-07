@@ -1,6 +1,6 @@
 /**
  * Theme Picker common helpers (Tampermonkey @require)
- * Version: 1.20.0
+ * Version: 1.21.0
  * Author: ExtraPotions
  * License: CC-BY-NC-4.0
  * Homepage: https://github.com/ExtraPotions/super-octo-parakeet
@@ -25,7 +25,7 @@
   'use strict';
 
   var PREFIX = 'ge-';
-  var COMMON_VERSION = '1.20.0';
+  var COMMON_VERSION = '1.21.0';
   var RAIL_ID = 'theme-picker-settings-rail';
   var FAB_ID = 'theme-picker-fab';
   var siteActions = {};
@@ -1163,7 +1163,7 @@
       }
 
       function applyFabTop(topPx) {
-        btn.style.setProperty('right', '12px', 'important');
+        btn.style.setProperty('right', '16px', 'important');
         btn.style.setProperty('left', 'auto', 'important');
         btn.style.setProperty('bottom', 'auto', 'important');
         btn.style.setProperty('top', clampTop(topPx) + 'px', 'important');
@@ -1183,46 +1183,13 @@
         if (top < 8) top = br.bottom + gap;
         var maxTop = Math.max(8, (window.innerHeight || 600) - Math.min(ph, (window.innerHeight || 600) - 16) - 8);
         if (top > maxTop) top = maxTop;
-        panel.style.setProperty('right', '12px', 'important');
+        panel.style.setProperty('right', '16px', 'important');
         panel.style.setProperty('left', 'auto', 'important');
         panel.style.setProperty('bottom', 'auto', 'important');
         panel.style.setProperty('top', top + 'px', 'important');
       }
 
       applyFabTop(loadFabTop());
-
-      // Keep the settings button clear of other fixed/sticky widgets (for
-      // example Prism Pride Highlighter or site utility buttons).
-      function placeFabAvoidingForeignUi() {
-        if (get('fabTop', null) !== null) return;
-        var preferred = document.querySelector('#pfh-fab, #adpb-settings-fab, [data-theme-picker-primary-control]');
-        if (preferred) {
-          var pr = preferred.getBoundingClientRect();
-          if (pr.width >= 8 && pr.height >= 8) {
-            var beside = { top: Math.max(16, Math.min(innerHeight - 64, pr.top)), right: Math.max(16, innerWidth - pr.left + 8) };
-            applyFabTop(beside.top);
-            btn.style.setProperty('right', beside.right + 'px', 'important');
-            set('fabDockTarget', preferred.id || preferred.getAttribute('data-theme-picker-primary-control') || 'primary');
-            return;
-          }
-        }
-        var size = 48, margin = 16, step = 56, obstacles = [];
-        try {
-          document.body.querySelectorAll('*').forEach(function (el) {
-            if (el === btn || el === panel || el.id === FAB_ID || el.id === PANEL_ID) return;
-            var s = getComputedStyle(el), r = el.getBoundingClientRect();
-            if ((s.position !== 'fixed' && s.position !== 'sticky') || s.display === 'none' || s.visibility === 'hidden' || s.opacity === '0') return;
-            if (r.width >= 8 && r.height >= 8 && r.bottom > 0 && r.right > 0 && r.top < innerHeight && r.left < innerWidth) obstacles.push(r);
-          });
-        } catch (err) {}
-        for (var bottom = margin; bottom <= 400; bottom += step) {
-          for (var right = margin; right <= 400; right += step) {
-            var target = { left: innerWidth - right - size, top: innerHeight - bottom - size, right: innerWidth - right, bottom: innerHeight - bottom };
-            var blocked = obstacles.some(function (o) { return !(target.right <= o.left || target.left >= o.right || target.bottom <= o.top || target.top >= o.bottom); });
-            if (!blocked) { applyFabTop(target.top); return; }
-          }
-        }
-      }
 
       var drag = { active: false, moved: false, startY: 0, origTop: 0, pointerId: null };
 
@@ -1289,7 +1256,6 @@
 
       document.body.appendChild(panel);
       document.body.appendChild(btn);
-      placeFabAvoidingForeignUi();
 
       // Scryfall's toolbox is a stable, site-native launch surface. Keep a
       // button there as well as the floating control, like Scrybuy's store

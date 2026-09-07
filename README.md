@@ -17,7 +17,7 @@
   <a href="https://creativecommons.org/licenses/by-nc/4.0/"><img alt="License: CC BY-NC 4.0" src="https://img.shields.io/badge/license-CC%20BY--NC%204.0-lightgrey?style=flat-square" /></a>
 </p>
 
-**Author:** [ExtraPotions](https://github.com/ExtraPotions) · **Next release:** `theme-picker-2.6.0`
+**Author:** [ExtraPotions](https://github.com/ExtraPotions) · **Next release:** `theme-picker-2.7.0`
 
 | Stat | Value |
 |------|-------|
@@ -34,12 +34,12 @@
 3. Open each `.user.js` (or drag into the extension dashboard) and save.
 4. Visit the site — the favicon button appears on the right edge.
 
-| Script | Version (in 2.6.0) | Install |
+| Script | Version (in 2.7.0) | Install |
 | --- | --- | --- |
-| **ManaPool Theme Picker** | 2.6.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
-| **SteamGifts Theme Picker** | 2.6.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
-| Theme Picker common (`@require`) | 1.20.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/theme-picker-common.js) |
-| Scryfall Theme Picker | 2.6.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
+| **ManaPool Theme Picker** | 2.7.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
+| **SteamGifts Theme Picker** | 2.7.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
+| Theme Picker common (`@require`) | 1.21.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/theme-picker-common.js) |
+| Scryfall Theme Picker | 2.7.0 | [download](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
 
 Each site script `@require`s `theme-picker-common.js` from the same latest-release URL. Update **common** whenever you update a site script.
 
@@ -77,6 +77,8 @@ Each site script `@require`s `theme-picker-common.js` from the same latest-relea
 See [GitHub Releases](https://github.com/ExtraPotions/super-octo-parakeet/releases) for downloadable builds and notes.
 
 Recent tags:
+
+- **theme-picker-2.7.0** — fixed dock position; other floating scripts no longer move the Theme Picker
 
 - **theme-picker-2.6.0** — all applicable settings use accessible toggle buttons; no checkbox controls
 

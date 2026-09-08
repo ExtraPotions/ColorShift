@@ -1,7 +1,7 @@
 /* Theme Picker 3: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ThemePicker = (() => {
   'use strict';
-  const version = '3.0.5';
+  const version = '3.0.6';
   const SETTINGS_SCHEMA = 1;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -29,6 +29,14 @@ var ThemePicker = (() => {
     return el;
   }
   const LAUNCHER_PROTOCOL='userscript-launcher-v1';
+  function normaliseShortcut(value) {
+    if(typeof value!=='string')return 'Alt+G';const raw=value.trim();if(!raw||/^off$/i.test(raw))return '';
+    const parts=raw.split('+').map(part=>part.trim()).filter(Boolean),key=parts.pop();if(!key)return '';
+    const mods=['Ctrl','Alt','Shift','Meta'].filter(mod=>parts.some(part=>part.toLowerCase()===mod.toLowerCase()));
+    return [...mods,key.length===1?key.toUpperCase():key].join('+');
+  }
+  function eventShortcut(event){return [...(event.ctrlKey?['Ctrl']:[]),...(event.altKey?['Alt']:[]),...(event.shiftKey?['Shift']:[]),...(event.metaKey?['Meta']:[]),event.key.length===1?event.key.toUpperCase():event.key].join('+');}
+  function editableTarget(target){return target?.matches?.('input,textarea,select,[contenteditable="true"]');}
   function declareLauncher(node,controls,meta) {
     const watched=()=>controls().filter(el=>el?.isConnected&&el.getClientRects().length);
     node.dataset.userscriptLauncher=LAUNCHER_PROTOCOL;
@@ -46,6 +54,8 @@ var ThemePicker = (() => {
     const schedule=()=>{if(!frame)frame=requestAnimationFrame(publish);};
     if(typeof ResizeObserver!=='undefined'){const observer=new ResizeObserver(schedule);for(const el of controls().filter(Boolean))observer.observe(el);}
     window.addEventListener('resize',schedule,{passive:true});
+    const checkCollision=()=>{let own=[];try{own=JSON.parse(node.dataset.launcherShortcuts||'[]');}catch{}const collision=[...document.querySelectorAll('[data-userscript-launcher="userscript-launcher-v1"]')].some(el=>{if(el===node)return false;try{return JSON.parse(el.dataset.launcherShortcuts||'[]').some(value=>own.includes(value));}catch{return false;}});node.dataset.launcherShortcutCollision=String(collision);};
+    window.addEventListener('userscript-launcher:change',checkCollision);queueMicrotask(checkCollision);
     return {publish:schedule};
   }
   // DOM-based opt-in works across userscript sandboxes; only ExtraPotions companions yield.
@@ -84,7 +94,7 @@ var ThemePicker = (() => {
     }
   }
   function start(site) {
-    const defaults={palette:'darkGray',accent:'site',intensity:'normal',fabTop:null};
+    const defaults={palette:'darkGray',accent:'site',intensity:'normal',fabTop:null,shortcut:'Alt+G'};
     for(const [key] of [...shared,...site.options,...accessibility]) defaults[key]=false;
     const state={...defaults};
     function valid(key,value) {
@@ -92,6 +102,7 @@ var ThemePicker = (() => {
       if(key==='accent') return Object.hasOwn(accents,value);
       if(key==='intensity') return ['normal','soft'].includes(value);
       if(key==='fabTop') return value===null || (typeof value==='number' && Number.isFinite(value));
+      if(key==='shortcut') return typeof value==='string'&&value.length<=40;
       return typeof value==='boolean';
     }
     const storedSchema=Number(read(SCHEMA_KEY,0))||0;
@@ -134,6 +145,7 @@ var ThemePicker = (() => {
       }
       host.toggleAttribute('data-motion',state.reducedMotion||motion.matches);
       host.toggleAttribute('data-contrast',state.highContrast||contrast.matches);
+      host.dataset.launcherShortcuts=JSON.stringify(state.shortcut?[normaliseShortcut(state.shortcut)]:[]);
       host.style.setProperty('--accent',accent);
       try { site.update?.(api); } catch(error) { diagnosticErrors.push(String(error?.message||error)); }
       lastProcessed=Date.now();position();refreshDiagnostics();
@@ -176,6 +188,8 @@ var ThemePicker = (() => {
       const disclosure=element('details');disclosure.append(element('summary',{},'Accessibility'));toggles(disclosure,accessibility);panel.append(disclosure);
       if(site.actions) { const group=section('Home sections');for(const [title,fn] of site.actions)action(group,title,()=>fn(api)); }
       const tools=section('Settings');
+      const shortcut=element('input',{type:'text','aria-label':'Open menu shortcut',placeholder:'Off',value:state.shortcut});
+      shortcut.addEventListener('change',()=>{set('shortcut',normaliseShortcut(shortcut.value));shortcut.value=state.shortcut;const collision=[...document.querySelectorAll('[data-userscript-launcher="userscript-launcher-v1"]')].some(el=>{if(el===host)return false;try{return JSON.parse(el.dataset.launcherShortcuts||'[]').includes(state.shortcut);}catch{return false;}});notice.textContent=collision?'Shortcut is also used by another installed script.':'Shortcut saved.';});row(tools,'Open menu shortcut',shortcut);
       action(tools,'Export',async()=>{
         const json=JSON.stringify({themePicker:true,schemaVersion:SETTINGS_SCHEMA,...state},null,2);
         try { await navigator.clipboard.writeText(json);notice.textContent='Settings copied.'; } catch { window.prompt('Copy settings JSON',json); }
@@ -195,9 +209,10 @@ var ThemePicker = (() => {
       const diagnostics=element('details');diagnostics.append(element('summary',{},'About & diagnostics'));
       diagnostics.append(element('pre',{class:'diagnostics-output'},diagnosticText()));
       action(diagnostics,'Copy diagnostics',async()=>{const text=diagnosticText();try{await navigator.clipboard.writeText(text);notice.textContent='Diagnostics copied.';}catch{window.prompt('Copy diagnostics',text);}});panel.append(diagnostics);
-      notice=element('p',{role:'status','aria-live':'polite',class:'notice'});panel.append(notice,element('footer',{},'Drag to position · Alt+G · Esc · v'+version));
+      notice=element('p',{role:'status','aria-live':'polite',class:'notice'});panel.append(notice,element('footer',{},'Drag to position · configurable shortcut · Esc · v'+version));
       root.append(fab,panel);document.body.append(host);
       launcher=declareLauncher(host,()=>[fab,panel],{owner:'ExtraPotions',id:'theme-picker-'+site.name.toLowerCase(),priority:100,preferredPosition:'right-bottom'});
+      host.dataset.launcherShortcuts=JSON.stringify(state.shortcut?[state.shortcut]:[]);
       style=element('style',{id:'theme-picker-site-style'});document.head.append(style);
       siteSheet=new CSSStyleSheet();document.adoptedStyleSheets=[...document.adoptedStyleSheets,siteSheet];
       let drag=null,suppress=false;
@@ -208,7 +223,7 @@ var ThemePicker = (() => {
       fab.addEventListener('click',()=>{if(suppress){suppress=false;return;}setOpen(!open);});
       document.addEventListener('keydown',e=>{
         if(e.key==='Escape'&&open){e.preventDefault();setOpen(false);}
-        else if(e.altKey&&!e.ctrlKey&&!e.metaKey&&e.key.toLowerCase()==='g'){e.preventDefault();setOpen(!open);}
+        else if(state.shortcut&&!editableTarget(e.target)&&eventShortcut(e)===normaliseShortcut(state.shortcut)){e.preventDefault();setOpen(!open);}
       });
       panel.addEventListener('keydown',e=>{
         if(e.key!=='Tab')return;

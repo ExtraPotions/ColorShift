@@ -16,7 +16,7 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
 <a class="esgst-gc esgst-gc-singleplayer" style="background:#5eb2a1">Singleplayer</a>
 <div class="fanatical_description" style="background:#dde0e7">Promotion</div>
 <a role="button" class="button-n manapool bg-blue-700" id="site-control" style="background:linear-gradient(white,#ccc);color:#444">Shop</a>
-<button id="pfh-fab" data-userscript-launcher="userscript-launcher-v1" data-launcher-owner="ExtraPotions" data-launcher-id="fixture-companion" data-launcher-priority="50" data-launcher-preferred-position="right-bottom" style="position:fixed;right:16px;bottom:16px;width:48px;height:48px;padding:0">P</button></body></html>`;
+<button id="pfh-fab" data-userscript-launcher="userscript-launcher-v1" data-launcher-owner="ExtraPotions" data-launcher-id="fixture-companion" data-launcher-priority="50" data-launcher-preferred-position="right-bottom" data-launcher-shortcuts='["Alt+G"]' style="position:fixed;right:16px;bottom:16px;width:48px;height:48px;padding:0">P</button></body></html>`;
 (async()=>{
   const browser=await chromium.launch({headless:true,...(process.env.TP_BROWSER?{channel:process.env.TP_BROWSER}:{})});
   try {
@@ -37,6 +37,7 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
       await page.waitForFunction(()=>document.getElementById('theme-picker-root')?.dataset.launcherOccupiedArea);
       const declaration=await page.locator('#theme-picker-root').evaluate(el=>({...el.dataset}));
       assert.equal(declaration.userscriptLauncher,'userscript-launcher-v1');assert.equal(declaration.launcherOwner,'ExtraPotions');assert.equal(declaration.launcherPriority,'100');assert.equal(declaration.launcherPreferredPosition,'right-bottom');assert.doesNotThrow(()=>JSON.parse(declaration.launcherOccupiedArea));
+      assert.equal(declaration.launcherShortcutCollision,'true');
       const start=await fab.boundingBox();
       if(site!=='scryfall'){const companion=await page.locator('#pfh-fab').boundingBox();assert(companion.x+companion.width<=start.x-7);}
       await page.mouse.move(start.x+24,start.y+24);await page.mouse.down();await page.mouse.move(start.x+24,420,{steps:6});await page.mouse.up();
@@ -45,7 +46,7 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
       await fab.click();const panel=page.getByRole('dialog');await panel.waitFor();
       assert.equal(await page.getByRole('checkbox').count(),0);
       const rowStyle=await panel.locator('.row').first().evaluate(el=>getComputedStyle(el).display);assert.equal(rowStyle,'flex');
-      await panel.getByText('About & diagnostics',{exact:true}).click();assert.match(await panel.locator('.diagnostics-output').textContent(),/Theme Picker 3\.0\.5[\s\S]*Site:/);
+      await panel.getByText('About & diagnostics',{exact:true}).click();assert.match(await panel.locator('.diagnostics-output').textContent(),/Theme Picker 3\.0\.6[\s\S]*Site:/);
       await panel.getByText('Accessibility',{exact:true}).click();
       {
         for(const palette of ['lightGray','darkGray','navy','black']){
@@ -83,6 +84,7 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
       assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');
       await page.keyboard.press('Escape');assert.equal(await panel.isVisible(),false);
       await page.keyboard.press('Alt+g');assert.equal(await panel.isVisible(),true);
+      const shortcutInput=panel.getByRole('textbox',{name:'Open menu shortcut',exact:true});await shortcutInput.fill('Alt+T');await shortcutInput.press('Tab');await page.keyboard.press('Escape');await page.keyboard.press('Alt+g');assert.equal(await panel.isVisible(),false);await page.keyboard.press('Alt+t');assert.equal(await panel.isVisible(),true);
       page.once('dialog',dialog=>dialog.accept('{"themePicker":true,"palette":"black"}'));
       await panel.getByRole('button',{name:'Import',exact:true}).click();assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'black');
       page.once('dialog',dialog=>dialog.accept('{"themePicker":true,"palette":"not-a-palette"}'));

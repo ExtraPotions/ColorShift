@@ -1,17 +1,17 @@
 // ==UserScript==
 // @name           SteamGifts Theme Picker
 // @namespace      https://github.com/ExtraPotions/super-octo-parakeet
-// @version        3.0.5
+// @version        3.0.6
 // @description    Theme palettes, accessible settings and site enhancements.
 // @author         ExtraPotions
 // @license        CC-BY-NC-4.0
-// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/theme-picker-3.0.5/assets/steamgifts-favicon.ico
+// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/theme-picker-3.0.6/assets/steamgifts-favicon.ico
 // @match          *://steamgifts.com/*
 // @match          *://www.steamgifts.com/*
 // @run-at         document-start
 // @downloadURL    https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js
 // @updateURL      https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js
-// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/theme-picker-3.0.5/theme-picker-common.js
+// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/theme-picker-3.0.6/theme-picker-common.js
 // @grant          GM_getValue
 // @grant          GM_setValue
 // @grant          GM_registerMenuCommand

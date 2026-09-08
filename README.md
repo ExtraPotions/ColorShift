@@ -1,6 +1,6 @@
-# Theme Picker 3.0
+# Theme Pickers
 
-A new implementation for ManaPool, Scryfall and SteamGifts: a compact Prism-style menu, accessible switches, persistent settings and site themes.
+Personalize ManaPool, Scryfall and SteamGifts with readable colour palettes, compact settings menus and site-specific enhancements.
 
 | Site | Icon | Install |
 | --- | --- | --- |
@@ -8,36 +8,36 @@ A new implementation for ManaPool, Scryfall and SteamGifts: a compact Prism-styl
 | Scryfall | <img src="assets/scryfall-favicon.ico" width="32" height="32" alt="Scryfall"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
 | SteamGifts | <img src="assets/steamgifts-favicon.ico" width="32" height="32" alt="SteamGifts"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
 
-All scripts and the common helper are version **3.0.1**. Install using Tampermonkey or Violentmonkey; update existing Theme Picker entries to retain stored settings. Disable older Grey Edition copies to avoid competing themes.
-
-### 3.0.1 contrast fixes
-
-SteamGifts/ESGST filter bars, navigation, statistics and badges now use readable themed surfaces instead of leftover bright gradients. ManaPool and Scryfall controls receive matching palette-aware backgrounds, readable text and placeholders, and visible keyboard focus outlines. Original mode restores native control styling. SteamGifts was verified with ESGST in a signed-in browser and approved by the user; ManaPool and Scryfall receive public-site checks and automated contrast regression tests.
-
-Click the rounded-square favicon or press **Alt+G** to open settings; **Esc** closes them. Drag the launcher vertically to save its location. Theme Picker stays anchored and displaces overlapping known Prism/ADPB launchers. It does not reposition unrelated website controls.
+**Version 3.0.2** · By [ExtraPotions](https://github.com/ExtraPotions)
 
 ## Features
 
-| Shared | ManaPool | Scryfall | SteamGifts |
-| --- | --- | --- | --- |
-| Original, light gray, dark gray, navy and black palettes | Persistent homepage shelf collapse | Sitewide surfaces and card/gallery theming | Giveaway, comment, navigation and popup theming |
-| Site default, blue, green, amber, violet and rose accents | Collapse all / expand all | Content-warning dimming with hover/focus reveal | Hide entered / ended giveaways |
-| Brighter links; hide ads/promos | Dense grid; hide sold out | Toolbox settings shortcut | Soft-hide featured/pinned giveaways |
-| Export, validated import, reset | Compact prices; always-visible chips | Automatic toolbox discovery | High-contrast Enter button |
-| Reduced motion and high contrast, including system preferences | Automatic discovery of dynamic shelves/cards | Keyboard-accessible menu | Selectors for common ESGST surfaces |
+- Original, light gray, dark gray, navy and black palettes.
+- Site-default, blue, green, amber, violet and rose accents.
+- Readable controls, brighter links, and optional ad/promo hiding.
+- Compact 312px menus with keyboard-accessible toggle switches.
+- Reduced-motion and high-contrast options that respect system preferences.
+- Export, import and reset settings; existing preferences are retained when updating.
 
-Existing GM settings and `ge-` local-storage keys are read. Legacy ManaPool collapse preferences are migrated when shelves are discovered. Original removes theme colours while leaving enabled feature options available.
+| ManaPool | Scryfall | SteamGifts |
+| --- | --- | --- |
+| Collapse individual homepage shelves, or expand/collapse all | Card, gallery and search themes | Giveaway, comment, navigation and popup themes |
+| Denser card grids | Content-warning dimming with hover/focus reveal | Hide entered or ended giveaways |
+| Hide sold-out cards | Settings shortcut in the card toolbox | Soft-hide featured and pinned giveaways |
+| Compact prices and always-visible chips | Readable store and search controls | High-contrast Enter buttons and readable ESGST controls |
 
-## Development
+Original mode restores native site colours while keeping enabled feature options available.
 
-- `src/common.js`: rewritten settings engine and isolated menu. Constructed stylesheets work with Scryfall's restrictive inline-style policy.
-- `src/sites.js`: rewritten site selectors, palette styles and feature behaviours.
-- `scripts/build.cjs`: generates all four scripts with matching pinned dependency URLs. Runtime icons are embedded from `assets/`.
-- `tests/browser.cjs`: Chromium tests cover document-start initialization, restrictive style policy, menu layout, toggles, persistence, themes, import, keyboard interaction, mobile fit, DOM replacement and missing-helper warnings.
-- `tests/live.cjs`: public-site spot checks. Isolated SteamGifts requests may encounter an anti-bot challenge; this is reported as a blocked check, not a pass.
+## Controls and companion plugins
 
-Run `npm install`, `npx playwright install chromium`, `npm run build`, then `npm test`. See [release procedure](RELEASE.md).
+Click the 48px rounded-square favicon or press **Alt+G** to open settings. **Escape** or an outside click closes the menu. Tab moves through its visible controls. Drag the launcher vertically to save its position.
 
-This is newly written code, including site styles. It preserves the settings feature set; the old 8,000-line SteamGifts third-party stylesheet is not bundled. Styling for every optional third-party extension combination has not been verified.
+Scripts recognize other plugins made by ExtraPotions and respect their positioning. **Theme Pickers and Amazon Dark Pattern Blocker always take primary position.** Overlapping secondary launchers make room without moving either primary or unrelated website controls.
 
-Author: [ExtraPotions](https://github.com/ExtraPotions). Code: [CC BY-NC 4.0](LICENSE). Original site favicon ownership remains with the respective sites.
+## Install
+
+Install a userscript manager such as Tampermonkey or Violentmonkey, then open the appropriate userscript link above. Update existing Theme Picker entries to retain settings, disable older Grey Edition duplicates, and reload the website.
+
+## License
+
+[CC BY-NC 4.0](LICENSE). Original site favicons belong to their respective owners.

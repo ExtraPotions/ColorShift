@@ -1,7 +1,7 @@
 /* Theme Picker 3: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ThemePicker = (() => {
   'use strict';
-  const version = '3.0.1';
+  const version = '3.0.2';
   const palettes = {
     original: ['Original'], lightGray: ['Light gray','#3f3f3c','#4a4a46','#333330'],
     darkGray: ['Dark gray','#252522','#2a2a28','#1c1c1a'],
@@ -25,6 +25,39 @@ var ThemePicker = (() => {
     for(const [key,value] of Object.entries(attrs)) el.setAttribute(key,value);
     if(text!==undefined) el.textContent=text;
     return el;
+  }
+  // DOM-based opt-in works across userscript sandboxes; only ExtraPotions companions yield.
+  function coordinateExtraPotionsControls(anchor, registered = []) {
+    const candidates = new Set([...document.querySelectorAll('[data-ExtraPotions-control="secondary"],#pfh-fab,.pfh-fab'), ...registered]);
+    const primary = [anchor];
+    for (const host of document.querySelectorAll('[data-ExtraPotions-dock-root]')) {
+      const control = host.shadowRoot?.querySelector('[data-ExtraPotions-control="primary"]');
+      if (control && control !== anchor) primary.push(control);
+    }
+    const occupied = primary.map(el=>el.getBoundingClientRect()).filter(r=>r.width&&r.height);
+    const origin=anchor.getBoundingClientRect();
+    const overlaps=r=>occupied.some(o=>r.left<o.right+8&&r.right>o.left-8&&r.top<o.bottom+8&&r.bottom>o.top-8);
+    for (const el of candidates) {
+      if (!el.isConnected || primary.includes(el) || el.dataset.ExtraPotionsControl==='primary') continue;
+      const ownerRoot=el.getRootNode().host;
+      if(ownerRoot?.dataset.ExtraPotionsDockRoot==='primary')continue;
+      let rect=el.getBoundingClientRect();
+      if (!rect.width || !rect.height || !['fixed','sticky'].includes(getComputedStyle(el).position)) continue;
+      if(overlaps(rect)){
+        let x=origin.left-rect.width-8,y=origin.top;
+        for(let n=0;n<100;n++){
+          if(x<8){x=Math.max(8,innerWidth-rect.width-16);y-=rect.height+8;}
+          if(y<8)break;
+          const box={left:x,right:x+rect.width,top:y,bottom:y+rect.height};
+          if(!overlaps(box)){
+            for(const [key,value] of Object.entries({left:x+'px',top:y+'px',right:'auto',bottom:'auto'}))el.style.setProperty(key,value,'important');
+            rect=box;break;
+          }
+          x-=rect.width+8;
+        }
+      }
+      occupied.push(rect);
+    }
   }
   function start(site) {
     const defaults={palette:'darkGray',accent:'site',intensity:'normal',fabTop:null};
@@ -58,28 +91,8 @@ var ThemePicker = (() => {
       fab.style.top=top+'px';
       panel.style.maxHeight=Math.max(100,innerHeight-24)+'px';
       if(open) panel.style.top=Math.max(12,Math.min(top-panel.offsetHeight-8,innerHeight-panel.offsetHeight-12))+'px';
-      // The picker owns its location. Only known companion launchers yield.
-      const anchor=fab.getBoundingClientRect();
-      const occupied=[anchor];
-      for(const other of document.querySelectorAll('#pfh-fab, .pfh-fab, #adpb-settings-fab')) {
-        let r=other.getBoundingClientRect();
-        if(!r.width||!r.height||getComputedStyle(other).position!=='fixed') continue;
-        const overlaps=box=>occupied.some(o=>box.left<o.right+8&&box.right>o.left-8&&box.top<o.bottom+8&&box.bottom>o.top-8);
-        if(overlaps(r)) {
-          let x=anchor.left-r.width-8,y=anchor.top;
-          for(let n=0;n<50;n++) {
-            if(x<8) { x=Math.max(8,innerWidth-r.width-16); y-=r.height+8; }
-            const candidate={left:x,right:x+r.width,top:y,bottom:y+r.height};
-            if(y<8) break;
-            if(!overlaps(candidate)) {
-              for(const [k,v] of Object.entries({left:x+'px',top:y+'px',right:'auto',bottom:'auto'})) other.style.setProperty(k,v,'important');
-              r=candidate; break;
-            }
-            x-=r.width+8;
-          }
-        }
-        occupied.push(r);
-      }
+      // Primary controls keep their saved position; only companions yield.
+      coordinateExtraPotionsControls(fab);
     }
     function apply() {
       const colors=palettes[state.palette],accent=accents[state.accent][1]||site.accent;
@@ -108,12 +121,13 @@ var ThemePicker = (() => {
     function mount() {
       if(!document.body) return;
       if(document.getElementById('theme-picker-root')) return;
-      host=element('div',{id:'theme-picker-root','data-theme-picker-primary-control':'true'});
+      host=element('div',{id:'theme-picker-root','data-theme-picker-primary-control':'true','data-ExtraPotions-dock-root':'primary'});
       host.style.cssText='all:initial!important;position:fixed!important;inset:0!important;z-index:2147483647!important;pointer-events:none!important;';
       root=host.attachShadow({mode:'open'});
       const sheet=new CSSStyleSheet();sheet.replaceSync(UI_CSS);root.adoptedStyleSheets=[sheet];
       fab=element('button',{id:'theme-picker-fab',type:'button',class:'fab','aria-label':site.name+' Theme Picker settings','aria-controls':'theme-picker-panel','aria-expanded':'false','data-floating-control':'primary'});
       const icon=element('img',{src:site.icon,alt:'',draggable:'false'});fab.append(icon);
+      fab.dataset.ExtraPotionsControl='primary';
       panel=element('div',{id:'theme-picker-panel',role:'dialog','aria-label':site.name+' Theme Picker settings',class:'panel'});panel.hidden=true;
       const header=element('header');header.append(element('h2',{},'Theme Picker · '+site.name),element('p',{},'Customize colours and site behaviour.'));panel.append(header);
       const appearance=section('Appearance');

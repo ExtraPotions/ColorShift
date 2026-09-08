@@ -1,7 +1,9 @@
 /* Theme Picker 3: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ThemePicker = (() => {
   'use strict';
-  const version = '3.0.2';
+  const version = '3.0.3';
+  const SETTINGS_SCHEMA = 1;
+  const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
     original: ['Original'], lightGray: ['Light gray','#3f3f3c','#4a4a46','#333330'],
     darkGray: ['Dark gray','#252522','#2a2a28','#1c1c1a'],
@@ -70,8 +72,13 @@ var ThemePicker = (() => {
       if(key==='fabTop') return value===null || (typeof value==='number' && Number.isFinite(value));
       return typeof value==='boolean';
     }
+    const storedSchema=Number(read(SCHEMA_KEY,0))||0;
     for(const key of Object.keys(defaults)) { const value=read(key,defaults[key]); if(valid(key,value)) state[key]=value; }
-    if(read('palette',null)===null && state.intensity==='soft') state.palette='lightGray';
+    if(storedSchema<1 && read('palette',null)===null && state.intensity==='soft') state.palette='lightGray';
+    if(storedSchema<SETTINGS_SCHEMA) {
+      for(const [key,value] of Object.entries(state)) write(key,value);
+      write(SCHEMA_KEY,SETTINGS_SCHEMA);
+    }
     let host,root,fab,panel,notice,style,siteSheet,open=false,frame=0;
     const controls=new Map();
     const motion=matchMedia('(prefers-reduced-motion: reduce)');
@@ -140,16 +147,17 @@ var ThemePicker = (() => {
       if(site.actions) { const group=section('Home sections');for(const [title,fn] of site.actions)action(group,title,()=>fn(api)); }
       const tools=section('Settings');
       action(tools,'Export',async()=>{
-        const json=JSON.stringify({themePicker:true,v:3,...state},null,2);
+        const json=JSON.stringify({themePicker:true,schemaVersion:SETTINGS_SCHEMA,...state},null,2);
         try { await navigator.clipboard.writeText(json);notice.textContent='Settings copied.'; } catch { window.prompt('Copy settings JSON',json); }
       });
       action(tools,'Import',()=>{
         const input=window.prompt('Paste Theme Picker settings JSON');if(input===null)return;
         try {
-          const data=JSON.parse(input);if(!data||data.themePicker!==true)throw Error();
+          const data=JSON.parse(input);if(!data||data.themePicker!==true||Array.isArray(data))throw Error();
+          const schema=Number(data.schemaVersion??data.v??0);if(!Number.isInteger(schema)||schema<0||schema>SETTINGS_SCHEMA)throw Error();
           const entries=Object.entries(data).filter(([k])=>Object.hasOwn(defaults,k));
           if(entries.some(([k,v])=>!valid(k,v)))throw Error();
-          for(const [key,value] of entries){state[key]=value;write(key,value);}apply();notice.textContent='Settings imported.';
+          for(const [key,value] of entries){state[key]=value;write(key,value);}write(SCHEMA_KEY,SETTINGS_SCHEMA);apply();notice.textContent='Settings imported.';
         } catch {notice.textContent='Import failed: invalid Theme Picker settings.';}
       });
       action(tools,'Reset defaults',()=>{if(!confirm('Reset Theme Picker settings?'))return;for(const [k,v]of Object.entries(defaults)){state[k]=v;write(k,v);}apply();notice.textContent='Settings reset.';});

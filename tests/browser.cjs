@@ -32,6 +32,7 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
       await context.addInitScript({content:helper+'\n'+siteCode});
       const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
       await page.goto('https://'+site+'.com/');
+      assert.equal(await page.evaluate(()=>localStorage.getItem('gm-settingsSchema')),'1','legacy settings are migrated to schema 1');
       const fab=page.locator('#theme-picker-fab');await fab.waitFor();
       const start=await fab.boundingBox();
       if(site!=='scryfall'){const companion=await page.locator('#pfh-fab').boundingBox();assert(companion.x+companion.width<=start.x-7);}

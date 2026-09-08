@@ -1,7 +1,7 @@
 /* Theme Picker 3: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ThemePicker = (() => {
   'use strict';
-  const version = '3.0.3';
+  const version = '3.0.4';
   const SETTINGS_SCHEMA = 1;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -79,7 +79,8 @@ var ThemePicker = (() => {
       for(const [key,value] of Object.entries(state)) write(key,value);
       write(SCHEMA_KEY,SETTINGS_SCHEMA);
     }
-    let host,root,fab,panel,notice,style,siteSheet,open=false,frame=0;
+    let host,root,fab,panel,notice,style,siteSheet,open=false,frame=0,lastProcessed=0;
+    const diagnosticErrors=[];
     const controls=new Map();
     const motion=matchMedia('(prefers-reduced-motion: reduce)');
     const contrast=matchMedia('(prefers-contrast: more)');
@@ -90,7 +91,7 @@ var ThemePicker = (() => {
     }
     function setOpen(value) {
       open=value; panel.hidden=!value; fab.setAttribute('aria-expanded',String(value));
-      if(value) { position(); panel.querySelector('select,button').focus(); }
+      if(value) { position();refreshDiagnostics(); panel.querySelector('select,button').focus(); }
       else fab.focus({preventScroll:true});
     }
     function position() {
@@ -111,8 +112,14 @@ var ThemePicker = (() => {
       host.toggleAttribute('data-motion',state.reducedMotion||motion.matches);
       host.toggleAttribute('data-contrast',state.highContrast||contrast.matches);
       host.style.setProperty('--accent',accent);
-      site.update?.(api); position();
+      try { site.update?.(api); } catch(error) { diagnosticErrors.push(String(error?.message||error)); }
+      lastProcessed=Date.now();position();refreshDiagnostics();
     }
+    function diagnosticText() {
+      const active=Object.entries(state).filter(([key,value])=>typeof defaults[key]==='boolean'&&value).length;
+      return [`Theme Picker ${version}`,`Site: ${site.name} (${location.hostname})`,`Page: ${location.pathname||'/'}`,`Active options: ${active}`,`Last processed: ${lastProcessed?new Date(lastProcessed).toISOString():'Not yet'}`,`Errors: ${diagnosticErrors.length}${diagnosticErrors.length?' · '+diagnosticErrors.at(-1):''}`].join('\n');
+    }
+    function refreshDiagnostics(){const out=panel?.querySelector('.diagnostics-output');if(out)out.textContent=diagnosticText();}
     function row(section,label,control) {
       const line=element('label',{class:'row'}); line.append(element('span',{},label),control);section.append(line);
     }
@@ -162,6 +169,9 @@ var ThemePicker = (() => {
       });
       action(tools,'Reset defaults',()=>{if(!confirm('Reset Theme Picker settings?'))return;for(const [k,v]of Object.entries(defaults)){state[k]=v;write(k,v);}apply();notice.textContent='Settings reset.';});
       action(tools,'Close',()=>setOpen(false));
+      const diagnostics=element('details');diagnostics.append(element('summary',{},'About & diagnostics'));
+      diagnostics.append(element('pre',{class:'diagnostics-output'},diagnosticText()));
+      action(diagnostics,'Copy diagnostics',async()=>{const text=diagnosticText();try{await navigator.clipboard.writeText(text);notice.textContent='Diagnostics copied.';}catch{window.prompt('Copy diagnostics',text);}});panel.append(diagnostics);
       notice=element('p',{role:'status','aria-live':'polite',class:'notice'});panel.append(notice,element('footer',{},'Drag to position · Alt+G · Esc · v'+version));
       root.append(fab,panel);document.body.append(host);
       style=element('style',{id:'theme-picker-site-style'});document.head.append(style);
@@ -221,6 +231,7 @@ var ThemePicker = (() => {
     .switch span {position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:white;box-shadow:0 1px 3px #0006;transition:transform .15s;}
     .switch[aria-checked=true] {background:linear-gradient(90deg,#e66aa1,#67cfff,#a185f5);}.switch[aria-checked=true] span {transform:translateX(16px);}
     summary {cursor:pointer;min-height:30px;align-content:center;}footer {padding:8px 18px 12px;color:#aaa;font-size:10px;}.notice {padding:0 18px;}
+    .diagnostics-output{white-space:pre-wrap;overflow-wrap:anywhere;margin:6px 0;padding:7px;border-radius:6px;background:#171715;color:#c8c8c4;font:11px/1.35 ui-monospace,monospace}
     :host([data-motion]) * {transition:none!important;animation:none!important;}
     :host([data-contrast]) .panel {border:2px solid white;color:white;background:black;}
     :host([data-contrast]) .switch {border:2px solid white;background:black;}

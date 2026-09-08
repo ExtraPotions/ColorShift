@@ -8,7 +8,7 @@ Personalize ManaPool, Scryfall and SteamGifts with readable colour palettes, com
 | Scryfall | <img src="assets/scryfall-favicon.ico" width="32" height="32" alt="Scryfall"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
 | SteamGifts | <img src="assets/steamgifts-favicon.ico" width="32" height="32" alt="SteamGifts"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
 
-**Version 3.0.3** · By [ExtraPotions](https://github.com/ExtraPotions)
+**Version 3.0.4** · By [ExtraPotions](https://github.com/ExtraPotions)
 
 ## Features
 
@@ -19,6 +19,7 @@ Personalize ManaPool, Scryfall and SteamGifts with readable colour palettes, com
 - Reduced-motion and high-contrast options that respect system preferences.
 - Export, import and reset settings; existing preferences are retained when updating.
 - Versioned settings automatically migrate when the script is updated; incompatible backup files are rejected safely.
+- Collapsible diagnostics show the installed version, current page, active options, processing time and captured errors, with one-click copy.
 
 | ManaPool | Scryfall | SteamGifts |
 | --- | --- | --- |

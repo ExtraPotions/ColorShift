@@ -6,7 +6,7 @@ on:
       tag:
         description: Release tag
         required: true
-        default: theme-picker-3.2.0
+        default: theme-picker-3.3.0
   release:
     types: [published]
 
@@ -31,4 +31,12 @@ jobs:
             steamgifts-theme-picker.user.js \
             tcgplayer-theme-picker.user.js \
             theme-picker-common.js \
+            assets/manapool-colorshift-64.png \
+            assets/manapool-colorshift-128.png \
+            assets/scryfall-colorshift-64.png \
+            assets/scryfall-colorshift-128.png \
+            assets/steamgifts-colorshift-64.png \
+            assets/steamgifts-colorshift-128.png \
+            assets/tcgplayer-colorshift-64.png \
+            assets/tcgplayer-colorshift-128.png \
             --clobber

@@ -1,15 +1,15 @@
-# Theme Pickers
+# ColorShift Theme Pickers
 
 Personalize ManaPool, Scryfall, SteamGifts and TCGPlayer with readable colour palettes, compact settings menus and site-specific enhancements.
 
-| Site | Icon | Install |
-| --- | --- | --- |
-| ManaPool | <img src="assets/manapool-favicon.svg" width="32" height="32" alt="ManaPool"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
-| Scryfall | <img src="assets/scryfall-favicon.ico" width="32" height="32" alt="Scryfall"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
-| SteamGifts | <img src="assets/steamgifts-favicon.ico" width="32" height="32" alt="SteamGifts"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
-| TCGPlayer | <img src="assets/tcgplayer-favicon.ico" width="32" height="32" alt="TCGPlayer"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/tcgplayer-theme-picker.user.js) |
+| Image | Site | Link |
+| :---: | --- | --- |
+| <img src="assets/manapool-colorshift-64.png" width="64" height="64" alt="ColorShift for ManaPool"> | ManaPool | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
+| <img src="assets/scryfall-colorshift-64.png" width="64" height="64" alt="ColorShift for Scryfall"> | Scryfall | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
+| <img src="assets/steamgifts-colorshift-64.png" width="64" height="64" alt="ColorShift for SteamGifts"> | SteamGifts | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
+| <img src="assets/tcgplayer-colorshift-64.png" width="64" height="64" alt="ColorShift for TCGPlayer"> | TCGPlayer | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/tcgplayer-theme-picker.user.js) |
 
-**Version 3.2.0** · By [ExtraPotions](https://github.com/ExtraPotions)
+**Version 3.3.0** · By [ExtraPotions](https://github.com/ExtraPotions)
 
 ## Features
 
@@ -36,7 +36,7 @@ Original mode restores native site colours while keeping enabled feature options
 
 ## Controls and companion plugins
 
-Click the 48px rounded-square favicon or press **Alt+G** to open settings. **Escape** or an outside click closes the menu. Tab moves through its visible controls. Drag the launcher vertically to save its position.
+Click the 48px rounded-square ColorShift button or press **Alt+G** to open settings. Hovering the button identifies its site. **Escape** or an outside click closes the menu. Tab moves through its visible controls. Drag the launcher vertically to save its position.
 
 Scripts recognize other plugins made by ExtraPotions and respect their positioning. **Theme Pickers and Amazon Dark Pattern Blocker always take primary position.** Overlapping secondary launchers make room without moving either primary or unrelated website controls.
 
@@ -46,4 +46,4 @@ Install a userscript manager such as Tampermonkey or Violentmonkey, then open th
 
 ## License
 
-[CC BY-NC 4.0](LICENSE). Original site favicons belong to their respective owners.
+[CC BY-NC 4.0](LICENSE).

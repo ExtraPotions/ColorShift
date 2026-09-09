@@ -1,7 +1,7 @@
 /* Theme Picker 3: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ThemePicker = (() => {
   'use strict';
-  const version = '3.2.0';
+  const version = '3.3.0';
   const SETTINGS_SCHEMA = 1;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -153,7 +153,7 @@ var ThemePicker = (() => {
       if(state.updateNotifications)checkForUpdate();else host.removeAttribute('data-update-available');
     }
     function newer(latest,current){const a=String(latest).split('.').map(Number),b=String(current).split('.').map(Number);if(a.some(Number.isNaN)||b.some(Number.isNaN))return false;for(let i=0;i<Math.max(a.length,b.length);i++){const difference=(a[i]||0)-(b[i]||0);if(difference)return difference>0;}return false;}
-    async function checkForUpdate(){const key='updateCheck';const cached=read(key,null);if(cached&&Date.now()-cached.checked<86400000){showUpdate(cached.latest);return;}try{const response=await fetch('https://api.github.com/repos/ExtraPotions/super-octo-parakeet/releases/latest',{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)return;const data=await response.json(),latest=String(data.tag_name||'').replace(/^theme-picker-/,'');write(key,{checked:Date.now(),latest});showUpdate(latest);}catch{}function showUpdate(latest){host.removeAttribute('data-update-available');if(!newer(latest,version))return;host.dataset.updateAvailable=latest;fab.title='Theme Picker '+latest+' is available';notice.textContent='Update available: '+latest;}}
+    async function checkForUpdate(){const key='updateCheck';const cached=read(key,null);if(cached&&Date.now()-cached.checked<86400000){showUpdate(cached.latest);return;}try{const response=await fetch('https://api.github.com/repos/ExtraPotions/super-octo-parakeet/releases/latest',{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)return;const data=await response.json(),latest=String(data.tag_name||'').replace(/^theme-picker-/,'');write(key,{checked:Date.now(),latest});showUpdate(latest);}catch{}function showUpdate(latest){host.removeAttribute('data-update-available');fab.title='ColorShift for '+site.name;if(!newer(latest,version))return;host.dataset.updateAvailable=latest;fab.title='ColorShift '+latest+' for '+site.name+' is available';notice.textContent='Update available: '+latest;}}
     function diagnosticText() {
       const active=Object.entries(state).filter(([key,value])=>typeof defaults[key]==='boolean'&&value).length;
       return [`Theme Picker ${version}`,`Site: ${site.name} (${location.hostname})`,`Page: ${location.pathname||'/'}`,`Active options: ${active}`,`Last processed: ${lastProcessed?new Date(lastProcessed).toISOString():'Not yet'}`,`Errors: ${diagnosticErrors.length}${diagnosticErrors.length?' · '+diagnosticErrors.at(-1):''}`].join('\n');
@@ -178,11 +178,11 @@ var ThemePicker = (() => {
       host.style.cssText='all:initial!important;position:fixed!important;inset:0!important;z-index:2147483647!important;pointer-events:none!important;';
       root=host.attachShadow({mode:'open'});
       const sheet=new CSSStyleSheet();sheet.replaceSync(UI_CSS);root.adoptedStyleSheets=[sheet];
-      fab=element('button',{id:'theme-picker-fab',type:'button',class:'fab','aria-label':site.name+' Theme Picker settings','aria-controls':'theme-picker-panel','aria-expanded':'false','data-floating-control':'primary'});
+      fab=element('button',{id:'theme-picker-fab',type:'button',class:'fab',title:'ColorShift for '+site.name,'aria-label':'ColorShift for '+site.name+' settings','aria-controls':'theme-picker-panel','aria-expanded':'false','data-floating-control':'primary'});
       const icon=element('img',{src:site.icon,alt:'',draggable:'false'});fab.append(icon);
       fab.dataset.ExtraPotionsControl='primary';
-      panel=element('div',{id:'theme-picker-panel',role:'dialog','aria-label':site.name+' Theme Picker settings',class:'panel'});panel.hidden=true;
-      const header=element('header');header.append(element('h2',{},'Theme Picker · '+site.name),element('p',{},'Customize colours and site behaviour.'));panel.append(header);
+      panel=element('div',{id:'theme-picker-panel',role:'dialog','aria-label':'ColorShift for '+site.name+' settings',class:'panel'});panel.hidden=true;
+      const header=element('header');header.append(element('h2',{},'ColorShift · '+site.name),element('p',{},'Customize colours and site behaviour.'));panel.append(header);
       const appearance=section('Appearance');
       for(const [key,label,values] of [['palette','Theme',palettes],['accent','Accent',accents]]) {
         const select=element('select',{'aria-label':label});for(const [value,[name]] of Object.entries(values))select.append(element('option',{value},name));
@@ -240,7 +240,7 @@ var ThemePicker = (() => {
       });
       document.addEventListener('pointerdown',e=>{if(open&&!e.composedPath().includes(host))setOpen(false);});
       window.addEventListener('resize',position);motion.addEventListener('change',apply);contrast.addEventListener('change',apply);
-      try {if(typeof GM_registerMenuCommand==='function')GM_registerMenuCommand('Theme Picker settings',()=>setOpen(true));}catch(error){console.warn('Theme Picker: extension menu registration unavailable',error);}
+      try {if(typeof GM_registerMenuCommand==='function')GM_registerMenuCommand('ColorShift settings',()=>setOpen(true));}catch(error){console.warn('ColorShift: extension menu registration unavailable',error);}
       site.mount?.(api);apply();
       const observer=new MutationObserver(records=>{
         if(records.every(r=>r.target===style||r.target===host||(r.type==='attributes'&&!r.target.matches('#pfh-fab,.pfh-fab,#adpb-settings-fab'))))return;

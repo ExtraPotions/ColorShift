@@ -1,14 +1,15 @@
 # Theme Pickers
 
-Personalize ManaPool, Scryfall and SteamGifts with readable colour palettes, compact settings menus and site-specific enhancements.
+Personalize ManaPool, Scryfall, SteamGifts and TCGPlayer with readable colour palettes, compact settings menus and site-specific enhancements.
 
 | Site | Icon | Install |
 | --- | --- | --- |
 | ManaPool | <img src="assets/manapool-favicon.svg" width="32" height="32" alt="ManaPool"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
 | Scryfall | <img src="assets/scryfall-favicon.ico" width="32" height="32" alt="Scryfall"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
 | SteamGifts | <img src="assets/steamgifts-favicon.ico" width="32" height="32" alt="SteamGifts"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
+| TCGPlayer | <img src="assets/tcgplayer-favicon.ico" width="32" height="32" alt="TCGPlayer"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/tcgplayer-theme-picker.user.js) |
 
-**Version 3.0.9** · By [ExtraPotions](https://github.com/ExtraPotions)
+**Version 3.1.0** · By [ExtraPotions](https://github.com/ExtraPotions)
 
 ## Features
 
@@ -24,12 +25,12 @@ Personalize ManaPool, Scryfall and SteamGifts with readable colour palettes, com
 - The menu keyboard shortcut can be changed or disabled, with warnings when another declared launcher uses the same shortcut.
 - Optional quiet update checks use release metadata only and never download executable code.
 
-| ManaPool | Scryfall | SteamGifts |
-| --- | --- | --- |
-| Collapse individual homepage shelves, or expand/collapse all | Card, gallery and search themes | Giveaway, comment, navigation and popup themes |
-| Denser card grids | Content-warning dimming with hover/focus reveal | Hide entered or ended giveaways |
-| Hide sold-out cards | Settings shortcut in the card toolbox | Soft-hide featured and pinned giveaways |
-| Compact prices and always-visible chips | Readable store and search controls | High-contrast Enter buttons and readable ESGST controls |
+| ManaPool | Scryfall | SteamGifts | TCGPlayer |
+| --- | --- | --- | --- |
+| Collapse individual homepage shelves, or expand/collapse all | Card, gallery and search themes | Giveaway, comment, navigation and popup themes | Search, product, listing, filter and modal themes |
+| Denser card grids | Content-warning dimming with hover/focus reveal | Hide entered or ended giveaways | Denser product grids |
+| Hide sold-out cards | Settings shortcut in the card toolbox | Soft-hide featured and pinned giveaways | Hide out-of-stock results |
+| Compact prices and always-visible chips | Readable store and search controls | High-contrast Enter buttons and readable ESGST controls | Compact listing rows and hide merchandising carousels |
 
 Original mode restores native site colours while keeping enabled feature options available.
 

@@ -6,7 +6,7 @@ on:
       tag:
         description: Release tag
         required: true
-        default: theme-picker-3.0.8
+        default: theme-picker-3.1.0
   release:
     types: [published]
 
@@ -29,5 +29,6 @@ jobs:
             manapool-theme-picker.user.js \
             scryfall-theme-picker.user.js \
             steamgifts-theme-picker.user.js \
+            tcgplayer-theme-picker.user.js \
             theme-picker-common.js \
             --clobber

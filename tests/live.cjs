@@ -2,7 +2,7 @@ const {chromium}=require('playwright');
 const fs=require('node:fs');
 (async()=>{
  const browser=await chromium.launch({headless:true});
- try {for(const site of ['manapool','scryfall','steamgifts']){
+ try {for(const site of ['manapool','scryfall','steamgifts','tcgplayer']){
   const context=await browser.newContext({viewport:{width:1280,height:900}});
   await context.addInitScript({content:fs.readFileSync('theme-picker-common.js','utf8')+'\n'+fs.readFileSync(site+'-theme-picker.user.js','utf8')});
   const page=await context.newPage();

@@ -8,7 +8,7 @@ Personalize ManaPool, Scryfall and SteamGifts with readable colour palettes, com
 | Scryfall | <img src="assets/scryfall-favicon.ico" width="32" height="32" alt="Scryfall"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
 | SteamGifts | <img src="assets/steamgifts-favicon.ico" width="32" height="32" alt="SteamGifts"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
 
-**Version 3.0.7** · By [ExtraPotions](https://github.com/ExtraPotions)
+**Version 3.0.8** · By [ExtraPotions](https://github.com/ExtraPotions)
 
 ## Features
 
@@ -22,6 +22,7 @@ Personalize ManaPool, Scryfall and SteamGifts with readable colour palettes, com
 - Collapsible diagnostics show the installed version, current page, active options, processing time and captured errors, with one-click copy.
 - A launcher coordination protocol publishes ownership, priority, preferred placement and occupied space so companion controls arrange predictably.
 - The menu keyboard shortcut can be changed or disabled, with warnings when another declared launcher uses the same shortcut.
+- Optional quiet update checks use release metadata only and never download executable code.
 
 | ManaPool | Scryfall | SteamGifts |
 | --- | --- | --- |

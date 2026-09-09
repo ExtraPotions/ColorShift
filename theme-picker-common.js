@@ -1,7 +1,7 @@
 /* Theme Picker 3: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ThemePicker = (() => {
   'use strict';
-  const version = '3.0.7';
+  const version = '3.0.8';
   const SETTINGS_SCHEMA = 1;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -95,7 +95,7 @@ var ThemePicker = (() => {
     }
   }
   function start(site) {
-    const defaults={palette:'darkGray',accent:'site',intensity:'normal',fabTop:null,shortcut:'Alt+G'};
+    const defaults={palette:'darkGray',accent:'site',intensity:'normal',fabTop:null,shortcut:'Alt+G',updateNotifications:false};
     for(const [key] of [...shared,...site.options,...accessibility]) defaults[key]=false;
     const state={...defaults};
     function valid(key,value) {
@@ -150,7 +150,10 @@ var ThemePicker = (() => {
       host.style.setProperty('--accent',accent);
       try { site.update?.(api); } catch(error) { diagnosticErrors.push(String(error?.message||error)); }
       lastProcessed=Date.now();position();refreshDiagnostics();
+      if(state.updateNotifications)checkForUpdate();else host.removeAttribute('data-update-available');
     }
+    function newer(latest,current){const a=String(latest).split('.').map(Number),b=String(current).split('.').map(Number);if(a.some(Number.isNaN)||b.some(Number.isNaN))return false;for(let i=0;i<Math.max(a.length,b.length);i++){const difference=(a[i]||0)-(b[i]||0);if(difference)return difference>0;}return false;}
+    async function checkForUpdate(){const key='updateCheck';const cached=read(key,null);if(cached&&Date.now()-cached.checked<86400000){showUpdate(cached.latest);return;}try{const response=await fetch('https://api.github.com/repos/ExtraPotions/super-octo-parakeet/releases/latest',{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)return;const data=await response.json(),latest=String(data.tag_name||'').replace(/^theme-picker-/,'');write(key,{checked:Date.now(),latest});showUpdate(latest);}catch{}function showUpdate(latest){host.removeAttribute('data-update-available');if(!newer(latest,version))return;host.dataset.updateAvailable=latest;fab.title='Theme Picker '+latest+' is available';notice.textContent='Update available: '+latest;}}
     function diagnosticText() {
       const active=Object.entries(state).filter(([key,value])=>typeof defaults[key]==='boolean'&&value).length;
       return [`Theme Picker ${version}`,`Site: ${site.name} (${location.hostname})`,`Page: ${location.pathname||'/'}`,`Active options: ${active}`,`Last processed: ${lastProcessed?new Date(lastProcessed).toISOString():'Not yet'}`,`Errors: ${diagnosticErrors.length}${diagnosticErrors.length?' · '+diagnosticErrors.at(-1):''}`].join('\n');
@@ -189,6 +192,7 @@ var ThemePicker = (() => {
       const disclosure=element('details');disclosure.append(element('summary',{},'Accessibility'));toggles(disclosure,accessibility);panel.append(disclosure);
       if(site.actions) { const group=section('Home sections');for(const [title,fn] of site.actions)action(group,title,()=>fn(api)); }
       const tools=section('Settings');
+      toggles(tools,[['updateNotifications','Quiet update notifications']]);
       const shortcut=element('input',{type:'text','aria-label':'Open menu shortcut',placeholder:'Off',value:state.shortcut});
       shortcut.addEventListener('change',()=>{set('shortcut',normaliseShortcut(shortcut.value));shortcut.value=state.shortcut;const collision=[...document.querySelectorAll('[data-userscript-launcher="userscript-launcher-v1"]')].some(el=>{if(el===host)return false;try{return JSON.parse(el.dataset.launcherShortcuts||'[]').includes(state.shortcut);}catch{return false;}});notice.textContent=collision?'Shortcut is also used by another installed script.':'Shortcut saved.';});row(tools,'Open menu shortcut',shortcut);
       action(tools,'Disable shortcut',()=>{set('shortcut','');shortcut.value='';notice.textContent='Keyboard shortcut disabled.';});

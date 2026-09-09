@@ -9,7 +9,7 @@ Personalize ManaPool, Scryfall, SteamGifts and TCGPlayer with readable colour pa
 | SteamGifts | <img src="assets/steamgifts-favicon.ico" width="32" height="32" alt="SteamGifts"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
 | TCGPlayer | <img src="assets/tcgplayer-favicon.ico" width="32" height="32" alt="TCGPlayer"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/tcgplayer-theme-picker.user.js) |
 
-**Version 3.1.0** · By [ExtraPotions](https://github.com/ExtraPotions)
+**Version 3.1.1** · By [ExtraPotions](https://github.com/ExtraPotions)
 
 ## Features
 

@@ -2,7 +2,7 @@ const { chromium } = require('playwright');
 const fs = require('node:fs');
 const assert = require('node:assert/strict');
 
-const helper = fs.readFileSync('theme-picker-common.js', 'utf8');
+const helper = fs.readFileSync('colorshift-common.js', 'utf8');
 const sites = ['manapool', 'scryfall', 'steamgifts', 'tcgplayer'];
 const cases = [
   { from: '2.13.0', stored: { palette: 'navy', accent: 'rose', intensity: 'soft', fabTop: 210 }, expect: { palette: 'navy', accent: 'rose', fabTop: 210, shortcut: 'Alt+G' } },
@@ -14,7 +14,7 @@ const cases = [
   const browser = await chromium.launch({ headless: true });
   try {
     for (const site of sites) {
-      const script = fs.readFileSync(`${site}-theme-picker.user.js`, 'utf8');
+      const script = fs.readFileSync(`colorshift-${site}.user.js`, 'utf8');
       for (const test of cases) {
         const context = await browser.newContext({ viewport: { width: 1000, height: 900 } });
         await context.route(`https://${site}.com/**`, route => route.fulfill({ contentType: 'text/html', body: '<main></main>' }));
@@ -45,7 +45,7 @@ const cases = [
         await context.close();
       }
     }
-    console.log('Theme Picker upgrade matrix OK');
+console.log('ColorShift upgrade matrix OK');
   } finally {
     await browser.close();
   }

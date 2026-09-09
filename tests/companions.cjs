@@ -2,7 +2,7 @@
 const {chromium}=require('playwright');const fs=require('node:fs');const assert=require('node:assert/strict');
 const prism=fs.readFileSync('../vivid-prism-heron/pride-flag-highlighter.user.js','utf8');
 const amazon=fs.readFileSync('../velvet-crane-orbit/amazon-dark-pattern-blocker.user.js','utf8');
-const helper=fs.readFileSync('theme-picker-common.js','utf8');
+const helper=fs.readFileSync('colorshift-common.js','utf8');
 (async()=>{const browser=await chromium.launch({headless:true});try{
  for(const site of ['manapool','scryfall','steamgifts','tcgplayer','amazon']){
   for(const reverse of [false,true]){
@@ -10,7 +10,7 @@ const helper=fs.readFileSync('theme-picker-common.js','utf8');
    await context.route('https://fixture.test/**',r=>r.fulfill({contentType:'text/html',body:'<p>Gay bisexual lesbian</p>'}));
    const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('https://fixture.test/');
    await page.evaluate(()=>{window.GM_getValue=(k,d)=>d;window.GM_setValue=()=>{};window.GM_registerMenuCommand=()=>{};});
-   const primary=site==='amazon'?amazon:helper+'\n'+fs.readFileSync(site+'-theme-picker.user.js','utf8');
+   const primary=site==='amazon'?amazon:helper+'\n'+fs.readFileSync('colorshift-'+site+'.user.js','utf8');
    for(const content of (reverse?[prism,primary]:[primary,prism]))await page.addScriptTag({content});
    const primaryFab=page.locator(site==='amazon'?'#adpb-settings-fab':'#theme-picker-fab');
    const secondary=page.locator('.pfh-fab');

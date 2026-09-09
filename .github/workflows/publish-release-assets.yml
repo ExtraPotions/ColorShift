@@ -6,7 +6,7 @@ on:
       tag:
         description: Release tag
         required: true
-        default: theme-picker-3.3.0
+        default: colorshift-4.0.0
   release:
     types: [published]
 
@@ -26,6 +26,11 @@ jobs:
           TAG: ${{ inputs.tag || github.event.release.tag_name }}
         run: |
           gh release upload "$TAG" \
+            colorshift-manapool.user.js \
+            colorshift-scryfall.user.js \
+            colorshift-steamgifts.user.js \
+            colorshift-tcgplayer.user.js \
+            colorshift-common.js \
             manapool-theme-picker.user.js \
             scryfall-theme-picker.user.js \
             steamgifts-theme-picker.user.js \

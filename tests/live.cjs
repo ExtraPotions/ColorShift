@@ -4,7 +4,7 @@ const fs=require('node:fs');
  const browser=await chromium.launch({headless:true});
  try {for(const site of ['manapool','scryfall','steamgifts','tcgplayer']){
   const context=await browser.newContext({viewport:{width:1280,height:900}});
-  await context.addInitScript({content:fs.readFileSync('theme-picker-common.js','utf8')+'\n'+fs.readFileSync(site+'-theme-picker.user.js','utf8')});
+  await context.addInitScript({content:fs.readFileSync('colorshift-common.js','utf8')+'\n'+fs.readFileSync('colorshift-'+site+'.user.js','utf8')});
   const page=await context.newPage();
   try {
    const response=await page.goto('https://'+site+'.com/',{waitUntil:'domcontentloaded',timeout:30000});

@@ -4,26 +4,19 @@ Personalize ManaPool, Scryfall, SteamGifts and TCGPlayer with readable colour pa
 
 | Image | Site | Link |
 | :---: | --- | --- |
-| <img src="assets/manapool-colorshift-64.png" width="64" height="64" alt="ColorShift for ManaPool"> | ManaPool | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
-| <img src="assets/scryfall-colorshift-64.png" width="64" height="64" alt="ColorShift for Scryfall"> | Scryfall | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
-| <img src="assets/steamgifts-colorshift-64.png" width="64" height="64" alt="ColorShift for SteamGifts"> | SteamGifts | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
-| <img src="assets/tcgplayer-colorshift-64.png" width="64" height="64" alt="ColorShift for TCGPlayer"> | TCGPlayer | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/tcgplayer-theme-picker.user.js) |
+| <img src="assets/manapool-colorshift-64.png" width="64" height="64" alt="ColorShift for ManaPool"> | ManaPool | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-manapool.user.js) |
+| <img src="assets/scryfall-colorshift-64.png" width="64" height="64" alt="ColorShift for Scryfall"> | Scryfall | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-scryfall.user.js) |
+| <img src="assets/steamgifts-colorshift-64.png" width="64" height="64" alt="ColorShift for SteamGifts"> | SteamGifts | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-steamgifts.user.js) |
+| <img src="assets/tcgplayer-colorshift-64.png" width="64" height="64" alt="ColorShift for TCGPlayer"> | TCGPlayer | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-tcgplayer.user.js) |
 
-**Version 3.3.0** · By [ExtraPotions](https://github.com/ExtraPotions)
+**Version 4.0.0** · By [ExtraPotions](https://github.com/ExtraPotions)
 
 ## Features
 
-- Original, light gray, dark gray, navy and black palettes.
-- Site-default, blue, green, amber, violet and rose accents.
-- Readable controls, brighter links, and optional ad/promo hiding.
-- Compact 312px menus with keyboard-accessible toggle switches.
-- Reduced-motion and high-contrast options that respect system preferences.
-- Export, import and reset settings; existing preferences are retained when updating.
-- Versioned settings automatically migrate when the script is updated; incompatible backup files are rejected safely.
-- Collapsible diagnostics show the installed version, current page, active options, processing time and captured errors, with one-click copy.
-- A launcher coordination protocol publishes ownership, priority, preferred placement and occupied space so companion controls arrange predictably.
-- The menu keyboard shortcut can be changed or disabled, with warnings when another declared launcher uses the same shortcut.
-- Optional quiet update checks use release metadata only and never download executable code.
+- Five base palettes, six accent choices, brighter links and optional ad hiding.
+- Compact accessible menus with reduced-motion and high-contrast support.
+- Configurable keyboard shortcuts and coordinated positioning with companion scripts.
+- Safe settings migration, export/import, reset, diagnostics and quiet update notices.
 
 | ManaPool | Scryfall | SteamGifts | TCGPlayer |
 | --- | --- | --- | --- |

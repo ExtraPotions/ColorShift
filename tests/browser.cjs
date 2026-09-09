@@ -3,7 +3,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const assert=require('node:assert/strict');
 const root=path.join(__dirname,'..');
-const helper=fs.readFileSync(path.join(root,'theme-picker-common.js'),'utf8');
+const helper=fs.readFileSync(path.join(root,'colorshift-common.js'),'utf8');
 const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{display:inline}div{color:red}</style></head><body>
 <main><section><h2>New arrivals</h2><ul class="grid"><li><article>Card one <span>Sold out</span></article></li><li><article>Card two in stock</article></li></ul></section></main>
 <ul class="toolbox-links"></ul><div class="card-content-warning">Content warning</div>
@@ -35,7 +35,7 @@ const version=require('../package.json').version;
         window.GM_setValue=(k,v)=>localStorage.setItem('gm-'+k,JSON.stringify(v));
         window.GM_registerMenuCommand=()=>{throw Error('Simulated manager menu failure');};
       });
-      const siteCode=fs.readFileSync(path.join(root,site+'-theme-picker.user.js'),'utf8');
+      const siteCode=fs.readFileSync(path.join(root,'colorshift-'+site+'.user.js'),'utf8');
       await context.addInitScript({content:helper+'\n'+siteCode});
       const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
       await page.goto('https://'+site+'.com/');
@@ -53,7 +53,7 @@ const version=require('../package.json').version;
       await fab.click();const panel=page.getByRole('dialog');await panel.waitFor();
       assert.equal(await page.getByRole('checkbox').count(),0);
       const rowStyle=await panel.locator('.row').first().evaluate(el=>getComputedStyle(el).display);assert.equal(rowStyle,'flex');
-      await panel.getByText('About & diagnostics',{exact:true}).click();assert.match(await panel.locator('.diagnostics-output').textContent(),new RegExp('Theme Picker '+version.replaceAll('.','\\.')+'[\\s\\S]*Site:'));
+      await panel.getByText('About & diagnostics',{exact:true}).click();assert.match(await panel.locator('.diagnostics-output').textContent(),new RegExp('ColorShift '+version.replaceAll('.','\\.')+'[\\s\\S]*Site:'));
       await panel.getByText('Accessibility',{exact:true}).click();
       {
         for(const palette of ['lightGray','darkGray','navy','black']){

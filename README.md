@@ -9,7 +9,7 @@ Personalize ManaPool, Scryfall, SteamGifts and TCGPlayer with readable colour pa
 | <img src="assets/steamgifts-colorshift-64.png" width="64" height="64" alt="ColorShift for SteamGifts"> | SteamGifts | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-steamgifts.user.js) |
 | <img src="assets/tcgplayer-colorshift-64.png" width="64" height="64" alt="ColorShift for TCGPlayer"> | TCGPlayer | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-tcgplayer.user.js) |
 
-**Version 4.0.2** · By [ExtraPotions](https://github.com/ExtraPotions)
+**Version 4.0.3** · By [ExtraPotions](https://github.com/ExtraPotions)
 
 ## Features
 

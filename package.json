@@ -1,1 +1,1 @@
-{"name":"colorshift","private":true,"version":"4.0.2","scripts":{"build":"node scripts/build.cjs","test":"node tests/distribution.cjs && node tests/browser.cjs && node tests/upgrade-matrix.cjs"},"devDependencies":{"playwright":"1.55.0"}}
+{"name":"colorshift","private":true,"version":"4.0.3","scripts":{"build":"node scripts/build.cjs","test":"node tests/distribution.cjs && node tests/browser.cjs && node tests/upgrade-matrix.cjs"},"devDependencies":{"playwright":"1.55.0"}}

@@ -16,11 +16,17 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
 <a class="esgst-gc esgst-gc-singleplayer" style="background:#5eb2a1">Singleplayer</a>
 <div class="fanatical_description" style="background:#dde0e7">Promotion</div>
 <a role="button" class="button-n manapool bg-blue-700" id="site-control" style="background:linear-gradient(white,#ccc);color:#444">Shop</a>
+<div class="search-results" id="tcg-grid"><div class="search-result" id="tcg-in-stock"><div class="search-result__content" style="background:linear-gradient(white,#ccc);color:#444">Lightning Bolt in stock</div></div>
+<div class="search-result" id="tcg-sold"><div class="out-of-stock">Out of stock</div></div></div>
+<div class="listing-item" id="tcg-listing" style="padding:16px">Seller listing</div>
+<div class="merchandising-filmstrip" id="tcg-merch">Recommended products</div>
+<div class="martech-promos-banner" id="tcg-promo">Sponsored promo</div>
 <button id="pfh-fab" data-userscript-launcher="userscript-launcher-v1" data-launcher-owner="ExtraPotions" data-launcher-id="fixture-companion" data-launcher-priority="50" data-launcher-preferred-position="right-bottom" data-launcher-shortcuts='["Alt+G"]' style="position:fixed;right:16px;bottom:16px;width:48px;height:48px;padding:0">P</button></body></html>`;
+const version=require('../package.json').version;
 (async()=>{
   const browser=await chromium.launch({headless:true,...(process.env.TP_BROWSER?{channel:process.env.TP_BROWSER}:{})});
   try {
-    for(const site of ['manapool','scryfall','steamgifts']) {
+    for(const site of ['manapool','scryfall','steamgifts','tcgplayer']) {
       const context=await browser.newContext({viewport:{width:1000,height:900}});
       await context.route('https://'+site+'.com/**',route=>route.fulfill({contentType:'text/html',headers:site==='scryfall'?{'Content-Security-Policy':"style-src 'self'; img-src 'self' data:"}:{},body:fixture}));
       await context.addInitScript(()=>{
@@ -46,12 +52,12 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
       await fab.click();const panel=page.getByRole('dialog');await panel.waitFor();
       assert.equal(await page.getByRole('checkbox').count(),0);
       const rowStyle=await panel.locator('.row').first().evaluate(el=>getComputedStyle(el).display);assert.equal(rowStyle,'flex');
-      await panel.getByText('About & diagnostics',{exact:true}).click();assert.match(await panel.locator('.diagnostics-output').textContent(),/Theme Picker 3\.0\.9[\s\S]*Site:/);
+      await panel.getByText('About & diagnostics',{exact:true}).click();assert.match(await panel.locator('.diagnostics-output').textContent(),new RegExp('Theme Picker '+version.replaceAll('.','\\.')+'[\\s\\S]*Site:'));
       await panel.getByText('Accessibility',{exact:true}).click();
       {
         for(const palette of ['lightGray','darkGray','navy','black']){
           await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption(palette);
-          for(const selector of (site==='steamgifts'?['.esgst-heading-button','.esgst-gf-container','.esgst-gwc','.esgst-gc','.fanatical_description']:['#site-control'])){
+          for(const selector of (site==='steamgifts'?['.esgst-heading-button','.esgst-gf-container','.esgst-gwc','.esgst-gc','.fanatical_description']:site==='tcgplayer'?['#site-control','.search-result__content','.listing-item']:['#site-control'])){
             const style=await page.locator(selector).evaluate(el=>{const s=getComputedStyle(el);return {bg:s.backgroundColor,fg:s.color,image:s.backgroundImage};});
             assert.equal(style.image,'none');
             const luminance=color=>{const c=color.match(/\d+/g).slice(0,3).map(Number).map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return c[0]*.2126+c[1]*.7152+c[2]*.0722;};
@@ -75,6 +81,13 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
       }
       if(site==='scryfall')assert.equal(await page.locator('.card-content-warning').evaluate(el=>getComputedStyle(el).opacity),'0.4');
       if(site==='steamgifts'){assert.equal(await page.locator('#entered').isVisible(),false);assert.equal(await page.locator('#ended').isVisible(),false);}
+      if(site==='tcgplayer'){
+        assert.equal(await page.locator('#tcg-sold').isVisible(),false);
+        assert.equal(await page.locator('#tcg-merch').isVisible(),false);
+        assert.equal(await page.locator('#tcg-promo').isVisible(),false);
+        assert.equal(await page.locator('#tcg-grid').evaluate(el=>getComputedStyle(el).rowGap),'8px');
+        assert.equal(await page.locator('#tcg-listing').evaluate(el=>getComputedStyle(el).paddingTop),'8px');
+      }
       await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('navy');
       assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(26, 35, 50)');
       await page.reload();await fab.click();assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'navy');

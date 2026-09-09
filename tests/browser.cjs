@@ -19,6 +19,7 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
 <div class="search-results" id="tcg-grid"><div class="search-result" id="tcg-in-stock"><div class="search-result__content" style="background:linear-gradient(white,#ccc);color:#444">Lightning Bolt in stock</div></div>
 <div class="search-result" id="tcg-sold"><div class="out-of-stock">Out of stock</div></div></div>
 <div class="listing-item" id="tcg-listing" style="padding:16px">Seller listing</div>
+<div class="marketplace__content" id="tcg-canvas" style="background:#f8f9fa;height:48px">Homepage canvas</div>
 <div class="merchandising-filmstrip product-carousel" id="tcg-merch">Recommended products</div>
 <div class="martech-promos-banner" id="tcg-promo">Sponsored promo</div>
 <button id="pfh-fab" data-userscript-launcher="userscript-launcher-v1" data-launcher-owner="ExtraPotions" data-launcher-id="fixture-companion" data-launcher-priority="50" data-launcher-preferred-position="right-bottom" data-launcher-shortcuts='["Alt+G"]' style="position:fixed;right:16px;bottom:16px;width:48px;height:48px;padding:0">P</button></body></html>`;
@@ -87,6 +88,7 @@ const version=require('../package.json').version;
         assert.equal(await page.locator('#tcg-promo').isVisible(),false);
         assert.equal(await page.locator('#tcg-grid').evaluate(el=>getComputedStyle(el).rowGap),'8px');
         assert.equal(await page.locator('#tcg-listing').evaluate(el=>getComputedStyle(el).paddingTop),'8px');
+        assert.equal(await page.locator('#tcg-canvas').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(37, 37, 34)');
       }
       await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('navy');
       assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(26, 35, 50)');

@@ -4,7 +4,7 @@ const root=path.join(__dirname,'..');
 const version=require('../package.json').version;
 const repo='https://github.com/ExtraPotions/super-octo-parakeet';
 const raw=`https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/colorshift-${version}`;
-const sites=[['manapool','ManaPool'],['scryfall','Scryfall'],['steamgifts','SteamGifts'],['tcgplayer','TCGPlayer'],['cardkingdom','Card Kingdom']];
+const sites=[['manapool','ManaPool'],['scryfall','Scryfall'],['steamgifts','SteamGifts'],['tcgplayer','TCGPlayer'],['cardkingdom','Card Kingdom'],['goodreads','Goodreads'],['genius','Genius']];
 const icons={};
 for(const [site]of sites){
   icons[site]='data:image/png;base64,'+fs.readFileSync(path.join(root,`assets/${site}-colorshift-64.png`)).toString('base64');

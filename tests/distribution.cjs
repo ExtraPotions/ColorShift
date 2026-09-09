@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 
-const sites=['manapool','scryfall','steamgifts','tcgplayer','cardkingdom'];
+const sites=['manapool','scryfall','steamgifts','tcgplayer','cardkingdom','goodreads','genius'];
 assert.equal(fs.readFileSync('colorshift-common.js','utf8'),fs.readFileSync('theme-picker-common.js','utf8'));
 for(const site of sites){
   const canonical=fs.readFileSync(`colorshift-${site}.user.js`,'utf8');

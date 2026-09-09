@@ -1,6 +1,6 @@
 # ColorShift Theme Pickers
 
-Personalize ManaPool, Scryfall, SteamGifts, TCGPlayer and Card Kingdom with readable colour palettes, compact settings menus and site-specific enhancements.
+Personalize ManaPool, Scryfall, SteamGifts, TCGPlayer, Card Kingdom, Goodreads and Genius with readable colour palettes, compact settings menus and site-specific enhancements.
 
 | Image | Site | Link |
 | :---: | --- | --- |
@@ -9,8 +9,10 @@ Personalize ManaPool, Scryfall, SteamGifts, TCGPlayer and Card Kingdom with read
 | <img src="assets/steamgifts-colorshift-64.png" width="64" height="64" alt="ColorShift for SteamGifts"> | SteamGifts | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-steamgifts.user.js) |
 | <img src="assets/tcgplayer-colorshift-64.png" width="64" height="64" alt="ColorShift for TCGPlayer"> | TCGPlayer | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-tcgplayer.user.js) |
 | <img src="assets/cardkingdom-colorshift-64.png" width="64" height="64" alt="ColorShift for Card Kingdom"> | Card Kingdom | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-cardkingdom.user.js) |
+| <img src="assets/goodreads-colorshift-64.png" width="64" height="64" alt="ColorShift for Goodreads"> | Goodreads | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-goodreads.user.js) |
+| <img src="assets/genius-colorshift-64.png" width="64" height="64" alt="ColorShift for Genius"> | Genius | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-genius.user.js) |
 
-**Version 4.1.0** · By [ExtraPotions](https://github.com/ExtraPotions)
+**Version 4.2.0** · By [ExtraPotions](https://github.com/ExtraPotions)
 
 ## Features
 
@@ -19,12 +21,15 @@ Personalize ManaPool, Scryfall, SteamGifts, TCGPlayer and Card Kingdom with read
 - Configurable keyboard shortcuts and coordinated positioning with companion scripts.
 - Safe settings migration, export/import, reset, diagnostics and quiet update notices.
 
-| ManaPool | Scryfall | SteamGifts | TCGPlayer | Card Kingdom |
-| --- | --- | --- | --- | --- |
-| Collapse individual homepage shelves, or expand/collapse all | Card, gallery and search themes | Giveaway, comment, navigation and popup themes | Search, product, listing, filter and modal themes | Storefront, search, product and cart themes |
-| Denser card grids | Content-warning dimming with hover/focus reveal | Hide entered or ended giveaways | Denser product grids | Denser product results |
-| Hide sold-out cards | Settings shortcut in the card toolbox | Soft-hide featured and pinned giveaways | Hide out-of-stock results | Hide fully sold-out products |
-| Compact prices and always-visible chips | Readable store and search controls | High-contrast Enter buttons and readable ESGST controls | Compact listing rows and hide merchandising carousels | Compact condition rows and sticky search filters |
+| Site | Visual coverage | Site controls |
+| --- | --- | --- |
+| ManaPool | Cards, shelves and pricing | Density, stock, prices and chips |
+| Scryfall | Cards, galleries and search | Content-warning dimming |
+| SteamGifts | Giveaways, comments and ESGST | Entered, ended, featured and Enter controls |
+| TCGPlayer | Search, products and listings | Density, stock, listings and merchandising |
+| Card Kingdom | Storefront, products and cart | Density, stock, condition rows and filters |
+| Goodreads | Books, shelves and reviews | Density, reviews, recommendations and reading width |
+| Genius | Lyrics, annotations and media | Lyric focus, annotations, media and recommendations |
 
 Original mode restores native site colours while keeping enabled feature options available.
 
@@ -32,7 +37,7 @@ Original mode restores native site colours while keeping enabled feature options
 
 Click the 48px rounded-square ColorShift button or press **Alt+G** to open settings. Hovering the button identifies its site. **Escape** or an outside click closes the menu. Tab moves through its visible controls. Drag the launcher vertically to save its position.
 
-Scripts recognize other plugins made by ExtraPotions and respect their positioning. **Theme Pickers and Amazon Dark Pattern Blocker always take primary position.** Overlapping secondary launchers make room without moving either primary or unrelated website controls.
+Scripts recognize other plugins made by ExtraPotions and respect their positioning. **ColorShift and Amazon Dark Pattern Blocker always take primary position.** Overlapping secondary launchers make room without moving either primary or unrelated website controls.
 
 ## Install
 

@@ -1,17 +1,17 @@
 // ==UserScript==
 // @name           ColorShift for Card Kingdom
 // @namespace      https://github.com/ExtraPotions/super-octo-parakeet
-// @version        4.1.0
+// @version        4.2.0
 // @description    Theme palettes, accessible settings and site enhancements.
 // @author         ExtraPotions
 // @license        CC-BY-NC-4.0
-// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/colorshift-4.1.0/assets/cardkingdom-colorshift-128.png
+// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/colorshift-4.2.0/assets/cardkingdom-colorshift-128.png
 // @match          *://cardkingdom.com/*
 // @match          *://www.cardkingdom.com/*
 // @run-at         document-start
 // @downloadURL    https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-cardkingdom.user.js
 // @updateURL      https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-cardkingdom.user.js
-// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/colorshift-4.1.0/colorshift-common.js
+// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/colorshift-4.2.0/colorshift-common.js
 // @grant          GM_getValue
 // @grant          GM_setValue
 // @grant          GM_registerMenuCommand
@@ -183,6 +183,36 @@ if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
       update(){for(const card of document.querySelectorAll('.search-result,.search-result__content,.product-card,.item-card,.list-view-product-card')){
         const sold=!!card.querySelector('.out-of-stock,.mp-oos-badge')||/\bout\s*of\s*stock\b/i.test(card.textContent||'');
         if(card.dataset.tpSold!==String(sold))card.dataset.tpSold=String(sold);
+      }}
+    },
+    goodreads:{name:'Goodreads',accent:'#d2b48c',options:[['denseBooks','Denser book lists'],['compactReviews','Compact reviews'],['hideRecommendations','Hide recommendations'],['wideReading','Wider reading column']],
+      css(state,colors,accent){return shared(state)+theme(state,colors,accent,
+        '#siteContainer,#wrapper,.content,.mainContent,.gr-mainContent,.gr-box,.gr-box--withShadow,.BookPage,.BookPage__mainContent,.BookPage__rightColumn,.ReviewsList,.ReviewCard,.review,.elementList,.bookalike,.modal__content,.dropdown__menu,footer',
+        `.siteHeader,.siteHeader__topLine,.siteHeader__contents,.Header,.HeaderNav{background:${colors[3]}!important}.bookTitle,.BookPageTitleSection__title,.ReviewCard__name{color:#eee!important}.authorName,.greyText,.minirating,.uitext{color:#bdbdb8!important}.bookCover,img.ResponsiveImage{background:transparent!important}`)+
+        siteControls(state,colors,accent,'button:not([role=switch]),a[role=button],.gr-button,.Button,select,input:not([type=checkbox]):not([type=radio]),textarea')+
+        (state.denseBooks?'.elementList,.bookalike,.BookCard{padding:.45rem 0!important;margin:.2rem 0!important}.leftAlignedImage{margin-right:.65rem!important}.leftAlignedImage img,.bookCover{max-height:110px!important;width:auto!important}':'')+
+        (state.compactReviews?'.review,.ReviewCard{padding:.65rem!important;margin:.35rem 0!important}.reviewText,.ReviewText{line-height:1.42!important}.ReviewsList__listContext{gap:.5rem!important}':'')+
+        (state.hideRecommendations?'[data-tp-recommendation=true]{display:none!important}':'')+
+        (state.wideReading?'.BookPage__mainContent,.mainContent,.gr-mainContent{max-width:980px!important;width:min(980px,100%)!important}.BookPage__rightColumn{max-width:280px!important}':'');},
+      update(){for(const heading of document.querySelectorAll('h1,h2,h3,h4')){
+        if(!/readers also enjoyed|recommend(?:ed|ations)|similar books|people also liked/i.test(heading.textContent||''))continue;
+        const section=heading.closest('section,.gr-box,.Carousel,.RecommendationShelf')||heading.parentElement;
+        if(section)section.dataset.tpRecommendation='true';
+      }}
+    },
+    genius:{name:'Genius',accent:'#f4df42',options:[['focusLyrics','Focus lyrics'],['compactAnnotations','Compact annotations'],['dimMedia','Dim media embeds'],['hideRecommendations','Hide recommendations']],
+      css(state,colors,accent){return shared(state)+theme(state,colors,accent,
+        'main,[class*="Page__Container"],[class*="Lyrics__Container"],[data-lyrics-container="true"],[class*="Annotation"],[class*="SongHeader"],[class*="StickyPlayer"],[class*="Modal"],[class*="Dropdown"],footer',
+        `.header,.Header,[class*="Header__Container"]{background:${colors[3]}!important}[data-lyrics-container="true"],[class*="Lyrics__Container"]{color:#eee!important}[class*="MetadataStats"],[class*="SongDescription"]{color:#bdbdb8!important}`)+
+        siteControls(state,colors,accent,'button:not([role=switch]),a[role=button],select,input:not([type=checkbox]):not([type=radio]),textarea')+
+        (state.focusLyrics?'[data-lyrics-container="true"],[class*="Lyrics__Container"]{max-width:760px!important;margin-left:auto!important;margin-right:auto!important;font-size:1.08rem!important;line-height:1.72!important}':'')+
+        (state.compactAnnotations?'[class*="Annotation"]{padding:.55rem!important;margin:.35rem 0!important;line-height:1.42!important}':'')+
+        (state.dimMedia?'iframe,video,[class*="Media"]{opacity:.42!important;transition:opacity .15s ease}iframe:hover,iframe:focus,video:hover,video:focus,[class*="Media"]:hover,[class*="Media"]:focus-within{opacity:1!important}':'')+
+        (state.hideRecommendations?'[data-tp-recommendation=true]{display:none!important}':'');},
+      update(){for(const heading of document.querySelectorAll('h1,h2,h3,h4')){
+        if(!/you might also like|recommended|more from|related songs/i.test(heading.textContent||''))continue;
+        const section=heading.closest('section,[class*="Recommended"],[class*="Related"]')||heading.parentElement;
+        if(section)section.dataset.tpRecommendation='true';
       }}
     }
   };

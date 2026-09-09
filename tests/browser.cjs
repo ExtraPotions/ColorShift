@@ -25,12 +25,14 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
 <form class="sidesearch" id="ck-filters"><div class="filterContainer"><button class="sideSearchApply btn btn-primary">Apply filters</button></div></form>
 <div class="productItemWrapper productCardWrapper" id="ck-in-stock"><div class="itemContentWrapper"><div class="productDetailTitle">Lightning Bolt</div><div class="addToCartByType oneRow"><span class="stylePrice">$1.99</span><button class="addToCartButton btn">Add to Cart</button></div></div></div>
 <div class="productItemWrapper productCardWrapper" id="ck-sold"><div class="outOfStockNotice">Out of stock.</div></div>
+<div class="mainContent" id="gr-reading"><div class="elementList" id="gr-book">A book</div><div class="ReviewCard" id="gr-review">A review</div><section id="gr-recommendations"><h2>Readers also enjoyed</h2></section></div>
+<main class="Page__Container" id="gn-page"><div data-lyrics-container="true" id="gn-lyrics">Lyrics</div><div class="Annotation__Container" id="gn-annotation">Annotation</div><iframe id="gn-media"></iframe><section id="gn-recommendations"><h2>You might also like</h2></section></main>
 <button id="pfh-fab" data-userscript-launcher="userscript-launcher-v1" data-launcher-owner="ExtraPotions" data-launcher-id="fixture-companion" data-launcher-priority="50" data-launcher-preferred-position="right-bottom" data-launcher-shortcuts='["Alt+G"]' style="position:fixed;right:16px;bottom:16px;width:48px;height:48px;padding:0">P</button></body></html>`;
 const version=require('../package.json').version;
 (async()=>{
   const browser=await chromium.launch({headless:true,...(process.env.TP_BROWSER?{channel:process.env.TP_BROWSER}:{})});
   try {
-    for(const site of ['manapool','scryfall','steamgifts','tcgplayer','cardkingdom']) {
+    for(const site of ['manapool','scryfall','steamgifts','tcgplayer','cardkingdom','goodreads','genius']) {
       const context=await browser.newContext({viewport:{width:1000,height:900}});
       await context.route('https://'+site+'.com/**',route=>route.fulfill({contentType:'text/html',headers:site==='scryfall'?{'Content-Security-Policy':"style-src 'self'; img-src 'self' data:"}:{},body:fixture}));
       await context.addInitScript(()=>{
@@ -61,7 +63,7 @@ const version=require('../package.json').version;
       {
         for(const palette of ['lightGray','darkGray','navy','black']){
           await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption(palette);
-          for(const selector of (site==='steamgifts'?['.esgst-heading-button','.esgst-gf-container','.esgst-gwc','.esgst-gc','.fanatical_description']:site==='tcgplayer'?['#site-control','.search-result__content','.listing-item']:site==='cardkingdom'?['#ck-filters','#ck-in-stock','.addToCartButton']:['#site-control'])){
+          for(const selector of (site==='steamgifts'?['.esgst-heading-button','.esgst-gf-container','.esgst-gwc','.esgst-gc','.fanatical_description']:site==='tcgplayer'?['#site-control','.search-result__content','.listing-item']:site==='cardkingdom'?['#ck-filters','#ck-in-stock','.addToCartButton']:site==='goodreads'?['#gr-reading','#gr-review']:site==='genius'?['#gn-page','#gn-lyrics']:['#site-control'])){
             const style=await page.locator(selector).evaluate(el=>{const s=getComputedStyle(el);return {bg:s.backgroundColor,fg:s.color,image:s.backgroundImage};});
             assert.equal(style.image,'none');
             const luminance=color=>{const c=color.match(/\d+/g).slice(0,3).map(Number).map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return c[0]*.2126+c[1]*.7152+c[2]*.0722;};
@@ -99,6 +101,18 @@ const version=require('../package.json').version;
         assert.equal(await page.locator('#ck-in-stock').evaluate(el=>getComputedStyle(el).marginBottom),'8px');
         assert.equal(await page.locator('.addToCartByType').evaluate(el=>getComputedStyle(el).paddingTop),'3.2px');
         assert.equal(await page.locator('#ck-filters').evaluate(el=>getComputedStyle(el).position),'sticky');
+      }
+      if(site==='goodreads'){
+        assert.equal(await page.locator('#gr-recommendations').isVisible(),false);
+        assert.equal(await page.locator('#gr-book').evaluate(el=>getComputedStyle(el).paddingTop),'7.2px');
+        assert.equal(await page.locator('#gr-review').evaluate(el=>getComputedStyle(el).paddingTop),'10.4px');
+        assert.equal(await page.locator('#gr-reading').evaluate(el=>getComputedStyle(el).maxWidth),'980px');
+      }
+      if(site==='genius'){
+        assert.equal(await page.locator('#gn-recommendations').isVisible(),false);
+        assert.equal(await page.locator('#gn-lyrics').evaluate(el=>getComputedStyle(el).maxWidth),'760px');
+        assert.equal(await page.locator('#gn-annotation').evaluate(el=>getComputedStyle(el).paddingTop),'8.8px');
+        assert(Number(await page.locator('#gn-media').evaluate(el=>getComputedStyle(el).opacity))<=.5);
       }
       await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('navy');
       assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(26, 35, 50)');

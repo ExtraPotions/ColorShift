@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const assert = require('node:assert/strict');
 
 const helper = fs.readFileSync('colorshift-common.js', 'utf8');
-const sites = ['manapool', 'scryfall', 'steamgifts', 'tcgplayer', 'cardkingdom'];
+const sites = ['manapool', 'scryfall', 'steamgifts', 'tcgplayer', 'cardkingdom', 'goodreads', 'genius'];
 const cases = [
   { from: '2.13.0', stored: { palette: 'navy', accent: 'rose', intensity: 'soft', fabTop: 210 }, expect: { palette: 'navy', accent: 'rose', fabTop: 210, shortcut: 'Alt+G' } },
   { from: '3.0.2', stored: { settingsSchema: 1, palette: 'black', accent: 'amber', intensity: 'strong', fabTop: 340, shortcut: 'Alt+P' }, expect: { palette: 'black', accent: 'amber', fabTop: 340, shortcut: 'Alt+P' } },

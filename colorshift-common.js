@@ -1,7 +1,7 @@
 /* ColorShift 4: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ThemePicker = (() => {
   'use strict';
-  const version = '4.1.0';
+  const version = '4.2.0';
   const SETTINGS_SCHEMA = 1;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {

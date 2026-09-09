@@ -1,0 +1,27 @@
+name: Publish release assets
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+      - name: Upload userscripts and shared helper
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          gh release upload "$TAG" \
+            manapool-theme-picker.user.js \
+            scryfall-theme-picker.user.js \
+            steamgifts-theme-picker.user.js \
+            theme-picker-common.js \
+            --clobber

@@ -1,7 +1,7 @@
 /* Theme Picker 3: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ThemePicker = (() => {
   'use strict';
-  const version = '3.0.6';
+  const version = '3.0.7';
   const SETTINGS_SCHEMA = 1;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -37,6 +37,7 @@ var ThemePicker = (() => {
   }
   function eventShortcut(event){return [...(event.ctrlKey?['Ctrl']:[]),...(event.altKey?['Alt']:[]),...(event.shiftKey?['Shift']:[]),...(event.metaKey?['Meta']:[]),event.key.length===1?event.key.toUpperCase():event.key].join('+');}
   function editableTarget(target){return target?.matches?.('input,textarea,select,[contenteditable="true"]');}
+  function shortcutBlocked(node,shortcut){const priority=Number(node?.dataset.launcherPriority||0),id=node?.dataset.launcherId||'';return [...document.querySelectorAll('[data-userscript-launcher="userscript-launcher-v1"]')].some(el=>{if(el===node)return false;let shortcuts=[];try{shortcuts=JSON.parse(el.dataset.launcherShortcuts||'[]');}catch{}const other=Number(el.dataset.launcherPriority||0);return shortcuts.includes(shortcut)&&(other>priority||(other===priority&&(el.dataset.launcherId||'').localeCompare(id)<0));});}
   function declareLauncher(node,controls,meta) {
     const watched=()=>controls().filter(el=>el?.isConnected&&el.getClientRects().length);
     node.dataset.userscriptLauncher=LAUNCHER_PROTOCOL;
@@ -124,7 +125,7 @@ var ThemePicker = (() => {
     }
     function setOpen(value) {
       open=value; panel.hidden=!value; fab.setAttribute('aria-expanded',String(value));
-      if(value) { position();refreshDiagnostics(); panel.querySelector('select,button').focus(); }
+      if(value) { position();refreshDiagnostics();if(host.dataset.launcherShortcutCollision==='true')notice.textContent='Shortcut conflict detected; the higher-priority launcher responds first.';panel.querySelector('select,button').focus(); }
       else fab.focus({preventScroll:true});
     }
     function position() {
@@ -190,6 +191,7 @@ var ThemePicker = (() => {
       const tools=section('Settings');
       const shortcut=element('input',{type:'text','aria-label':'Open menu shortcut',placeholder:'Off',value:state.shortcut});
       shortcut.addEventListener('change',()=>{set('shortcut',normaliseShortcut(shortcut.value));shortcut.value=state.shortcut;const collision=[...document.querySelectorAll('[data-userscript-launcher="userscript-launcher-v1"]')].some(el=>{if(el===host)return false;try{return JSON.parse(el.dataset.launcherShortcuts||'[]').includes(state.shortcut);}catch{return false;}});notice.textContent=collision?'Shortcut is also used by another installed script.':'Shortcut saved.';});row(tools,'Open menu shortcut',shortcut);
+      action(tools,'Disable shortcut',()=>{set('shortcut','');shortcut.value='';notice.textContent='Keyboard shortcut disabled.';});
       action(tools,'Export',async()=>{
         const json=JSON.stringify({themePicker:true,schemaVersion:SETTINGS_SCHEMA,...state},null,2);
         try { await navigator.clipboard.writeText(json);notice.textContent='Settings copied.'; } catch { window.prompt('Copy settings JSON',json); }
@@ -223,7 +225,7 @@ var ThemePicker = (() => {
       fab.addEventListener('click',()=>{if(suppress){suppress=false;return;}setOpen(!open);});
       document.addEventListener('keydown',e=>{
         if(e.key==='Escape'&&open){e.preventDefault();setOpen(false);}
-        else if(state.shortcut&&!editableTarget(e.target)&&eventShortcut(e)===normaliseShortcut(state.shortcut)){e.preventDefault();setOpen(!open);}
+        else if(state.shortcut&&!editableTarget(e.target)&&eventShortcut(e)===normaliseShortcut(state.shortcut)&&!shortcutBlocked(host,normaliseShortcut(state.shortcut))){e.preventDefault();setOpen(!open);}
       });
       panel.addEventListener('keydown',e=>{
         if(e.key!=='Tab')return;

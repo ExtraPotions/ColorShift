@@ -46,7 +46,7 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
       await fab.click();const panel=page.getByRole('dialog');await panel.waitFor();
       assert.equal(await page.getByRole('checkbox').count(),0);
       const rowStyle=await panel.locator('.row').first().evaluate(el=>getComputedStyle(el).display);assert.equal(rowStyle,'flex');
-      await panel.getByText('About & diagnostics',{exact:true}).click();assert.match(await panel.locator('.diagnostics-output').textContent(),/Theme Picker 3\.0\.6[\s\S]*Site:/);
+      await panel.getByText('About & diagnostics',{exact:true}).click();assert.match(await panel.locator('.diagnostics-output').textContent(),/Theme Picker 3\.0\.7[\s\S]*Site:/);
       await panel.getByText('Accessibility',{exact:true}).click();
       {
         for(const palette of ['lightGray','darkGray','navy','black']){

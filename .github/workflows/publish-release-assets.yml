@@ -1,6 +1,12 @@
 name: Publish release assets
 
 on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag
+        required: true
+        default: theme-picker-3.0.8
   release:
     types: [published]
 
@@ -17,7 +23,7 @@ jobs:
       - name: Upload userscripts and shared helper
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ github.event.release.tag_name }}
+          TAG: ${{ inputs.tag || github.event.release.tag_name }}
         run: |
           gh release upload "$TAG" \
             manapool-theme-picker.user.js \

@@ -1,17 +1,17 @@
 // ==UserScript==
 // @name           TCGPlayer Theme Picker
 // @namespace      https://github.com/ExtraPotions/super-octo-parakeet
-// @version        3.1.1
+// @version        3.2.0
 // @description    Theme palettes, accessible settings and site enhancements.
 // @author         ExtraPotions
 // @license        CC-BY-NC-4.0
-// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/theme-picker-3.1.1/assets/tcgplayer-favicon.ico
+// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/theme-picker-3.2.0/assets/tcgplayer-favicon.ico
 // @match          *://tcgplayer.com/*
 // @match          *://www.tcgplayer.com/*
 // @run-at         document-start
 // @downloadURL    https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/tcgplayer-theme-picker.user.js
 // @updateURL      https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/tcgplayer-theme-picker.user.js
-// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/theme-picker-3.1.1/theme-picker-common.js
+// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/theme-picker-3.2.0/theme-picker-common.js
 // @grant          GM_getValue
 // @grant          GM_setValue
 // @grant          GM_registerMenuCommand

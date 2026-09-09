@@ -6,7 +6,7 @@ on:
       tag:
         description: Release tag
         required: true
-        default: theme-picker-3.1.0
+        default: theme-picker-3.2.0
   release:
     types: [published]
 

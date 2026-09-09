@@ -4,7 +4,7 @@ const root=path.join(__dirname,'..');
 const version=require('../package.json').version;
 const repo='https://github.com/ExtraPotions/super-octo-parakeet';
 const raw=`https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/colorshift-${version}`;
-const sites=[['manapool','ManaPool'],['scryfall','Scryfall'],['steamgifts','SteamGifts'],['tcgplayer','TCGPlayer']];
+const sites=[['manapool','ManaPool'],['scryfall','Scryfall'],['steamgifts','SteamGifts'],['tcgplayer','TCGPlayer'],['cardkingdom','Card Kingdom']];
 const icons={};
 for(const [site]of sites){
   icons[site]='data:image/png;base64,'+fs.readFileSync(path.join(root,`assets/${site}-colorshift-64.png`)).toString('base64');
@@ -27,4 +27,4 @@ for(const [site,name]of sites){
   fs.writeFileSync(path.join(root,canonical),output);
   fs.writeFileSync(path.join(root,legacy),output);
 }
-console.log('Built 5 canonical release files and 5 compatibility aliases for '+version);
+console.log('Built '+(sites.length+1)+' canonical release files and '+(sites.length+1)+' compatibility aliases for '+version);

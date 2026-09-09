@@ -6,7 +6,7 @@ on:
       tag:
         description: Release tag
         required: true
-        default: colorshift-4.0.3
+        default: colorshift-4.1.0
   release:
     types: [published]
 
@@ -30,11 +30,13 @@ jobs:
             colorshift-scryfall.user.js \
             colorshift-steamgifts.user.js \
             colorshift-tcgplayer.user.js \
+            colorshift-cardkingdom.user.js \
             colorshift-common.js \
             manapool-theme-picker.user.js \
             scryfall-theme-picker.user.js \
             steamgifts-theme-picker.user.js \
             tcgplayer-theme-picker.user.js \
+            cardkingdom-theme-picker.user.js \
             theme-picker-common.js \
             assets/manapool-colorshift-64.png \
             assets/manapool-colorshift-128.png \
@@ -44,4 +46,6 @@ jobs:
             assets/steamgifts-colorshift-128.png \
             assets/tcgplayer-colorshift-64.png \
             assets/tcgplayer-colorshift-128.png \
+            assets/cardkingdom-colorshift-64.png \
+            assets/cardkingdom-colorshift-128.png \
             --clobber

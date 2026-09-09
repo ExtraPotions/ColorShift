@@ -1,17 +1,17 @@
 // ==UserScript==
 // @name           ColorShift for ManaPool
 // @namespace      https://github.com/ExtraPotions/super-octo-parakeet
-// @version        4.0.3
+// @version        4.1.0
 // @description    Theme palettes, accessible settings and site enhancements.
 // @author         ExtraPotions
 // @license        CC-BY-NC-4.0
-// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/colorshift-4.0.3/assets/manapool-colorshift-128.png
+// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/colorshift-4.1.0/assets/manapool-colorshift-128.png
 // @match          *://manapool.com/*
 // @match          *://www.manapool.com/*
 // @run-at         document-start
 // @downloadURL    https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-manapool.user.js
 // @updateURL      https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-manapool.user.js
-// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/colorshift-4.0.3/colorshift-common.js
+// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/colorshift-4.1.0/colorshift-common.js
 // @grant          GM_getValue
 // @grant          GM_setValue
 // @grant          GM_registerMenuCommand
@@ -143,6 +143,23 @@ if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
       update(){for(const row of document.querySelectorAll('.giveaway__row-outer-wrap')){
         const ended=!!row.querySelector('.fa-times-circle')||[...row.querySelectorAll('[title]')].some(el=>/ended/i.test(el.title));
         if(row.dataset.tpEnded!==String(ended))row.dataset.tpEnded=String(ended);
+      }}
+    },
+    cardkingdom:{name:'Card Kingdom',accent:'#e45b64',options:[['dense','Denser product results'],['hideSoldOut','Hide fully sold out'],['compactListings','Compact condition rows'],['stickyFilters','Sticky search filters']],
+      css(state,colors,accent){return shared(state)+theme(state,colors,accent,
+        '#landing-wrapper,.landing-wrapper,main,.main,.productItemWrapper,.productCardWrapper,.itemContentWrapper,.detailWrapper,.addToCartWrapper,.addToCartByType,.filterContainer,.sidesearch,#sidecartContainer,.sideCart,.dropdown-menu,.pagination,.modal-content,.card,.footer,.footer-wrapper',
+        `.header-nav,.bg-ck-blue{background:${colors[3]}!important}.productDetailTitle,.productDetailSet,.productDetailType,.collector-number,.styleQtyAvailText,.resultsCount{color:#d0d0cc!important}.stylePrice,.amtAndPrice{color:#8ee2a4!important}.outOfStockNotice{color:#ffabab!important}.mtg-card-static-wrapper,img.card-image{background:transparent!important}`)+
+        siteControls(state,colors,accent,'.btn,.dropdown-toggle,.page-link,.addToCartButton,.sideSearchApply,button:not([role=switch]),select,input:not([type=checkbox]):not([type=radio]),textarea')+
+        (state.palette==='original'?'':'.text-muted,.detailFlavortext{color:#b8b8b4!important}.nav-tabs .nav-link.active{background:'+colors[2]+'!important;color:#fff!important;border-color:#777!important}')+
+        (state.hideAds?'.promo,.promo-banner,.mega-menu-promo,[class*="promoColumn"],[class*="marketing"]{display:none!important}':'')+
+        (state.dense?'.productItemWrapper{margin-bottom:.5rem!important}.productCardWrapper,.itemContentWrapper,.detailWrapper{padding:.45rem!important}.productDetailDrillIn{margin-bottom:.25rem!important}':'')+
+        (state.hideSoldOut?'[data-tp-sold=true]{display:none!important}':'')+
+        (state.compactListings?'.addToCartByType,.oneRow,.twoRow{min-height:auto!important;margin:.15rem 0!important;padding:.2rem .35rem!important}.style,.qty,.amtAndPrice{margin-top:.1rem!important;margin-bottom:.1rem!important}':'')+
+        (state.stickyFilters?'.sidesearch{position:sticky!important;top:8px!important;max-height:calc(100vh - 16px)!important;overflow:auto!important;scrollbar-gutter:stable}':'');},
+      update(){for(const card of document.querySelectorAll('.productItemWrapper,.productCardWrapper')){
+        const available=!!card.querySelector('.addToCartButton:not(.disabled),button.addToCartButton:not([disabled])');
+        const sold=!available&&!!card.querySelector('.outOfStockNotice');
+        if(card.dataset.tpSold!==String(sold))card.dataset.tpSold=String(sold);
       }}
     },
     tcgplayer:{name:'TCGPlayer',accent:'#6ea8ff',options:[['dense','Denser product grid'],['hideSoldOut','Hide out of stock'],['compactListings','Compact listing rows'],['hideMerch','Hide merchandising carousels']],

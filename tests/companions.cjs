@@ -4,7 +4,7 @@ const prism=fs.readFileSync('../vivid-prism-heron/pride-flag-highlighter.user.js
 const amazon=fs.readFileSync('../velvet-crane-orbit/amazon-dark-pattern-blocker.user.js','utf8');
 const helper=fs.readFileSync('colorshift-common.js','utf8');
 (async()=>{const browser=await chromium.launch({headless:true});try{
- for(const site of ['manapool','scryfall','steamgifts','tcgplayer','amazon']){
+ for(const site of ['manapool','scryfall','steamgifts','tcgplayer','cardkingdom','amazon']){
   for(const reverse of [false,true]){
    const context=await browser.newContext({viewport:{width:1000,height:900}});
    await context.route('https://fixture.test/**',r=>r.fulfill({contentType:'text/html',body:'<p>Gay bisexual lesbian</p>'}));

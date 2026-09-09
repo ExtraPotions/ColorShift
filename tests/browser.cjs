@@ -22,12 +22,15 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
 <div class="marketplace__content" id="tcg-canvas" style="background:#f8f9fa;height:48px">Homepage canvas</div>
 <div class="merchandising-filmstrip product-carousel" id="tcg-merch">Recommended products</div>
 <div class="martech-promos-banner" id="tcg-promo">Sponsored promo</div>
+<form class="sidesearch" id="ck-filters"><div class="filterContainer"><button class="sideSearchApply btn btn-primary">Apply filters</button></div></form>
+<div class="productItemWrapper productCardWrapper" id="ck-in-stock"><div class="itemContentWrapper"><div class="productDetailTitle">Lightning Bolt</div><div class="addToCartByType oneRow"><span class="stylePrice">$1.99</span><button class="addToCartButton btn">Add to Cart</button></div></div></div>
+<div class="productItemWrapper productCardWrapper" id="ck-sold"><div class="outOfStockNotice">Out of stock.</div></div>
 <button id="pfh-fab" data-userscript-launcher="userscript-launcher-v1" data-launcher-owner="ExtraPotions" data-launcher-id="fixture-companion" data-launcher-priority="50" data-launcher-preferred-position="right-bottom" data-launcher-shortcuts='["Alt+G"]' style="position:fixed;right:16px;bottom:16px;width:48px;height:48px;padding:0">P</button></body></html>`;
 const version=require('../package.json').version;
 (async()=>{
   const browser=await chromium.launch({headless:true,...(process.env.TP_BROWSER?{channel:process.env.TP_BROWSER}:{})});
   try {
-    for(const site of ['manapool','scryfall','steamgifts','tcgplayer']) {
+    for(const site of ['manapool','scryfall','steamgifts','tcgplayer','cardkingdom']) {
       const context=await browser.newContext({viewport:{width:1000,height:900}});
       await context.route('https://'+site+'.com/**',route=>route.fulfill({contentType:'text/html',headers:site==='scryfall'?{'Content-Security-Policy':"style-src 'self'; img-src 'self' data:"}:{},body:fixture}));
       await context.addInitScript(()=>{
@@ -58,7 +61,7 @@ const version=require('../package.json').version;
       {
         for(const palette of ['lightGray','darkGray','navy','black']){
           await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption(palette);
-          for(const selector of (site==='steamgifts'?['.esgst-heading-button','.esgst-gf-container','.esgst-gwc','.esgst-gc','.fanatical_description']:site==='tcgplayer'?['#site-control','.search-result__content','.listing-item']:['#site-control'])){
+          for(const selector of (site==='steamgifts'?['.esgst-heading-button','.esgst-gf-container','.esgst-gwc','.esgst-gc','.fanatical_description']:site==='tcgplayer'?['#site-control','.search-result__content','.listing-item']:site==='cardkingdom'?['#ck-filters','#ck-in-stock','.addToCartButton']:['#site-control'])){
             const style=await page.locator(selector).evaluate(el=>{const s=getComputedStyle(el);return {bg:s.backgroundColor,fg:s.color,image:s.backgroundImage};});
             assert.equal(style.image,'none');
             const luminance=color=>{const c=color.match(/\d+/g).slice(0,3).map(Number).map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return c[0]*.2126+c[1]*.7152+c[2]*.0722;};
@@ -89,6 +92,13 @@ const version=require('../package.json').version;
         assert.equal(await page.locator('#tcg-grid').evaluate(el=>getComputedStyle(el).rowGap),'8px');
         assert.equal(await page.locator('#tcg-listing').evaluate(el=>getComputedStyle(el).paddingTop),'8px');
         assert.equal(await page.locator('#tcg-canvas').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(37, 37, 34)');
+      }
+      if(site==='cardkingdom'){
+        assert.equal(await page.locator('#ck-sold').isVisible(),false);
+        assert.equal(await page.locator('#ck-in-stock').isVisible(),true);
+        assert.equal(await page.locator('#ck-in-stock').evaluate(el=>getComputedStyle(el).marginBottom),'8px');
+        assert.equal(await page.locator('.addToCartByType').evaluate(el=>getComputedStyle(el).paddingTop),'3.2px');
+        assert.equal(await page.locator('#ck-filters').evaluate(el=>getComputedStyle(el).position),'sticky');
       }
       await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('navy');
       assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(26, 35, 50)');

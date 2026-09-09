@@ -1,6 +1,6 @@
 # ColorShift Theme Pickers
 
-Personalize ManaPool, Scryfall, SteamGifts and TCGPlayer with readable colour palettes, compact settings menus and site-specific enhancements.
+Personalize ManaPool, Scryfall, SteamGifts, TCGPlayer and Card Kingdom with readable colour palettes, compact settings menus and site-specific enhancements.
 
 | Image | Site | Link |
 | :---: | --- | --- |
@@ -8,8 +8,9 @@ Personalize ManaPool, Scryfall, SteamGifts and TCGPlayer with readable colour pa
 | <img src="assets/scryfall-colorshift-64.png" width="64" height="64" alt="ColorShift for Scryfall"> | Scryfall | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-scryfall.user.js) |
 | <img src="assets/steamgifts-colorshift-64.png" width="64" height="64" alt="ColorShift for SteamGifts"> | SteamGifts | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-steamgifts.user.js) |
 | <img src="assets/tcgplayer-colorshift-64.png" width="64" height="64" alt="ColorShift for TCGPlayer"> | TCGPlayer | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-tcgplayer.user.js) |
+| <img src="assets/cardkingdom-colorshift-64.png" width="64" height="64" alt="ColorShift for Card Kingdom"> | Card Kingdom | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-cardkingdom.user.js) |
 
-**Version 4.0.3** · By [ExtraPotions](https://github.com/ExtraPotions)
+**Version 4.1.0** · By [ExtraPotions](https://github.com/ExtraPotions)
 
 ## Features
 
@@ -18,12 +19,12 @@ Personalize ManaPool, Scryfall, SteamGifts and TCGPlayer with readable colour pa
 - Configurable keyboard shortcuts and coordinated positioning with companion scripts.
 - Safe settings migration, export/import, reset, diagnostics and quiet update notices.
 
-| ManaPool | Scryfall | SteamGifts | TCGPlayer |
-| --- | --- | --- | --- |
-| Collapse individual homepage shelves, or expand/collapse all | Card, gallery and search themes | Giveaway, comment, navigation and popup themes | Search, product, listing, filter and modal themes |
-| Denser card grids | Content-warning dimming with hover/focus reveal | Hide entered or ended giveaways | Denser product grids |
-| Hide sold-out cards | Settings shortcut in the card toolbox | Soft-hide featured and pinned giveaways | Hide out-of-stock results |
-| Compact prices and always-visible chips | Readable store and search controls | High-contrast Enter buttons and readable ESGST controls | Compact listing rows and hide merchandising carousels |
+| ManaPool | Scryfall | SteamGifts | TCGPlayer | Card Kingdom |
+| --- | --- | --- | --- | --- |
+| Collapse individual homepage shelves, or expand/collapse all | Card, gallery and search themes | Giveaway, comment, navigation and popup themes | Search, product, listing, filter and modal themes | Storefront, search, product and cart themes |
+| Denser card grids | Content-warning dimming with hover/focus reveal | Hide entered or ended giveaways | Denser product grids | Denser product results |
+| Hide sold-out cards | Settings shortcut in the card toolbox | Soft-hide featured and pinned giveaways | Hide out-of-stock results | Hide fully sold-out products |
+| Compact prices and always-visible chips | Readable store and search controls | High-contrast Enter buttons and readable ESGST controls | Compact listing rows and hide merchandising carousels | Compact condition rows and sticky search filters |
 
 Original mode restores native site colours while keeping enabled feature options available.
 

@@ -31,5 +31,4 @@ jobs:
             steamgifts-theme-picker.user.js \
             tcgplayer-theme-picker.user.js \
             theme-picker-common.js \
-            assets/theme-picker-icon.png \
             --clobber

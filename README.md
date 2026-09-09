@@ -2,14 +2,12 @@
 
 Personalize ManaPool, Scryfall, SteamGifts and TCGPlayer with readable colour palettes, compact settings menus and site-specific enhancements.
 
-<img src="assets/theme-picker-icon.png" width="64" height="64" alt="Theme Picker">
-
-| Site | Install |
-| --- | --- |
-| ManaPool | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
-| Scryfall | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
-| SteamGifts | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
-| TCGPlayer | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/tcgplayer-theme-picker.user.js) |
+| Site | Icon | Install |
+| --- | --- | --- |
+| ManaPool | <img src="assets/manapool-favicon.svg" width="32" height="32" alt="ManaPool"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/manapool-theme-picker.user.js) |
+| Scryfall | <img src="assets/scryfall-favicon.ico" width="32" height="32" alt="Scryfall"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
+| SteamGifts | <img src="assets/steamgifts-favicon.ico" width="32" height="32" alt="SteamGifts"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
+| TCGPlayer | <img src="assets/tcgplayer-favicon.ico" width="32" height="32" alt="TCGPlayer"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/tcgplayer-theme-picker.user.js) |
 
 **Version 3.1.1** · By [ExtraPotions](https://github.com/ExtraPotions)
 
@@ -38,7 +36,7 @@ Original mode restores native site colours while keeping enabled feature options
 
 ## Controls and companion plugins
 
-Click the 48px Theme Picker icon or press **Alt+G** to open settings. **Escape** or an outside click closes the menu. Tab moves through its visible controls. Drag the launcher vertically to save its position.
+Click the 48px rounded-square favicon or press **Alt+G** to open settings. **Escape** or an outside click closes the menu. Tab moves through its visible controls. Drag the launcher vertically to save its position.
 
 Scripts recognize other plugins made by ExtraPotions and respect their positioning. **Theme Pickers and Amazon Dark Pattern Blocker always take primary position.** Overlapping secondary launchers make room without moving either primary or unrelated website controls.
 
@@ -48,4 +46,4 @@ Install a userscript manager such as Tampermonkey or Violentmonkey, then open th
 
 ## License
 
-[CC BY-NC 4.0](LICENSE).
+[CC BY-NC 4.0](LICENSE). Original site favicons belong to their respective owners.

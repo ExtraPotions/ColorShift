@@ -261,9 +261,9 @@ var ThemePicker = (() => {
     button,select { font:inherit; color:inherit; }
     button { cursor:pointer; }
     button:focus-visible,select:focus-visible,summary:focus-visible { outline:2px solid #82dcff; outline-offset:3px; }
-    .fab { position:fixed; right:16px; width:48px; height:48px; padding:0; z-index:2147483647; border:0; border-radius:0; background:transparent; box-shadow:none; touch-action:none; overflow:visible; pointer-events:auto; }
-    .fab img { display:block;width:100%;height:100%;object-fit:contain;pointer-events:none; }
-    .fab:hover { box-shadow:0 0 0 2px #82dcff; border-radius:12px; }
+    .fab { position:fixed; right:16px; width:48px; height:48px; padding:0; z-index:2147483647; border:1px solid #ffffff33; border-radius:13px; background:#121722; box-shadow:0 5px 18px #0006; touch-action:none; overflow:hidden; pointer-events:auto; }
+    .fab img { width:100%;height:100%;object-fit:contain;pointer-events:none; }
+    .fab:hover { box-shadow:0 0 0 2px #82dcff,0 8px 22px #0006; }
     .panel { position:fixed;right:16px;z-index:2147483647;width:min(312px,calc(100vw - 32px));overflow:auto;background:#282826;color:#ddd;border:1px solid #ffffff22;border-radius:14px;box-shadow:0 16px 40px #0007;pointer-events:auto; }
     header {padding:14px 18px 10px;} h2 {font-size:15px;margin:0 0 3px;} p {margin:0;font-size:12px;color:#bbb;}
     section,details {padding:9px 18px;border-top:1px solid #ffffff14;}

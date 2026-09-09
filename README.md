@@ -12,11 +12,11 @@ Personalize ManaPool, Scryfall, SteamGifts, TCGPlayer, Card Kingdom, Goodreads a
 | <img src="assets/goodreads-colorshift-64.png" width="64" height="64" alt="ColorShift for Goodreads"> | Goodreads | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-goodreads.user.js) |
 | <img src="assets/genius-colorshift-64.png" width="64" height="64" alt="ColorShift for Genius"> | Genius | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-genius.user.js) |
 
-**Version 4.3.0** · By [ExtraPotions](https://github.com/ExtraPotions)
+**Version 4.4.0** · By [ExtraPotions](https://github.com/ExtraPotions)
 
 ## Features
 
-- Five base palettes, six accent choices, brighter links and optional ad hiding.
+- Eight base palettes, six accent choices, brighter links and optional ad hiding.
 - Compact accessible menus with reduced-motion and high-contrast support.
 - Configurable keyboard shortcuts and coordinated positioning with companion scripts.
 - Safe settings migration, export/import, reset, diagnostics and quiet update notices.

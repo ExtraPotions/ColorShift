@@ -61,7 +61,7 @@ const version=require('../package.json').version;
       await panel.getByText('About & diagnostics',{exact:true}).click();assert.match(await panel.locator('.diagnostics-output').textContent(),new RegExp('ColorShift '+version.replaceAll('.','\\.')+'[\\s\\S]*Site:'));
       await panel.getByText('Accessibility',{exact:true}).click();
       {
-        for(const palette of ['lightGray','darkGray','navy','black']){
+        for(const palette of ['lightGray','darkGray','navy','black','fireRed','leafGreen','heartGold']){
           await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption(palette);
           for(const selector of (site==='steamgifts'?['.esgst-heading-button','.esgst-gf-container','.esgst-gwc','.esgst-gc','.fanatical_description']:site==='tcgplayer'?['#site-control','.search-result__content','.listing-item']:site==='cardkingdom'?['#ck-filters','#ck-in-stock','.addToCartButton']:site==='goodreads'?['#gr-reading','#gr-review']:site==='genius'?['#gn-page','#gn-lyrics']:['#site-control'])){
             const style=await page.locator(selector).evaluate(el=>{const s=getComputedStyle(el);return {bg:s.backgroundColor,fg:s.color,image:s.backgroundImage};});

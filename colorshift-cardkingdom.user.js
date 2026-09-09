@@ -1,17 +1,17 @@
 // ==UserScript==
 // @name           ColorShift for Card Kingdom
 // @namespace      https://github.com/ExtraPotions/super-octo-parakeet
-// @version        4.3.0
+// @version        4.4.0
 // @description    Theme palettes, accessible settings and site enhancements.
 // @author         ExtraPotions
 // @license        CC-BY-NC-4.0
-// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/colorshift-4.3.0/assets/cardkingdom-colorshift-128.png
+// @icon           https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/colorshift-4.4.0/assets/cardkingdom-colorshift-128.png
 // @match          *://cardkingdom.com/*
 // @match          *://www.cardkingdom.com/*
 // @run-at         document-start
 // @downloadURL    https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-cardkingdom.user.js
 // @updateURL      https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-cardkingdom.user.js
-// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/colorshift-4.3.0/colorshift-common.js
+// @require        https://raw.githubusercontent.com/ExtraPotions/super-octo-parakeet/colorshift-4.4.0/colorshift-common.js
 // @grant          GM_getValue
 // @grant          GM_setValue
 // @grant          GM_registerMenuCommand

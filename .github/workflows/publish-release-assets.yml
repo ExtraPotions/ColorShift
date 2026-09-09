@@ -6,7 +6,7 @@ on:
       tag:
         description: Release tag
         required: true
-        default: colorshift-4.3.0
+        default: colorshift-4.4.0
   release:
     types: [published]
 

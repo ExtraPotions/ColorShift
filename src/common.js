@@ -1,13 +1,16 @@
 /* ColorShift 4: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ThemePicker = (() => {
   'use strict';
-  const version = '4.3.0';
+  const version = '4.4.0';
   const SETTINGS_SCHEMA = 1;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
     original: ['Original'], lightGray: ['Light gray','#3f3f3c','#4a4a46','#333330'],
     darkGray: ['Dark gray','#252522','#2a2a28','#1c1c1a'],
-    navy: ['Navy','#1a2332','#243044','#141c28'], black: ['Black','#0a0a0a','#111111','#050505']
+    navy: ['Navy','#1a2332','#243044','#141c28'], black: ['Black','#0a0a0a','#111111','#050505'],
+    fireRed: ['Fire red','#211516','#382123','#481f22'],
+    leafGreen: ['Leaf green','#131d17','#213329','#24442f'],
+    heartGold: ['Heart gold','#211d13','#39301d','#493a1d']
   };
   const accents = {site:['Site default',null],blue:['Blue','#5eb0ef'],green:['Green','#63d989'],amber:['Amber','#f0c14b'],violet:['Violet','#b57aef'],rose:['Rose','#f5b0c8']};
   const shared = [['brighterLinks','Brighter links'],['hideAds','Hide ads / promos']];

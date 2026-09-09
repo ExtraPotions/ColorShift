@@ -8,7 +8,7 @@ Personalize ManaPool, Scryfall and SteamGifts with readable colour palettes, com
 | Scryfall | <img src="assets/scryfall-favicon.ico" width="32" height="32" alt="Scryfall"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/scryfall-theme-picker.user.js) |
 | SteamGifts | <img src="assets/steamgifts-favicon.ico" width="32" height="32" alt="SteamGifts"> | [Userscript](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/steamgifts-theme-picker.user.js) |
 
-**Version 3.0.8** · By [ExtraPotions](https://github.com/ExtraPotions)
+**Version 3.0.9** · By [ExtraPotions](https://github.com/ExtraPotions)
 
 ## Features
 

@@ -2,7 +2,7 @@
 
 Personalize seven websites with readable palettes, accessible settings, and site controls.
 
-**0.0.3** · [Downloads](https://github.com/ExtraPotions/ColorShift/releases)
+**0.0.4** · [Downloads](https://github.com/ExtraPotions/ColorShift/releases)
 
 ## Install
 
@@ -28,14 +28,9 @@ Tap the ColorShift button to open or close settings. Expand a section to reach a
 
 Choose a palette and accent, or select **System** to follow your device: native site colours in light mode and dark gray in dark mode. Adjust site options and use export/import to transfer settings. Each section has its own reset, which leaves other sections unchanged. Reduced motion, high contrast, diagnostics, and optional update notices are included. Original mode restores site colours while retaining enabled site options.
 
-## What's new in 0.0.3
+## What's new in 0.0.4
 
-- A compact menu that matches your palette, with an × close button.
-- More consistent page backgrounds and readable accents, including newly loaded content.
-- ManaPool card contrast, Sets menu, sales-graph accents, rounded profile buttons, and themed breadcrumbs.
-- Improved Card Kingdom, Goodreads, and Genius page colours.
-- Readable SteamGifts/ESGST statistics and links, with category-chip colours preserved.
-- Separate switches for Genius's News, Charts, Videos, Latest, and Community sections, plus an option to hide TCGPlayer support chat.
+Clearer prices, labels, and buttons on Card Kingdom, SteamGifts, Scryfall, TCGPlayer, and Genius. These fixes cover all seven palettes while preserving Original mode and ESGST category-chip colours.
 
 If something looks off, open **Settings → About & diagnostics → Scan theme coverage** to check the page. Some images, gradients, and site-specific controls still need visual review.
 

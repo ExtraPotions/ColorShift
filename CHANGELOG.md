@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.0.4
+
+- Card Kingdom: improved homepage slider-price contrast.
+- SteamGifts: readable Featured tabs, New badges, and homepage table headings while preserving ESGST chip colours.
+- Scryfall: corrected skip links, blue New pills, selected language, and purchase-price contrast.
+- TCGPlayer: corrected the search selector, Sign In link, and Shop Now buttons.
+- Genius: expanded readable accent labels beyond community rankings.
+- Added regression checks across all seven palettes and six accents, including Original-mode restoration.
+
 ## 0.0.3
 
 - Shared repair for missed neutral backgrounds and low-contrast text, including dynamically loaded content. Artwork and semantic colours are protected.

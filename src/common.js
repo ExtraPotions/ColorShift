@@ -127,7 +127,7 @@ var ColorShift = (() => {
         if(node===host||node.closest(protectedSurfaces))continue;
         const computed=getComputedStyle(node),bg=parseColor(computed.backgroundColor);
         if(computed.display==='none'||computed.backgroundImage!=='none')continue;
-        if(neutral(bg)&&(bg[3]??1)===1&&node.matches('main,header,footer,nav,aside,section,article,div,form,ul,li')){
+        if(neutral(bg)&&(bg[3]??1)===1&&node.matches('main,header,footer,nav,aside,section,article,div,form,ul,li,h1,h2,h3,h4')){
           const rect=node.getBoundingClientRect();
           if(rect.width>=80&&rect.height>=24&&!surfacePalette.some(c=>c.every((v,i)=>v===bg[i]))){
             let level=node.closest('header,footer,nav')?'header':'surface';
@@ -145,12 +145,23 @@ var ColorShift = (() => {
         if(back&&(node.matches('a')||surfacePalette.some(c=>c.every((v,i)=>v===back[i])))){const a=luminance(fg),b=luminance(back);if((Math.max(a,b)+.05)/(Math.min(a,b)+.05)<4.5)node.dataset.colorshiftText=node.matches('a')?(b>.179?'dark':'light'):'true';}
       }
     }
+    function visuallyHidden(node){
+      for(let current=node;current&&current!==document.documentElement;current=current.parentElement){
+        const style=getComputedStyle(current),rect=current.getBoundingClientRect();
+        if(style.display==='none'||style.visibility==='hidden'||style.visibility==='collapse'||Number(style.opacity)===0)return true;
+        const clip=style.clip.match(/^rect\(([^)]+)\)$/);
+        if(clip){const edges=clip[1].split(/[,\s]+/).filter(Boolean).map(parseFloat);if(edges.length===4&&edges.every(Number.isFinite)&&(edges[2]<=edges[0]||edges[1]<=edges[3]))return true;}
+        if(/^inset\(50%(?:\s|\))/.test(style.clipPath))return true;
+        if(rect.width<=1&&rect.height<=1&&['hidden','clip'].includes(style.overflow))return true;
+      }
+      return false;
+    }
     function scanCoverage(){
       if(!surfacePalette){coverageReport='Theme coverage: Original mode; no theme audit needed.';refreshDiagnostics();return;}
       const findings=[];let scanned=0,unknown=0,protectedCount=0;
       const nodes=document.querySelectorAll('main,header,footer,nav,section,article,div,p,span,a,button,input,select,textarea,label,h1,h2,h3,h4');
       for(const node of nodes){
-        if(node===host||!node.getClientRects().length)continue;
+        if(node===host||!node.getClientRects().length||visuallyHidden(node))continue;
         if(node.closest(protectedSurfaces)){protectedCount++;continue;}
         if(scanned>=5000)break;scanned++;
         const style=getComputedStyle(node);if(style.visibility==='hidden'||style.opacity==='0')continue;

@@ -1,6 +1,10 @@
-# ColorShift Theme Pickers
+# ColorShift
 
-Personalize ManaPool, Scryfall, SteamGifts, TCGPlayer, Card Kingdom, Goodreads and Genius with readable colour palettes, compact settings menus and site-specific enhancements.
+Personalize seven websites with readable palettes, accessible settings, and site controls.
+
+## Install
+
+Install a userscript manager such as Tampermonkey or Violentmonkey, open the link for your site, and reload the website.
 
 | Image | Site | Link |
 | :---: | --- | --- |
@@ -12,37 +16,32 @@ Personalize ManaPool, Scryfall, SteamGifts, TCGPlayer, Card Kingdom, Goodreads a
 | <img src="assets/goodreads-colorshift-64.png" width="64" height="64" alt="ColorShift for Goodreads"> | Goodreads | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-goodreads.user.js) |
 | <img src="assets/genius-colorshift-64.png" width="64" height="64" alt="ColorShift for Genius"> | Genius | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-genius.user.js) |
 
-**Version 0.0.1** · By [ExtraPotions](https://github.com/ExtraPotions)
+## Controls
 
-## Features
+Click the ColorShift button or press **Alt+G** to open settings. Press **Escape** or click outside to close. Drag the button vertically to reposition it. The keyboard shortcut is configurable.
 
-- Eight base palettes, six accent choices, brighter links and optional ad hiding.
-- Compact accessible menus with reduced-motion and high-contrast support.
-- Configurable keyboard shortcuts and coordinated positioning with companion scripts.
-- Safe settings migration, export/import, reset, diagnostics and quiet update notices.
+Choose from eight palettes and six accents, adjust site options, and use export/import or reset to manage settings. Reduced motion, high contrast, diagnostics, and optional update notices are included. Original mode restores site colours while retaining enabled site options.
 
-| Site | Visual coverage | Site controls |
-| --- | --- | --- |
-| ManaPool | Cards, shelves and pricing | Density, stock, prices and chips |
-| Scryfall | Cards, galleries and search | Content-warning dimming |
-| SteamGifts | Giveaways, comments and ESGST | Entered, ended, featured and Enter controls |
-| TCGPlayer | Search, products and listings | Density, stock, listings and merchandising |
-| Card Kingdom | Storefront, products and cart | Density, stock, condition rows and filters |
-| Goodreads | Books, shelves and reviews | Density, reviews, recommendations and reading width |
-| Genius | Lyrics, annotations and media | Lyric focus, annotations, media and recommendations |
+## Development
 
-Original mode restores native site colours while keeping enabled feature options available.
+Edit shared behaviour in `src/common.js` and site adapters in `src/sites.js`. Run:
 
-## Controls and companion plugins
+```sh
+npm install
+npx playwright install chromium
+npm run build
+npm test
+```
 
-Click the 48px rounded-square ColorShift button or press **Alt+G** to open settings. Hovering the button identifies its site. **Escape** or an outside click closes the menu. Tab moves through its visible controls. Drag the launcher vertically to save its position.
+Commit the generated `colorshift-*.js` files. Releases use matching `colorshift-VERSION` tags; the release workflow verifies and uploads the scripts, shared helper, and icons.
 
-Scripts recognize other plugins made by ExtraPotions and respect their positioning. **ColorShift and Amazon Dark Pattern Blocker always take primary position.** Overlapping secondary launchers make room without moving either primary or unrelated website controls.
+## Releases
 
-## Install
+- **0.0.2**: Simplified distribution, settings initialization, and release checks.
+- **0.0.1**: Initial ColorShift release for all seven sites.
 
-Install a userscript manager such as Tampermonkey or Violentmonkey, then open the appropriate userscript link above. Update existing Theme Picker entries to retain settings, disable older Grey Edition duplicates, and reload the website.
+See [releases](https://github.com/ExtraPotions/ColorShift/releases) for downloads.
 
 ## License
 
-[CC BY-NC 4.0](LICENSE).
+[CC BY-NC 4.0](LICENSE) · By [ExtraPotions](https://github.com/ExtraPotions).

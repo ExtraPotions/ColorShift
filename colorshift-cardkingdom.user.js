@@ -1,22 +1,22 @@
 // ==UserScript==
 // @name           ColorShift for Card Kingdom
 // @namespace      https://github.com/ExtraPotions/ColorShift
-// @version        0.0.1
+// @version        0.0.2
 // @description    Theme palettes, accessible settings and site enhancements.
 // @author         ExtraPotions
 // @license        CC-BY-NC-4.0
-// @icon           https://raw.githubusercontent.com/ExtraPotions/ColorShift/colorshift-0.0.1/assets/cardkingdom-colorshift-128.png
+// @icon           https://raw.githubusercontent.com/ExtraPotions/ColorShift/colorshift-0.0.2/assets/cardkingdom-colorshift-128.png
 // @match          *://cardkingdom.com/*
 // @match          *://www.cardkingdom.com/*
 // @run-at         document-start
 // @downloadURL    https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-cardkingdom.user.js
 // @updateURL      https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-cardkingdom.user.js
-// @require        https://raw.githubusercontent.com/ExtraPotions/ColorShift/colorshift-0.0.1/colorshift-common.js
+// @require        https://raw.githubusercontent.com/ExtraPotions/ColorShift/colorshift-0.0.2/colorshift-common.js
 // @grant          GM_getValue
 // @grant          GM_setValue
 // @grant          GM_registerMenuCommand
 // ==/UserScript==
-if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
+if(typeof ColorShift==='undefined'||typeof ColorShift.start!=='function'){
     const warn=()=>{const box=document.createElement('div');box.setAttribute('role','alert');box.textContent='ColorShift could not load its shared helper. Reinstall the latest release in your userscript manager.';box.style.cssText='position:fixed;bottom:16px;right:16px;padding:16px;background:#421;color:white;z-index:2147483647';document.body.append(box);};
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',warn,{once:true});else warn();
   }else{
@@ -73,7 +73,7 @@ if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
     record.collapsed=value;
     const map=api.read('sections',{});map[record.title]=value;api.write('sections',map);
     record.button.setAttribute('aria-expanded',String(!value));record.button.textContent=value?'▸':'▾';
-    for(const child of record.content)child.classList.toggle('tp-section-hidden',value);
+    for(const child of record.content)child.classList.toggle('colorshift-section-hidden',value);
     if(value){record.scroll=scrollY;const positions=api.read('sectionScroll',{});positions[record.title]=scrollY;api.write('sectionScroll',positions);}
     else if(Number.isFinite(record.scroll)&&Math.abs(scrollY-record.scroll)<120)scrollTo(0,record.scroll);
   }
@@ -92,30 +92,29 @@ if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
         header a[href="/"]{color:${accent}!important}`)+
         siteControls(state,colors,accent,'button:not([role=switch]),a[role=button],a.bg-blue-700,a.bg-blue-600,select,input:not([type=checkbox]):not([type=radio]),textarea')+
         (state.palette==='original'?'':'.text-gray-500,.text-gray-600,.text-gray-700,.text-gray-800,.text-gray-900{color:#d0d0cc!important}')+
-        '.tp-section-hidden{display:none!important}.tp-section-heading{display:block!important;visibility:visible!important}.tp-section-button{border-radius:6px;padding:4px 8px;margin-right:8px;cursor:pointer}'+
+        '.colorshift-section-hidden{display:none!important}.colorshift-section-heading{display:block!important;visibility:visible!important}.colorshift-section-button{border-radius:6px;padding:4px 8px;margin-right:8px;cursor:pointer}'+
         (state.dense?'ul.grid,.grid{gap:.5rem!important}article{margin:0!important}':'')+
-        (state.hideSoldOut?'[data-tp-sold=true]{display:none!important}':'')+
+        (state.hideSoldOut?'[data-colorshift-sold=true]{display:none!important}':'')+
         (state.compactPrices?'.text-green-700,.text-xl.font-bold{font-size:.95rem!important;line-height:1.2!important}':'')+
         (state.alwaysChips?'.rounded-b-lg.bg-gray-50,.inline-flex.items-center.border{opacity:1!important;visibility:visible!important}':'');},
       update(api){
         for(const card of document.querySelectorAll('article,li.group,.group.bg-white')) {
           const sold=/sold\s*out|out\s*of\s*stock/i.test(card.textContent)||!!card.querySelector('[data-stock="0"],[class*="out-of-stock"]');
-          if(card.dataset.tpSold!==String(sold))card.dataset.tpSold=String(sold);
+          if(card.dataset.colorshiftSold!==String(sold))card.dataset.colorshiftSold=String(sold);
         }
         for(const [node] of sections)if(!node.isConnected)sections.delete(node);
         if(location.pathname.replace(/\/+$/,'')!=='')return;
         for(const heading of document.querySelectorAll('h2')) {
-          if(heading.querySelector('.tp-section-button'))continue;
+          if(heading.querySelector('.colorshift-section-button'))continue;
           let container=heading.parentElement;
           while(container&&container!==document.body&&!container.querySelector('ul,.grid,[class*=grid-cols]'))container=container.parentElement;
           if(!container||container===document.body||sections.has(container)||container.querySelectorAll('h2').length!==1)continue;
           const title=heading.textContent.trim();
           const content=[...container.children].filter(el=>el!==heading&&!el.contains(heading));if(!content.length)continue;
-          const button=api.element('button',{type:'button',class:'tp-section-button','aria-label':'Toggle '+title});heading.prepend(button);
-          heading.classList.add('tp-section-heading');
+          const button=api.element('button',{type:'button',class:'colorshift-section-button','aria-label':'Toggle '+title});heading.prepend(button);
+          heading.classList.add('colorshift-section-heading');
           const record={title,button,content,collapsed:false,scroll:api.read('sectionScroll',{})[title]};sections.set(container,record);
-          let legacy={};try{legacy=JSON.parse(localStorage.getItem('mpge-collapsed-sections-v1')||'{}');}catch{}
-          collapse(api,record,api.read('sections',legacy)[title]===true);
+          collapse(api,record,api.read('sections',{})[title]===true);
           button.addEventListener('click',()=>collapse(api,record,!record.collapsed));
         }
       }
@@ -126,8 +125,8 @@ if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
         '.card-image,img.card,picture{background:transparent!important}')+
         siteControls(state,colors,accent,'.button-n,.select-n,button:not([role=switch]),select,input:not([type=checkbox]):not([type=radio]),textarea')+
         (state.dimWarnings?'.card-content-warning{opacity:.4;filter:grayscale(.55);max-height:3.5rem;overflow:hidden}.card-content-warning:hover,.card-content-warning:focus-within{opacity:1;filter:none;max-height:none}':'');},
-      update(api){const toolbox=document.querySelector('.toolbox-links');if(toolbox&&!toolbox.querySelector('[data-tp-launch]')){
-        const item=api.element('li'),button=api.element('button',{type:'button',class:'button-n','data-tp-launch':'true'},'Theme Picker settings');
+      update(api){const toolbox=document.querySelector('.toolbox-links');if(toolbox&&!toolbox.querySelector('[data-colorshift-launch]')){
+        const item=api.element('li'),button=api.element('button',{type:'button',class:'button-n','data-colorshift-launch':'true'},'ColorShift settings');
         button.addEventListener('click',api.open);item.append(button);toolbox.append(item);
       }}
     },
@@ -137,12 +136,12 @@ if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
         '.sidebar__entry-insert,.form__submit-button{background:#315b27!important;color:#d8ffc5!important}.sidebar__entry-delete{background:#7f2828!important;color:#ffdbdb!important}.giveaway__heading__name{color:#c1d8ec!important}.giveaway__columns,.comment__username{color:#bbb!important}.is-faded{opacity:.55}.giveaway__image,.giveaway__image-outer-wrap{background-color:transparent!important}')+
         steamControls(state,colors,accent)+
         (state.hideEntered?'.giveaway__row-outer-wrap:has(.is-faded),.giveaway__row-outer-wrap:has(.esgst-faded),.giveaway-gridview .faded{display:none!important}':'')+
-        (state.hideEnded?'[data-tp-ended=true]{display:none!important}':'')+
+        (state.hideEnded?'[data-colorshift-ended=true]{display:none!important}':'')+
         (state.softHideFeatured?'.featured__container,.pinned-giveaways{opacity:.32;max-height:52px;overflow:hidden}.featured__container:hover,.featured__container:focus-within,.pinned-giveaways:hover,.pinned-giveaways:focus-within{opacity:1;max-height:none}':'')+
         (state.highContrastEnter?'.sidebar__entry-insert,.form__submit-button{background:#125c14!important;color:#fff!important;border:2px solid #fff!important;font-weight:bold!important}':'');},
       update(){for(const row of document.querySelectorAll('.giveaway__row-outer-wrap')){
         const ended=!!row.querySelector('.fa-times-circle')||[...row.querySelectorAll('[title]')].some(el=>/ended/i.test(el.title));
-        if(row.dataset.tpEnded!==String(ended))row.dataset.tpEnded=String(ended);
+        if(row.dataset.colorshiftEnded!==String(ended))row.dataset.colorshiftEnded=String(ended);
       }}
     },
     cardkingdom:{name:'Card Kingdom',accent:'#e45b64',options:[['dense','Denser product results'],['hideSoldOut','Hide fully sold out'],['compactListings','Compact condition rows'],['stickyFilters','Sticky search filters']],
@@ -153,13 +152,13 @@ if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
         (state.palette==='original'?'':'.text-muted,.detailFlavortext{color:#b8b8b4!important}.nav-tabs .nav-link.active{background:'+colors[2]+'!important;color:#fff!important;border-color:#777!important}')+
         (state.hideAds?'.promo,.promo-banner,.mega-menu-promo,[class*="promoColumn"],[class*="marketing"]{display:none!important}':'')+
         (state.dense?'.productItemWrapper{margin-bottom:.5rem!important}.productCardWrapper,.itemContentWrapper,.detailWrapper{padding:.45rem!important}.productDetailDrillIn{margin-bottom:.25rem!important}':'')+
-        (state.hideSoldOut?'[data-tp-sold=true]{display:none!important}':'')+
+        (state.hideSoldOut?'[data-colorshift-sold=true]{display:none!important}':'')+
         (state.compactListings?'.addToCartByType,.oneRow,.twoRow{min-height:auto!important;margin:.15rem 0!important;padding:.2rem .35rem!important}.style,.qty,.amtAndPrice{margin-top:.1rem!important;margin-bottom:.1rem!important}':'')+
         (state.stickyFilters?'.sidesearch{position:sticky!important;top:8px!important;max-height:calc(100vh - 16px)!important;overflow:auto!important;scrollbar-gutter:stable}':'');},
       update(){for(const card of document.querySelectorAll('.productItemWrapper,.productCardWrapper')){
         const available=!!card.querySelector('.addToCartButton:not(.disabled),button.addToCartButton:not([disabled])');
         const sold=!available&&!!card.querySelector('.outOfStockNotice');
-        if(card.dataset.tpSold!==String(sold))card.dataset.tpSold=String(sold);
+        if(card.dataset.colorshiftSold!==String(sold))card.dataset.colorshiftSold=String(sold);
       }}
     },
     tcgplayer:{name:'TCGPlayer',accent:'#6ea8ff',options:[['dense','Denser product grid'],['hideSoldOut','Hide out of stock'],['compactListings','Compact listing rows'],['hideMerch','Hide merchandising carousels']],
@@ -177,12 +176,12 @@ if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
         (state.palette==='original'?'':`.mp-header [class*="signin-btn"],button.tcg-standard-button.tcg-standard-button--flat.mp-header__content__cart-count{background:${header}!important;color:#ddd!important;border-color:#777!important}`)+
         (state.hideAds?'.martech-promos-banner,.martech-promos-wrapper,.sponsored-wrap,.hero-banner-promo{display:none!important}':'')+
         (state.dense?'.search-results{display:grid!important;gap:.5rem!important;grid-gap:.5rem!important;grid-template-columns:repeat(auto-fill,minmax(180px,1fr))!important;padding:0 8px!important}.search-result{margin:0!important}.item-card,.merchandising-filmstrip .item-card{min-width:108px!important}':'')+
-        (state.hideSoldOut?'.out-of-stock,.mp-oos-badge,[data-tp-sold=true],.search-result:has(.out-of-stock),.search-result:has(.mp-oos-badge){display:none!important}':'')+
+        (state.hideSoldOut?'.out-of-stock,.mp-oos-badge,[data-colorshift-sold=true],.search-result:has(.out-of-stock),.search-result:has(.mp-oos-badge){display:none!important}':'')+
         (state.compactListings?'.listing-item{padding:.5rem .75rem!important;margin-bottom:.25rem!important}.search-toolbar,.horizontal-filters-bar{min-height:auto!important;padding:.5rem 1rem!important}.search-filter{padding:.5rem .75rem!important}':'')+
         (state.hideMerch?'.merchandising-filmstrip,.product-carousel{display:none!important}':'');},
       update(){for(const card of document.querySelectorAll('.search-result,.search-result__content,.product-card,.item-card,.list-view-product-card')){
         const sold=!!card.querySelector('.out-of-stock,.mp-oos-badge')||/\bout\s*of\s*stock\b/i.test(card.textContent||'');
-        if(card.dataset.tpSold!==String(sold))card.dataset.tpSold=String(sold);
+        if(card.dataset.colorshiftSold!==String(sold))card.dataset.colorshiftSold=String(sold);
       }}
     },
     goodreads:{name:'Goodreads',accent:'#d2b48c',options:[['denseBooks','Denser book lists'],['compactReviews','Compact reviews'],['hideRecommendations','Hide recommendations'],['wideReading','Wider reading column']],
@@ -192,12 +191,12 @@ if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
         siteControls(state,colors,accent,'button:not([role=switch]),a[role=button],.gr-button,.Button,select,input:not([type=checkbox]):not([type=radio]),textarea')+
         (state.denseBooks?'.elementList,.bookalike,.BookCard{padding:.45rem 0!important;margin:.2rem 0!important}.leftAlignedImage{margin-right:.65rem!important}.leftAlignedImage img,.bookCover{max-height:110px!important;width:auto!important}':'')+
         (state.compactReviews?'.review,.ReviewCard{padding:.65rem!important;margin:.35rem 0!important}.reviewText,.ReviewText{line-height:1.42!important}.ReviewsList__listContext{gap:.5rem!important}':'')+
-        (state.hideRecommendations?'[data-tp-recommendation=true]{display:none!important}':'')+
+        (state.hideRecommendations?'[data-colorshift-recommendation=true]{display:none!important}':'')+
         (state.wideReading?'.BookPage__mainContent,.mainContent,.gr-mainContent{max-width:980px!important;width:min(980px,100%)!important}.BookPage__rightColumn{max-width:280px!important}':'');},
       update(){for(const heading of document.querySelectorAll('h1,h2,h3,h4')){
         if(!/readers also enjoyed|recommend(?:ed|ations)|similar books|people also liked/i.test(heading.textContent||''))continue;
         const section=heading.closest('section,.gr-box,.Carousel,.RecommendationShelf')||heading.parentElement;
-        if(section)section.dataset.tpRecommendation='true';
+        if(section)section.dataset.colorshiftRecommendation='true';
       }}
     },
     genius:{name:'Genius',accent:'#f4df42',options:[['focusLyrics','Focus lyrics'],['compactAnnotations','Compact annotations'],['dimMedia','Dim media embeds'],['hideRecommendations','Hide recommendations']],
@@ -208,16 +207,16 @@ if(typeof ThemePicker==='undefined'||typeof ThemePicker.start!=='function'){
         (state.focusLyrics?'[data-lyrics-container="true"],[class*="Lyrics__Container"]{max-width:760px!important;margin-left:auto!important;margin-right:auto!important;font-size:1.08rem!important;line-height:1.72!important}':'')+
         (state.compactAnnotations?'[class*="Annotation"]{padding:.55rem!important;margin:.35rem 0!important;line-height:1.42!important}':'')+
         (state.dimMedia?'iframe,video,[class*="Media"]{opacity:.42!important;transition:opacity .15s ease}iframe:hover,iframe:focus,video:hover,video:focus,[class*="Media"]:hover,[class*="Media"]:focus-within{opacity:1!important}':'')+
-        (state.hideRecommendations?'[data-tp-recommendation=true]{display:none!important}':'');},
+        (state.hideRecommendations?'[data-colorshift-recommendation=true]{display:none!important}':'');},
       update(){for(const heading of document.querySelectorAll('h1,h2,h3,h4')){
         if(!/you might also like|recommended|more from|related songs/i.test(heading.textContent||''))continue;
         const section=heading.closest('section,[class*="Recommended"],[class*="Related"]')||heading.parentElement;
-        if(section)section.dataset.tpRecommendation='true';
+        if(section)section.dataset.colorshiftRecommendation='true';
       }}
     }
   };
   const site=adapters[siteId];site.icon=icons[siteId];
-  ThemePicker.start(site);
+  ColorShift.start(site);
 })();
 
 }

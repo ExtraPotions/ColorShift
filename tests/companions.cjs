@@ -12,7 +12,7 @@ const helper=fs.readFileSync('colorshift-common.js','utf8');
    await page.evaluate(()=>{window.GM_getValue=(k,d)=>d;window.GM_setValue=()=>{};window.GM_registerMenuCommand=()=>{};});
    const primary=site==='amazon'?amazon:helper+'\n'+fs.readFileSync('colorshift-'+site+'.user.js','utf8');
    for(const content of (reverse?[prism,primary]:[primary,prism]))await page.addScriptTag({content});
-   const primaryFab=page.locator(site==='amazon'?'#adpb-settings-fab':'#theme-picker-fab');
+   const primaryFab=page.locator(site==='amazon'?'#adpb-settings-fab':'#colorshift-fab');
    const secondary=page.locator('.pfh-fab');
    const initial=await primaryFab.boundingBox();assert(initial);
    // Deliberately overlap the recognized companion with the primary.

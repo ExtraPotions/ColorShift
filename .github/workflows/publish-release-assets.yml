@@ -6,7 +6,7 @@ on:
       tag:
         description: Release tag
         required: true
-        default: colorshift-0.0.1
+        default: colorshift-0.0.2
   release:
     types: [published]
 
@@ -19,7 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.release.tag_name }}
+          ref: ${{ inputs.tag || github.event.release.tag_name }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/build.cjs
+      - run: git diff --exit-code -- 'colorshift-*.js'
+      - run: node tests/distribution.cjs
       - name: Upload userscripts and shared helper
         env:
           GH_TOKEN: ${{ github.token }}
@@ -34,14 +40,6 @@ jobs:
             colorshift-goodreads.user.js \
             colorshift-genius.user.js \
             colorshift-common.js \
-            manapool-theme-picker.user.js \
-            scryfall-theme-picker.user.js \
-            steamgifts-theme-picker.user.js \
-            tcgplayer-theme-picker.user.js \
-            cardkingdom-theme-picker.user.js \
-            goodreads-theme-picker.user.js \
-            genius-theme-picker.user.js \
-            theme-picker-common.js \
             assets/manapool-colorshift-64.png \
             assets/manapool-colorshift-128.png \
             assets/scryfall-colorshift-64.png \

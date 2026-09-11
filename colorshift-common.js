@@ -1,7 +1,7 @@
-/* ColorShift 4: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
-var ThemePicker = (() => {
+/* ColorShift: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
+var ColorShift = (() => {
   'use strict';
-  const version = '0.0.1';
+  const version = '0.0.2';
   const SETTINGS_SCHEMA = 1;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -18,12 +18,12 @@ var ThemePicker = (() => {
   const memory = new Map();
   function read(key, fallback) {
     try { if (typeof GM_getValue === 'function') return GM_getValue(key,fallback); } catch {}
-    try { const v=localStorage.getItem('ge-'+key); return v===null?fallback:JSON.parse(v); } catch { return memory.get(key) ?? fallback; }
+    try { const v=localStorage.getItem('colorshift-'+key); return v===null?fallback:JSON.parse(v); } catch { return memory.get(key) ?? fallback; }
   }
   function write(key,value) {
     memory.set(key,value);
     try { if(typeof GM_setValue==='function') { GM_setValue(key,value); return; } } catch {}
-    try { localStorage.setItem('ge-'+key,JSON.stringify(value)); } catch {}
+    try { localStorage.setItem('colorshift-'+key,JSON.stringify(value)); } catch {}
   }
   function element(tag,attrs={},text) {
     const el=document.createElement(tag);
@@ -156,7 +156,7 @@ var ThemePicker = (() => {
       if(state.updateNotifications)checkForUpdate();else host.removeAttribute('data-update-available');
     }
     function newer(latest,current){const a=String(latest).split('.').map(Number),b=String(current).split('.').map(Number);if(a.some(Number.isNaN)||b.some(Number.isNaN))return false;for(let i=0;i<Math.max(a.length,b.length);i++){const difference=(a[i]||0)-(b[i]||0);if(difference)return difference>0;}return false;}
-    async function checkForUpdate(){const key='updateCheck';const cached=read(key,null);if(cached&&Date.now()-cached.checked<86400000){showUpdate(cached.latest);return;}try{const response=await fetch('https://api.github.com/repos/ExtraPotions/ColorShift/releases/latest',{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)return;const data=await response.json(),latest=String(data.tag_name||'').replace(/^(?:theme-picker|colorshift)-/,'');write(key,{checked:Date.now(),latest});showUpdate(latest);}catch{}function showUpdate(latest){host.removeAttribute('data-update-available');fab.title='ColorShift for '+site.name;if(!newer(latest,version))return;host.dataset.updateAvailable=latest;fab.title='ColorShift '+latest+' for '+site.name+' is available';notice.textContent='Update available: '+latest;}}
+    async function checkForUpdate(){const key='updateCheck';const cached=read(key,null);if(cached&&Date.now()-cached.checked<86400000){showUpdate(cached.latest);return;}try{const response=await fetch('https://api.github.com/repos/ExtraPotions/ColorShift/releases/latest',{headers:{Accept:'application/vnd.github+json'}});if(!response.ok)return;const data=await response.json(),latest=String(data.tag_name||'').replace(/^colorshift-/,'');write(key,{checked:Date.now(),latest});showUpdate(latest);}catch{}function showUpdate(latest){host.removeAttribute('data-update-available');fab.title='ColorShift for '+site.name;if(!newer(latest,version))return;host.dataset.updateAvailable=latest;fab.title='ColorShift '+latest+' for '+site.name+' is available';notice.textContent='Update available: '+latest;}}
     function diagnosticText() {
       const active=Object.entries(state).filter(([key,value])=>typeof defaults[key]==='boolean'&&value).length;
       return [`ColorShift ${version}`,`Site: ${site.name} (${location.hostname})`,`Page: ${location.pathname||'/'}`,`Active options: ${active}`,`Last processed: ${lastProcessed?new Date(lastProcessed).toISOString():'Not yet'}`,`Errors: ${diagnosticErrors.length}${diagnosticErrors.length?' · '+diagnosticErrors.at(-1):''}`].join('\n');
@@ -176,15 +176,15 @@ var ThemePicker = (() => {
     function action(parent,title,fn) { const b=element('button',{type:'button'},title);b.addEventListener('click',fn);parent.append(b);return b; }
     function mount() {
       if(!document.body) return;
-      if(document.getElementById('theme-picker-root')) return;
-      host=element('div',{id:'theme-picker-root','data-theme-picker-primary-control':'true','data-ExtraPotions-dock-root':'primary'});
+      if(document.getElementById('colorshift-root')) return;
+      host=element('div',{id:'colorshift-root','data-colorshift-primary-control':'true','data-ExtraPotions-dock-root':'primary'});
       host.style.cssText='all:initial!important;position:fixed!important;inset:0!important;z-index:2147483647!important;pointer-events:none!important;';
       root=host.attachShadow({mode:'open'});
       const sheet=new CSSStyleSheet();sheet.replaceSync(UI_CSS);root.adoptedStyleSheets=[sheet];
-      fab=element('button',{id:'theme-picker-fab',type:'button',class:'fab',title:'ColorShift for '+site.name,'aria-label':'ColorShift for '+site.name+' settings','aria-controls':'theme-picker-panel','aria-expanded':'false','data-floating-control':'primary'});
+      fab=element('button',{id:'colorshift-fab',type:'button',class:'fab',title:'ColorShift for '+site.name,'aria-label':'ColorShift for '+site.name+' settings','aria-controls':'colorshift-panel','aria-expanded':'false','data-floating-control':'primary'});
       const icon=element('img',{src:site.icon,alt:'',draggable:'false'});fab.append(icon);
       fab.dataset.ExtraPotionsControl='primary';
-      panel=element('div',{id:'theme-picker-panel',role:'dialog','aria-label':'ColorShift for '+site.name+' settings',class:'panel'});panel.hidden=true;
+      panel=element('div',{id:'colorshift-panel',role:'dialog','aria-label':'ColorShift for '+site.name+' settings',class:'panel'});panel.hidden=true;
       const header=element('header');header.append(element('h2',{},'ColorShift · '+site.name),element('p',{},'Customize colours and site behaviour.'));panel.append(header);
       const appearance=section('Appearance');
       for(const [key,label,values] of [['palette','Theme',palettes],['accent','Accent',accents]]) {
@@ -200,14 +200,14 @@ var ThemePicker = (() => {
       shortcut.addEventListener('change',()=>{set('shortcut',normaliseShortcut(shortcut.value));shortcut.value=state.shortcut;const collision=[...document.querySelectorAll('[data-userscript-launcher="userscript-launcher-v1"]')].some(el=>{if(el===host)return false;try{return JSON.parse(el.dataset.launcherShortcuts||'[]').includes(state.shortcut);}catch{return false;}});notice.textContent=collision?'Shortcut is also used by another installed script.':'Shortcut saved.';});row(tools,'Open menu shortcut',shortcut);
       action(tools,'Disable shortcut',()=>{set('shortcut','');shortcut.value='';notice.textContent='Keyboard shortcut disabled.';});
       action(tools,'Export',async()=>{
-        const json=JSON.stringify({themePicker:true,schemaVersion:SETTINGS_SCHEMA,...state},null,2);
+        const json=JSON.stringify({colorShift:true,schemaVersion:SETTINGS_SCHEMA,...state},null,2);
         try { await navigator.clipboard.writeText(json);notice.textContent='Settings copied.'; } catch { window.prompt('Copy settings JSON',json); }
       });
       action(tools,'Import',()=>{
         const input=window.prompt('Paste ColorShift settings JSON');if(input===null)return;
         try {
-          const data=JSON.parse(input);if(!data||data.themePicker!==true||Array.isArray(data))throw Error();
-          const schema=Number(data.schemaVersion??data.v??0);if(!Number.isInteger(schema)||schema<0||schema>SETTINGS_SCHEMA)throw Error();
+          const data=JSON.parse(input);if(!data||data.colorShift!==true||Array.isArray(data))throw Error();
+          const schema=Number(data.schemaVersion??SETTINGS_SCHEMA);if(!Number.isInteger(schema)||schema<0||schema>SETTINGS_SCHEMA)throw Error();
           const entries=Object.entries(data).filter(([k])=>Object.hasOwn(defaults,k));
           if(entries.some(([k,v])=>!valid(k,v)))throw Error();
           for(const [key,value] of entries){state[key]=value;write(key,value);}write(SCHEMA_KEY,SETTINGS_SCHEMA);apply();notice.textContent='Settings imported.';
@@ -220,9 +220,9 @@ var ThemePicker = (() => {
       action(diagnostics,'Copy diagnostics',async()=>{const text=diagnosticText();try{await navigator.clipboard.writeText(text);notice.textContent='Diagnostics copied.';}catch{window.prompt('Copy diagnostics',text);}});panel.append(diagnostics);
       notice=element('p',{role:'status','aria-live':'polite',class:'notice'});panel.append(notice,element('footer',{},'Drag to position · configurable shortcut · Esc · v'+version));
       root.append(fab,panel);document.body.append(host);
-      launcher=declareLauncher(host,()=>[fab,panel],{owner:'ExtraPotions',id:'theme-picker-'+site.name.toLowerCase(),priority:100,preferredPosition:'right-bottom'});
+      launcher=declareLauncher(host,()=>[fab,panel],{owner:'ExtraPotions',id:'colorshift-'+site.name.toLowerCase(),priority:100,preferredPosition:'right-bottom'});
       host.dataset.launcherShortcuts=JSON.stringify(state.shortcut?[state.shortcut]:[]);
-      style=element('style',{id:'theme-picker-site-style'});document.head.append(style);
+      style=element('style',{id:'colorshift-site-style'});document.head.append(style);
       siteSheet=new CSSStyleSheet();document.adoptedStyleSheets=[...document.adoptedStyleSheets,siteSheet];
       let drag=null,suppress=false;
       fab.addEventListener('pointerdown',e=>{if(e.button!==0)return;drag={y:e.clientY,top:fab.getBoundingClientRect().top,moved:false};fab.setPointerCapture(e.pointerId);});

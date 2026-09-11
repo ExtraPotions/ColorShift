@@ -30,7 +30,7 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
 <button id="pfh-fab" data-userscript-launcher="userscript-launcher-v1" data-launcher-owner="ExtraPotions" data-launcher-id="fixture-companion" data-launcher-priority="50" data-launcher-preferred-position="right-bottom" data-launcher-shortcuts='["Alt+G"]' style="position:fixed;right:16px;bottom:16px;width:48px;height:48px;padding:0">P</button></body></html>`;
 const version=require('../package.json').version;
 (async()=>{
-  const browser=await chromium.launch({headless:true,...(process.env.TP_BROWSER?{channel:process.env.TP_BROWSER}:{})});
+  const browser=await chromium.launch({headless:true,...(process.env.COLORSHIFT_BROWSER?{channel:process.env.COLORSHIFT_BROWSER}:{})});
   try {
     for(const site of ['manapool','scryfall','steamgifts','tcgplayer','cardkingdom','goodreads','genius']) {
       const context=await browser.newContext({viewport:{width:1000,height:900}});
@@ -44,10 +44,10 @@ const version=require('../package.json').version;
       await context.addInitScript({content:helper+'\n'+siteCode});
       const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
       await page.goto('https://'+site+'.com/');
-      assert.equal(await page.evaluate(()=>localStorage.getItem('gm-settingsSchema')),'1','legacy settings are migrated to schema 1');
-      const fab=page.locator('#theme-picker-fab');await fab.waitFor();
-      await page.waitForFunction(()=>document.getElementById('theme-picker-root')?.dataset.launcherOccupiedArea);
-      const declaration=await page.locator('#theme-picker-root').evaluate(el=>({...el.dataset}));
+      assert.equal(await page.evaluate(()=>localStorage.getItem('gm-settingsSchema')),'1','settings schema is initialized');
+      const fab=page.locator('#colorshift-fab');await fab.waitFor();
+      await page.waitForFunction(()=>document.getElementById('colorshift-root')?.dataset.launcherOccupiedArea);
+      const declaration=await page.locator('#colorshift-root').evaluate(el=>({...el.dataset}));
       assert.equal(declaration.userscriptLauncher,'userscript-launcher-v1');assert.equal(declaration.launcherOwner,'ExtraPotions');assert.equal(declaration.launcherPriority,'100');assert.equal(declaration.launcherPreferredPosition,'right-bottom');assert.doesNotThrow(()=>JSON.parse(declaration.launcherOccupiedArea));
       assert.equal(declaration.launcherShortcutCollision,'true');
       const start=await fab.boundingBox();
@@ -124,12 +124,12 @@ const version=require('../package.json').version;
       await page.keyboard.press('Escape');assert.equal(await panel.isVisible(),false);
       await page.keyboard.press('Alt+g');assert.equal(await panel.isVisible(),true);
       const shortcutInput=panel.getByRole('textbox',{name:'Open menu shortcut',exact:true});await shortcutInput.fill('Alt+T');await shortcutInput.press('Tab');await page.keyboard.press('Escape');await page.keyboard.press('Alt+g');assert.equal(await panel.isVisible(),false);await page.keyboard.press('Alt+t');assert.equal(await panel.isVisible(),true);
-      page.once('dialog',dialog=>dialog.accept('{"themePicker":true,"palette":"black"}'));
+      page.once('dialog',dialog=>dialog.accept('{"colorShift":true,"palette":"black"}'));
       await panel.getByRole('button',{name:'Import',exact:true}).click();assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'black');
-      page.once('dialog',dialog=>dialog.accept('{"themePicker":true,"palette":"not-a-palette"}'));
+      page.once('dialog',dialog=>dialog.accept('{"colorShift":true,"palette":"not-a-palette"}'));
       await panel.getByRole('button',{name:'Import',exact:true}).click();assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'black');
       await panel.getByRole('switch',{name:'Brighter links',exact:true}).focus();await page.keyboard.press('Space');assert.equal(await panel.getByRole('switch',{name:'Brighter links',exact:true}).getAttribute('aria-checked'),'false');
-      await page.evaluate(()=>document.getElementById('theme-picker-root').remove());await fab.waitFor();assert.equal(await page.locator('#theme-picker-root').count(),1);
+      await page.evaluate(()=>document.getElementById('colorshift-root').remove());await fab.waitFor();assert.equal(await page.locator('#colorshift-root').count(),1);
       await page.setViewportSize({width:360,height:640});await page.waitForTimeout(100);
       const box=await panel.boundingBox();assert(box.x>=0&&box.x+box.width<=360&&box.y>=0&&box.y+box.height<=640);
       fs.mkdirSync(path.join(root,'test-results'),{recursive:true});await page.screenshot({path:path.join(root,'test-results',site+'.png')});

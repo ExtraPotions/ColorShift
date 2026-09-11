@@ -12,7 +12,7 @@ Personalize ManaPool, Scryfall, SteamGifts, TCGPlayer, Card Kingdom, Goodreads a
 | <img src="assets/goodreads-colorshift-64.png" width="64" height="64" alt="ColorShift for Goodreads"> | Goodreads | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-goodreads.user.js) |
 | <img src="assets/genius-colorshift-64.png" width="64" height="64" alt="ColorShift for Genius"> | Genius | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-genius.user.js) |
 
-**Version 4.4.0** · By [ExtraPotions](https://github.com/ExtraPotions)
+**Version 0.0.1** · By [ExtraPotions](https://github.com/ExtraPotions)
 
 ## Features
 

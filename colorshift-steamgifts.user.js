@@ -1,17 +1,17 @@
 // ==UserScript==
 // @name           ColorShift for SteamGifts
 // @namespace      https://github.com/ExtraPotions/ColorShift
-// @version        4.4.0
+// @version        0.0.1
 // @description    Theme palettes, accessible settings and site enhancements.
 // @author         ExtraPotions
 // @license        CC-BY-NC-4.0
-// @icon           https://raw.githubusercontent.com/ExtraPotions/ColorShift/colorshift-4.4.0/assets/steamgifts-colorshift-128.png
+// @icon           https://raw.githubusercontent.com/ExtraPotions/ColorShift/colorshift-0.0.1/assets/steamgifts-colorshift-128.png
 // @match          *://steamgifts.com/*
 // @match          *://www.steamgifts.com/*
 // @run-at         document-start
 // @downloadURL    https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-steamgifts.user.js
 // @updateURL      https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-steamgifts.user.js
-// @require        https://raw.githubusercontent.com/ExtraPotions/ColorShift/colorshift-4.4.0/colorshift-common.js
+// @require        https://raw.githubusercontent.com/ExtraPotions/ColorShift/colorshift-0.0.1/colorshift-common.js
 // @grant          GM_getValue
 // @grant          GM_setValue
 // @grant          GM_registerMenuCommand

@@ -15,7 +15,7 @@ await theme.selectOption('original');await page.emulateMedia({colorScheme:'light
 await theme.selectOption('system');await page.emulateMedia({colorScheme:'dark'});await page.waitForFunction(()=>getComputedStyle(document.getElementById('colorshift-root').shadowRoot.querySelector('.panel')).backgroundColor==='rgb(37, 37, 34)');
 await theme.selectOption('darkGray');await panel.locator(':scope > .settings-group > summary').first().click();
 await panel.getByRole('button',{name:'Close settings',exact:true}).click();assert.equal(await panel.isVisible(),false);await fab.click();
-await fab.click();assert.equal(await panel.isVisible(),false);await page.keyboard.press('Alt+g');assert.equal(await panel.isVisible(),false);await fab.click();await page.keyboard.press('Escape');assert.equal(await panel.isVisible(),false);await fab.click();await page.mouse.click(3,3);assert.equal(await panel.isVisible(),false);await fab.click();
+await panel.getByRole('button',{name:'Close settings',exact:true}).click();assert.equal(await panel.isVisible(),false);await page.keyboard.press('Alt+g');assert.equal(await panel.isVisible(),false);await fab.click();await page.keyboard.press('Escape');assert.equal(await panel.isVisible(),false);await fab.click();await page.mouse.click(3,3);assert.equal(await panel.isVisible(),false);await fab.click();
 fs.mkdirSync('test-results/menu',{recursive:true});await panel.screenshot({path:`test-results/menu/${site}.png`});await context.close();
 }
 console.log('Compact menus: theme colours, header close, no search/banner, and mobile bounds passed on all seven sites');

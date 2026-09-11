@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0
+
+- Introduced ColorShift Anywhere as the primary offering: best-effort theming, enabled separately per website, with origin-scoped settings and immediate restoration when disabled.
+- Added amber-and-coral globe/facet branding. Seven tailored editions remain available.
+- Responsive menus choose the roomier side on desktop and use a bottom sheet on mobile. One section opens at a time, with section-only scrolling and a persistent header; extremely small viewports retain a whole-menu scrolling fallback.
+- Simplified theme names, expanded to eight accents plus Site default, and added color previews.
+- ManaPool: improved menu-icon and preorder contrast and reduced + Add button size.
+
+
 ## 0.0.4
 
 - Card Kingdom: improved homepage slider-price contrast.

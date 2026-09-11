@@ -1,16 +1,30 @@
-# ColorShift
+# ColorShift Anywhere
 
-Personalize seven websites with readable palettes, accessible settings, and site controls.
+<img src="assets/anywhere-banner.svg" width="720" alt="ColorShift Anywhere">
 
-**0.0.4** · [Downloads](https://github.com/ExtraPotions/ColorShift/releases)
+Your palette, across the web. Best-effort website theming, with eight complementary accents and a menu that stays in view.
 
-## Install
+**0.1.0** · [Download ColorShift Anywhere](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-anywhere.user.js)
+
+## Get started
 
 1. Install a userscript manager such as Tampermonkey or Violentmonkey.
-2. Open the install link for your site and confirm installation in the manager.
-3. Reload the site and click the ColorShift button.
+2. Install ColorShift Anywhere, then reload a website.
+3. Open the ColorShift button and turn on **Enable on this site**.
 
-Your userscript manager handles updates. Optional notifications let you know when a new release is available.
+Each website starts unchanged. Your palette, accent, and options are saved separately for each website. Turn the switch off to restore the site's appearance.
+
+Choose Graphite, Charcoal, Navy, Black, Ember, Forest, or Antique Gold. System follows your device preference, and Original keeps native site colours. Color dots preview your choices. On desktop, the menu opens above or below its button and repositions as needed. On mobile, it opens as a bottom sheet. One section opens at a time; long sections scroll while the title and close button stay visible.
+
+## Best-effort coverage
+
+Anywhere works on ordinary HTTP and HTTPS pages where your userscript manager can run. Some page components, embedded frames, images, charts, and custom controls may retain their original appearance. Browser settings pages and other restricted pages are outside its reach.
+
+If something looks wrong, switch Anywhere off for that site. **Settings → About & diagnostics → Scan theme coverage** can help identify contrast problems; a clean scan does not guarantee every part of a page is correct.
+
+## Tailored site editions
+
+These editions include extra site-specific fixes and controls. Use one ColorShift edition per website; exclude a site from Anywhere in your userscript manager when using its tailored edition.
 
 | Image | Site | Link |
 | :---: | --- | --- |
@@ -22,21 +36,13 @@ Your userscript manager handles updates. Optional notifications let you know whe
 | <img src="assets/goodreads-colorshift-64.png" width="64" height="64" alt="ColorShift for Goodreads"> | Goodreads | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-goodreads.user.js) |
 | <img src="assets/genius-colorshift-64.png" width="64" height="64" alt="ColorShift for Genius"> | Genius | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-genius.user.js) |
 
-## Controls
+## Settings
 
-Tap the ColorShift button to open or close settings. Expand a section to reach an option. Use the × button or tap outside the menu to close it. Drag the button vertically to reposition it.
-
-Choose a palette and accent, or select **System** to follow your device: native site colours in light mode and dark gray in dark mode. Adjust site options and use export/import to transfer settings. Each section has its own reset, which leaves other sections unchanged. Reduced motion, high contrast, diagnostics, and optional update notices are included. Original mode restores site colours while retaining enabled site options.
-
-## What's new in 0.0.4
-
-Clearer prices, labels, and buttons on Card Kingdom, SteamGifts, Scryfall, TCGPlayer, and Genius. These fixes cover all seven palettes while preserving Original mode and ESGST category-chip colours.
-
-If something looks off, open **Settings → About & diagnostics → Scan theme coverage** to check the page. Some images, gradients, and site-specific controls still need visual review.
+Use the × button or tap outside to close the menu. Drag the ColorShift button to reposition it. Export/import transfers settings for the current website. Reduced motion, high contrast, and optional update notices are available.
 
 ## Releases
 
-Read the [changelog](CHANGELOG.md) for changes and [releases](https://github.com/ExtraPotions/ColorShift/releases) for downloads.
+Read the [changelog](CHANGELOG.md) and browse [releases](https://github.com/ExtraPotions/ColorShift/releases).
 
 ## License
 

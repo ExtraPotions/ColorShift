@@ -1,12 +1,16 @@
 {
   "name": "colorshift",
   "private": true,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
     "build": "node scripts/build.cjs",
-    "test": "node tests/distribution.cjs && node tests/browser.cjs"
+    "build:check": "node scripts/build.cjs --check",
+    "test": "node tests/distribution.cjs && node tests/browser.cjs && node tests/settings.cjs && node tests/visual.cjs && node tests/performance.cjs && node tests/usability.cjs",
+    "test:live": "node tests/live.cjs",
+    "release:check": "node scripts/release-check.cjs"
   },
   "devDependencies": {
-    "playwright": "1.55.0"
+    "playwright": "1.55.1",
+    "pngjs": "7.0.0"
   }
 }

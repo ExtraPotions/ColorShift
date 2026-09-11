@@ -76,13 +76,13 @@
         (state.compactPrices?'.text-green-700,.text-xl.font-bold{font-size:.95rem!important;line-height:1.2!important}':'')+
         (state.alwaysChips?'.rounded-b-lg.bg-gray-50,.inline-flex.items-center.border{opacity:1!important;visibility:visible!important}':'');},
       update(api){
-        for(const card of document.querySelectorAll('article,li.group,.group.bg-white')) {
+        for(const card of api.query('article,li.group,.group.bg-white')) {
           const sold=/sold\s*out|out\s*of\s*stock/i.test(card.textContent)||!!card.querySelector('[data-stock="0"],[class*="out-of-stock"]');
           if(card.dataset.colorshiftSold!==String(sold))card.dataset.colorshiftSold=String(sold);
         }
         for(const [node] of sections)if(!node.isConnected)sections.delete(node);
         if(location.pathname.replace(/\/+$/,'')!=='')return;
-        for(const heading of document.querySelectorAll('h2')) {
+        for(const heading of api.query('h2')) {
           if(heading.querySelector('.colorshift-section-button'))continue;
           let container=heading.parentElement;
           while(container&&container!==document.body&&!container.querySelector('ul,.grid,[class*=grid-cols]'))container=container.parentElement;
@@ -117,7 +117,7 @@
         (state.hideEnded?'[data-colorshift-ended=true]{display:none!important}':'')+
         (state.softHideFeatured?'.featured__container,.pinned-giveaways{opacity:.32;max-height:52px;overflow:hidden}.featured__container:hover,.featured__container:focus-within,.pinned-giveaways:hover,.pinned-giveaways:focus-within{opacity:1;max-height:none}':'')+
         (state.highContrastEnter?'.sidebar__entry-insert,.form__submit-button{background:#125c14!important;color:#fff!important;border:2px solid #fff!important;font-weight:bold!important}':'');},
-      update(){for(const row of document.querySelectorAll('.giveaway__row-outer-wrap')){
+      update(api){for(const row of api.query('.giveaway__row-outer-wrap')){
         const ended=!!row.querySelector('.fa-times-circle')||[...row.querySelectorAll('[title]')].some(el=>/ended/i.test(el.title));
         if(row.dataset.colorshiftEnded!==String(ended))row.dataset.colorshiftEnded=String(ended);
       }}
@@ -133,7 +133,7 @@
         (state.hideSoldOut?'[data-colorshift-sold=true]{display:none!important}':'')+
         (state.compactListings?'.addToCartByType,.oneRow,.twoRow{min-height:auto!important;margin:.15rem 0!important;padding:.2rem .35rem!important}.style,.qty,.amtAndPrice{margin-top:.1rem!important;margin-bottom:.1rem!important}':'')+
         (state.stickyFilters?'.sidesearch{position:sticky!important;top:8px!important;max-height:calc(100vh - 16px)!important;overflow:auto!important;scrollbar-gutter:stable}':'');},
-      update(){for(const card of document.querySelectorAll('.productItemWrapper,.productCardWrapper')){
+      update(api){for(const card of api.query('.productItemWrapper,.productCardWrapper')){
         const available=!!card.querySelector('.addToCartButton:not(.disabled),button.addToCartButton:not([disabled])');
         const sold=!available&&!!card.querySelector('.outOfStockNotice');
         if(card.dataset.colorshiftSold!==String(sold))card.dataset.colorshiftSold=String(sold);
@@ -157,7 +157,7 @@
         (state.hideSoldOut?'.out-of-stock,.mp-oos-badge,[data-colorshift-sold=true],.search-result:has(.out-of-stock),.search-result:has(.mp-oos-badge){display:none!important}':'')+
         (state.compactListings?'.listing-item{padding:.5rem .75rem!important;margin-bottom:.25rem!important}.search-toolbar,.horizontal-filters-bar{min-height:auto!important;padding:.5rem 1rem!important}.search-filter{padding:.5rem .75rem!important}':'')+
         (state.hideMerch?'.merchandising-filmstrip,.product-carousel{display:none!important}':'');},
-      update(){for(const card of document.querySelectorAll('.search-result,.search-result__content,.product-card,.item-card,.list-view-product-card')){
+      update(api){for(const card of api.query('.search-result,.search-result__content,.product-card,.item-card,.list-view-product-card')){
         const sold=!!card.querySelector('.out-of-stock,.mp-oos-badge')||/\bout\s*of\s*stock\b/i.test(card.textContent||'');
         if(card.dataset.colorshiftSold!==String(sold))card.dataset.colorshiftSold=String(sold);
       }}
@@ -171,7 +171,7 @@
         (state.compactReviews?'.review,.ReviewCard{padding:.65rem!important;margin:.35rem 0!important}.reviewText,.ReviewText{line-height:1.42!important}.ReviewsList__listContext{gap:.5rem!important}':'')+
         (state.hideRecommendations?'[data-colorshift-recommendation=true]{display:none!important}':'')+
         (state.wideReading?'.BookPage__mainContent,.mainContent,.gr-mainContent{max-width:980px!important;width:min(980px,100%)!important}.BookPage__rightColumn{max-width:280px!important}':'');},
-      update(){for(const heading of document.querySelectorAll('h1,h2,h3,h4')){
+      update(api){for(const heading of api.query('h1,h2,h3,h4')){
         if(!/readers also enjoyed|recommend(?:ed|ations)|similar books|people also liked/i.test(heading.textContent||''))continue;
         const section=heading.closest('section,.gr-box,.Carousel,.RecommendationShelf')||heading.parentElement;
         if(section)section.dataset.colorshiftRecommendation='true';
@@ -186,7 +186,7 @@
         (state.compactAnnotations?'[class*="Annotation"]{padding:.55rem!important;margin:.35rem 0!important;line-height:1.42!important}':'')+
         (state.dimMedia?'iframe,video,[class*="Media"]{opacity:.42!important;transition:opacity .15s ease}iframe:hover,iframe:focus,video:hover,video:focus,[class*="Media"]:hover,[class*="Media"]:focus-within{opacity:1!important}':'')+
         (state.hideRecommendations?'[data-colorshift-recommendation=true]{display:none!important}':'');},
-      update(){for(const heading of document.querySelectorAll('h1,h2,h3,h4')){
+      update(api){for(const heading of api.query('h1,h2,h3,h4')){
         if(!/you might also like|recommended|more from|related songs/i.test(heading.textContent||''))continue;
         const section=heading.closest('section,[class*="Recommended"],[class*="Related"]')||heading.parentElement;
         if(section)section.dataset.colorshiftRecommendation='true';

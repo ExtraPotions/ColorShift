@@ -1,0 +1,14 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const {execFileSync}=require('node:child_process');
+const version=require('../package.json').version;
+assert.match(version,/^\d+\.\d+\.\d+$/);
+const expected='colorshift-'+version;
+const tag=process.env.TAG||process.argv[2]||expected;
+assert.equal(tag,expected,'Release tag must match package.json');
+assert(fs.readFileSync('CHANGELOG.md','utf8').includes('## '+version),'Version needs release notes');
+assert(fs.readFileSync('README.md','utf8').includes('**'+version+'**'),'README version must match');
+assert.equal(JSON.parse(fs.readFileSync('package-lock.json','utf8')).version,version,'Lockfile version must match');
+execFileSync(process.execPath,['scripts/build.cjs','--check'],{stdio:'inherit'});
+execFileSync(process.execPath,['tests/distribution.cjs'],{stdio:'inherit'});
+console.log('Release metadata verified for '+tag);

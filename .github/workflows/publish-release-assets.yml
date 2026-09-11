@@ -1,57 +1,38 @@
 name: Publish release assets
-
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Release tag
+        description: Existing release tag matching package.json
         required: true
-        default: colorshift-0.0.2
   release:
     types: [published]
-
 permissions:
   contents: write
-
 jobs:
   assets:
     runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.event.release.tag_name }}
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.tag || github.event.release.tag_name }}
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node scripts/build.cjs
-      - run: git diff --exit-code -- 'colorshift-*.js'
-      - run: node tests/distribution.cjs
-      - name: Upload userscripts and shared helper
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run release:check
+      - run: npm test
+      - name: Upload self-contained userscripts and icons
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ inputs.tag || github.event.release.tag_name }}
-        run: |
-          gh release upload "$TAG" \
-            colorshift-manapool.user.js \
-            colorshift-scryfall.user.js \
-            colorshift-steamgifts.user.js \
-            colorshift-tcgplayer.user.js \
-            colorshift-cardkingdom.user.js \
-            colorshift-goodreads.user.js \
-            colorshift-genius.user.js \
-            colorshift-common.js \
-            assets/manapool-colorshift-64.png \
-            assets/manapool-colorshift-128.png \
-            assets/scryfall-colorshift-64.png \
-            assets/scryfall-colorshift-128.png \
-            assets/steamgifts-colorshift-64.png \
-            assets/steamgifts-colorshift-128.png \
-            assets/tcgplayer-colorshift-64.png \
-            assets/tcgplayer-colorshift-128.png \
-            assets/cardkingdom-colorshift-64.png \
-            assets/cardkingdom-colorshift-128.png \
-            assets/goodreads-colorshift-64.png \
-            assets/goodreads-colorshift-128.png \
-            assets/genius-colorshift-64.png \
-            assets/genius-colorshift-128.png \
-            --clobber
+        run: gh release upload "$TAG" colorshift-*.user.js assets/*-colorshift-*.png --clobber
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: release-test-results
+          path: test-results/

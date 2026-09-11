@@ -3,7 +3,6 @@ const fs=require('node:fs');
 const path=require('node:path');
 const assert=require('node:assert/strict');
 const root=path.join(__dirname,'..');
-const helper=fs.readFileSync(path.join(root,'colorshift-common.js'),'utf8');
 const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{display:inline}div{color:red}</style></head><body>
 <main><section><h2>New arrivals</h2><ul class="grid"><li><article>Card one <span>Sold out</span></article></li><li><article>Card two in stock</article></li></ul></section></main>
 <ul class="toolbox-links"></ul><div class="card-content-warning">Content warning</div>
@@ -41,7 +40,7 @@ const version=require('../package.json').version;
         window.GM_registerMenuCommand=()=>{throw Error('Simulated manager menu failure');};
       });
       const siteCode=fs.readFileSync(path.join(root,'colorshift-'+site+'.user.js'),'utf8');
-      await context.addInitScript({content:helper+'\n'+siteCode});
+      await context.addInitScript({content:siteCode});
       const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
       await page.goto('https://'+site+'.com/');
       assert.equal(await page.evaluate(()=>localStorage.getItem('gm-settingsSchema')),'1','settings schema is initialized');
@@ -78,7 +77,7 @@ const version=require('../package.json').version;
       }
       for(const button of await panel.getByRole('switch').all()) {
         const before=await button.getAttribute('aria-checked');await button.click();assert.equal(await button.getAttribute('aria-checked'),String(before!=='true'));
-        const size=await button.boundingBox();assert.equal(size.width,36);assert.equal(size.height,20);
+        const size=await button.boundingBox();assert.equal(size.width,44);assert.equal(size.height,44);
       }
       if(site==='manapool'){
         assert.equal(await page.locator('article').first().isVisible(),false);
@@ -114,6 +113,7 @@ const version=require('../package.json').version;
         assert.equal(await page.locator('#gn-annotation').evaluate(el=>getComputedStyle(el).paddingTop),'8.8px');
         assert(Number(await page.locator('#gn-media').evaluate(el=>getComputedStyle(el).opacity))<=.5);
       }
+      await panel.getByRole('switch',{name:'High contrast',exact:true}).click();
       await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('navy');
       assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(26, 35, 50)');
       await page.reload();await fab.click();assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'navy');
@@ -136,7 +136,7 @@ const version=require('../package.json').version;
       assert.deepEqual(errors,[]);console.log(site+': startup, switches, layout, theme, features, persistence, keyboard, recovery and mobile passed');
       await context.close();
       const fallback=await browser.newPage();await fallback.goto('about:blank');await fallback.addScriptTag({content:siteCode});
-      assert.match(await fallback.getByRole('alert').textContent(),/could not load/);await fallback.close();
+      await fallback.locator('#colorshift-fab').waitFor();assert.equal(await fallback.getByRole('alert').count(),0);await fallback.close();
     }
   } finally {await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

@@ -1,0 +1,25 @@
+const {chromium}=require('playwright');
+const fs=require('node:fs');const assert=require('node:assert/strict');
+(async()=>{const browser=await chromium.launch({headless:true});try{
+const context=await browser.newContext();
+const cards=Array.from({length:2000},(_,i)=>`<article id="card-${i}">Card ${i}<span>Available</span></article>`).join('');
+await context.route('https://manapool.com/**',r=>r.fulfill({contentType:'text/html',body:'<main>'+cards+'</main>'}));
+await context.addInitScript({content:fs.readFileSync('colorshift-manapool.user.js','utf8')});
+const page=await context.newPage();await page.goto('https://manapool.com/');await page.locator('#colorshift-fab').click();
+await page.getByText('About & diagnostics',{exact:true}).click();
+const metrics=async()=>{const text=await page.locator('.diagnostics-output').textContent();return text.match(/Page updates: (\d+) · Elements inspected: (\d+) · Style writes: (\d+)/).slice(1).map(Number);};
+await page.waitForTimeout(200);const before=await metrics();
+await page.evaluate(()=>{const span=document.querySelector('#card-100 span');for(let i=0;i<100;i++)span.firstChild.data=i===99?'Sold out':'Changing '+i;});
+await page.waitForFunction(()=>document.getElementById('card-100').dataset.colorshiftSold==='true');
+const after=await metrics();assert(after[0]-before[0]<=2,'batch rapid changes');assert(after[1]-before[1]<20,'inspect changed cards, not all 2000');assert.equal(after[2],before[2],'no style rewrite on content changes');
+await page.evaluate(()=>{document.querySelector('main').insertAdjacentHTML('beforeend','<article id="new-card">Out of stock</article>');});
+await page.waitForFunction(()=>document.getElementById('new-card').dataset.colorshiftSold==='true');
+await page.getByRole('switch',{name:'Hide sold out',exact:true}).click();assert.equal(await page.locator('#new-card').isVisible(),false);
+const idle=await metrics();await page.waitForTimeout(350);assert.deepEqual(await metrics(),idle,'no self-triggering update loop');
+console.log(`2000-card page: ${after[1]-before[1]} elements inspected for 100 changes; ${after[0]-before[0]} update batch; no stylesheet rewrite`);
+await page.evaluate(()=>{const button=document.createElement('button');button.id='pfh-fab';button.textContent='Companion';button.style.cssText='position:fixed;right:16px;bottom:16px;width:48px;height:48px';document.body.append(button);});
+await page.waitForFunction(()=>{const a=document.getElementById('pfh-fab').getBoundingClientRect(),b=document.getElementById('colorshift-root').shadowRoot.querySelector('.fab').getBoundingClientRect();return a.right<b.left;});
+await page.evaluate(()=>document.getElementById('pfh-fab').style.cssText='position:fixed;right:16px;bottom:16px;width:48px;height:48px');
+await page.waitForFunction(()=>{const a=document.getElementById('pfh-fab').getBoundingClientRect(),b=document.getElementById('colorshift-root').shadowRoot.querySelector('.fab').getBoundingClientRect();return a.right<b.left;});
+await context.close();
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

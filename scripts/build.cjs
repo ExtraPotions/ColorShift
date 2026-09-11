@@ -3,26 +3,23 @@ const path=require('node:path');
 const root=path.join(__dirname,'..');
 const version=require('../package.json').version;
 const repo='https://github.com/ExtraPotions/ColorShift';
-const raw=`https://raw.githubusercontent.com/ExtraPotions/ColorShift/colorshift-${version}`;
+
 const sites=[['manapool','ManaPool'],['scryfall','Scryfall'],['steamgifts','SteamGifts'],['tcgplayer','TCGPlayer'],['cardkingdom','Card Kingdom'],['goodreads','Goodreads'],['genius','Genius']];
 const icons={};
 for(const [site]of sites){
   icons[site]='data:image/png;base64,'+fs.readFileSync(path.join(root,`assets/${site}-colorshift-64.png`)).toString('base64');
 }
-const common=fs.readFileSync(path.join(root,'src/common.js'),'utf8');
+const common=fs.readFileSync(path.join(root,'src/common.js'),'utf8').replaceAll('\r\n','\n');
 if(!common.includes("const version = '"+version+"'"))throw new Error('Common and package versions must match');
-fs.writeFileSync(path.join(root,'colorshift-common.js'),common);
-const adapter=fs.readFileSync(path.join(root,'src/sites.js'),'utf8');
+
+const adapter=fs.readFileSync(path.join(root,'src/sites.js'),'utf8').replaceAll('\r\n','\n');
 for(const [site,name]of sites){
   const canonical=`colorshift-${site}.user.js`;
-  const metadata=[['name','ColorShift for '+name],['namespace',repo],['version',version],['description','Theme palettes, accessible settings and site enhancements.'],['author','ExtraPotions'],['license','CC-BY-NC-4.0'],['icon',`${raw}/assets/${site}-colorshift-128.png`],['match',`*://${site}.com/*`],['match',`*://www.${site}.com/*`],['run-at','document-start'],['downloadURL',`${repo}/releases/latest/download/${canonical}`],['updateURL',`${repo}/releases/latest/download/${canonical}`],['require',`${raw}/colorshift-common.js`],['grant','GM_getValue'],['grant','GM_setValue'],['grant','GM_registerMenuCommand']];
+  const metadata=[['name','ColorShift for '+name],['namespace',repo],['version',version],['description','Theme palettes, accessible settings and site enhancements.'],['author','ExtraPotions'],['license','CC-BY-NC-4.0'],['icon',icons[site]],['match',`*://${site}.com/*`],['match',`*://www.${site}.com/*`],['run-at','document-start'],['downloadURL',`${repo}/releases/latest/download/${canonical}`],['updateURL',`${repo}/releases/latest/download/${canonical}`],['grant','GM_getValue'],['grant','GM_setValue'],['grant','GM_registerMenuCommand']];
   if(site==='steamgifts')for(const host of ['steamtrades.com','www.steamtrades.com','sgtools.info','www.sgtools.info'])metadata.push(['match','*://'+host+'/*']);
-  const warning=`if(typeof ColorShift==='undefined'||typeof ColorShift.start!=='function'){
-    const warn=()=>{const box=document.createElement('div');box.setAttribute('role','alert');box.textContent='ColorShift could not load its shared helper. Reinstall the latest release in your userscript manager.';box.style.cssText='position:fixed;bottom:16px;right:16px;padding:16px;background:#421;color:white;z-index:2147483647';document.body.append(box);};
-    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',warn,{once:true});else warn();
-  }else{\n`;
-  const output='// ==UserScript==\n'+metadata.map(([k,v])=>'// @'+k.padEnd(15)+v).join('\n')+'\n// ==/UserScript==\n'+warning+adapter.replace('__SITE__',site).replace('__ICONS__',JSON.stringify({[site]:icons[site]}))+'\n}\n';
-  fs.writeFileSync(path.join(root,canonical),output);
+  const output='// ==UserScript==\n'+metadata.map(([k,v])=>'// @'+k.padEnd(15)+v).join('\n')+'\n// ==/UserScript==\n'+'(function(){\n'+common+'\n'+adapter.replace('__SITE__',site).replace('__ICONS__',JSON.stringify({[site]:icons[site]}))+'\n})();\n';
+  if(process.argv.includes('--check')){if(fs.readFileSync(path.join(root,canonical),'utf8').replaceAll('\r\n','\n')!==output)throw Error(canonical+' is stale; run npm run build');}
+  else fs.writeFileSync(path.join(root,canonical),output);
 }
 
-console.log('Built '+(sites.length+1)+' release files for '+version);
+console.log((process.argv.includes('--check')?'Verified ':'Built ')+sites.length+' release files for '+version);

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.1
+
+- Added Pride theme and accent with rainbow details. Color choices run lightest to darkest, with Pride last; System, Original, and Site default remain at the top.
+- Compact shared menus across all eight editions, with side-by-side theme and accent popups, live previews, smaller desktop spacing, and touch-friendly mobile controls.
+- Improved neutral gradient backgrounds, product-detail separation, and text contrast while preserving semantic hues.
+- Prevented product images from darkening through multiply blending on repaired surfaces, including picture-wrapped images.
+- Improved floating-button docking, enabled-state indicators, and startup behavior on new sites.
+- Improved coverage checks for visually hidden text and general heading and button surfaces.
+
+
 ## 0.1.0
 
 - Introduced ColorShift Anywhere as the primary offering: best-effort theming, enabled separately per website, with origin-scoped settings and immediate restoration when disabled.

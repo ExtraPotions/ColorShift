@@ -20,9 +20,9 @@ const context=await browser.newContext();await context.route('https://future.exa
 await context.addInitScript({content:fs.readFileSync('src/common.js','utf8')+'\n'+adapter});
 const page=await context.newPage();await page.goto('https://future.example');await page.locator('#colorshift-fab').click();
 await page.evaluate(()=>document.getElementById('colorshift-root').shadowRoot.querySelectorAll('details').forEach(e=>e.open=true));
-const theme=page.getByRole('combobox',{name:'Theme',exact:true});
+const theme=page.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true});
 for(const palette of ['lightGray','darkGray','navy','black','fireRed','leafGreen','heartGold']){
- await theme.selectOption(palette);
+ await theme.selectOption(palette,{force:true});
  for(const id of ['header','section','feed','square','pill','footer']){
   const result=await page.locator('#'+id).evaluate(e=>({repair:e.dataset.colorshiftSurface,bg:getComputedStyle(e).backgroundColor,fg:getComputedStyle(e).color}));
   assert(result.repair,`${palette}: ${id} needs no adapter`);assert.notEqual(result.bg,'rgb(255, 255, 255)');
@@ -34,6 +34,6 @@ for(const palette of ['lightGray','darkGray','navy','black','fireRed','leafGreen
 await page.evaluate(()=>document.getElementById('changing').classList.add('chip'));
 await page.waitForFunction(()=>!document.getElementById('changing').hasAttribute('data-colorshift-surface'));
 assert.equal(await page.locator('#changing').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(94, 178, 161)');
-await theme.selectOption('original');assert.equal(await page.locator('[data-colorshift-surface],[data-colorshift-text]').count(),0);
+await theme.selectOption('original',{force:true});assert.equal(await page.locator('[data-colorshift-surface],[data-colorshift-text]').count(),0);
 await context.close();console.log('Adapter-free core: six surface patterns × seven palettes pass contrast; gradients, branding, chips and artwork preserved; semantic class changes and Original restoration passed');
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

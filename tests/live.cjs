@@ -15,9 +15,9 @@ try{await Promise.all(Object.entries(sites).filter(([site])=>!process.env.COLORS
   await page.waitForFunction(selector=>[...document.querySelectorAll(selector)].some(e=>e.innerText.trim().length>80),selector,{timeout:15000});
   await page.locator('#colorshift-fab').click({timeout:10000});
   const panel=page.getByRole('dialog');await panel.locator(':scope > details > summary').first().click();
-  const theme=panel.getByRole('combobox',{name:'Theme',exact:true});
+  const theme=panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true});
   for(const palette of ['navy','leafGreen']){
-   await theme.selectOption(palette);
+   await theme.selectOption(palette,{force:true});
    assert.equal(await panel.getByRole('button',{name:'Close settings',exact:true}).count(),1);
    assert.notEqual(await page.locator('body').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(255, 255, 255)');
    result.checks.push(palette+': mounted menu and themed body');

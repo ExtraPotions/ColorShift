@@ -12,11 +12,11 @@ const fixture=`<html><head><style>body{margin:0;font:16px/1.5 Arial}header{paddi
   await context.route(`https://${site}.com/**`,r=>r.fulfill({contentType:'text/html',body:fixture}));
   await context.addInitScript({content:fs.readFileSync(`colorshift-${site}.user.js`,'utf8')});
   const page=await context.newPage();await page.goto(`https://${site}.com/`);await page.locator('#colorshift-fab').click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));
-  const panel=page.getByRole('dialog'),theme=panel.getByRole('combobox',{name:'Theme',exact:true});
+  const panel=page.getByRole('dialog'),theme=panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true});
   for(const palette of ['lightGray','darkGray','navy','black','fireRed','leafGreen','heartGold']){
-   await theme.selectOption(palette);
+   await theme.selectOption(palette,{force:true});
    for(const accent of ['site','blue','green','amber','violet','rose','teal','coral','silver']){
-    await panel.getByRole('combobox',{name:'Accent',exact:true}).selectOption(accent);
+    await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).selectOption(accent,{force:true});
     const ratio=await page.locator('#sample-link').evaluate(el=>{
       const lum=color=>color.match(/\d+/g).slice(0,3).map(Number).map(x=>x/255).map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4).reduce((a,x,i)=>a+x*[.2126,.7152,.0722][i],0);
       let node=el,bg='rgba(0, 0, 0, 0)';while(node&&bg==='rgba(0, 0, 0, 0)'){bg=getComputedStyle(node).backgroundColor;node=node.parentElement;}
@@ -24,11 +24,11 @@ const fixture=`<html><head><style>body{margin:0;font:16px/1.5 Arial}header{paddi
     });assert(ratio>=4.5,`${site} ${palette} ${accent}: ${ratio}`);
    }
   }
-  await panel.getByRole('combobox',{name:'Accent',exact:true}).selectOption('site');
+  await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).selectOption('site',{force:true});
   for(const width of [1100,360]){
-   await page.setViewportSize({width,height:850});await theme.selectOption('navy');await panel.evaluate(el=>el.scrollTop=0);await page.mouse.move(0,0);
+   await page.setViewportSize({width,height:850});await theme.selectOption('navy',{force:true});await panel.evaluate(el=>el.scrollTop=0);await page.mouse.move(0,0);
    const first=await page.screenshot({animations:'disabled',path:`test-results/visual/${site}-${width}.png`});
-   await theme.selectOption('original');await theme.selectOption('navy');await page.mouse.move(0,0);
+   await theme.selectOption('original',{force:true});await theme.selectOption('navy',{force:true});await page.mouse.move(0,0);
    const restored=await page.screenshot({animations:'disabled'});
    assert(difference(first,restored)<.001,`${site} ${width} theme restoration screenshot mismatch`);
    const box=await panel.boundingBox();assert(box.x>=0&&box.x+box.width<=width&&box.y>=0&&box.y+box.height<=850);

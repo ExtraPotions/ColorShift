@@ -2,9 +2,9 @@
 
 <img src="assets/anywhere-banner.svg" width="720" alt="ColorShift Anywhere">
 
-Your palette, across the web. Best-effort website theming, with eight complementary accents and a menu that stays in view.
+Your palette, across the web. Best-effort website theming, with nine complementary accents and a menu that stays in view.
 
-**0.1.0** · [Download ColorShift Anywhere](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-anywhere.user.js)
+**0.1.1** · [Download ColorShift Anywhere](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-anywhere.user.js)
 
 ## Get started
 
@@ -14,7 +14,7 @@ Your palette, across the web. Best-effort website theming, with eight complement
 
 Each website starts unchanged. Your palette, accent, and options are saved separately for each website. Turn the switch off to restore the site's appearance.
 
-Choose Graphite, Charcoal, Navy, Black, Ember, Forest, or Antique Gold. System follows your device preference, and Original keeps native site colours. Color dots preview your choices. On desktop, the menu opens above or below its button and repositions as needed. On mobile, it opens as a bottom sheet. One section opens at a time; long sections scroll while the title and close button stay visible.
+Choose Graphite, Charcoal, Navy, Black, Ember, Forest, Antique Gold, or Pride. System follows your device preference, and Original keeps native site colours. Hover or focus a theme or accent to preview it, then select it to save. Compact picker popups keep the menu short. On desktop, the menu opens above or below its button and repositions as needed. On mobile, it opens as a bottom sheet. One section opens at a time; long sections scroll while the title and close button stay visible.
 
 ## Best-effort coverage
 

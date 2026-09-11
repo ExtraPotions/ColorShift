@@ -8,11 +8,11 @@ const lum=color=>{const c=color.match(/[\d.]+/g).slice(0,3).map(v=>{v=Number(v)/
  await page.addInitScript({content:fs.readFileSync('colorshift-scryfall.user.js','utf8')});
  await page.goto('https://scryfall.com/');await page.locator('#colorshift-fab').click();
  await page.evaluate(()=>document.getElementById('colorshift-root').shadowRoot.querySelectorAll('details').forEach(e=>e.open=true));
- const theme=page.getByRole('combobox',{name:'Theme',exact:true}),accent=page.getByRole('combobox',{name:'Accent',exact:true});
+ const theme=page.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}),accent=page.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true});
  for(const palette of ['lightGray','darkGray','navy','black','fireRed','leafGreen','heartGold']){
-  await theme.selectOption(palette);
+  await theme.selectOption(palette,{force:true});
   for(const choice of ['site','blue','green','amber','violet','rose']){
-   await accent.selectOption(choice);
+   await accent.selectOption(choice,{force:true});
    for(const selector of selectors){
     await page.locator(selector).focus();
     const [fg,bg]=await page.locator(selector).evaluate(e=>[getComputedStyle(e).color,getComputedStyle(e).backgroundColor]);
@@ -20,7 +20,7 @@ const lum=color=>{const c=color.match(/[\d.]+/g).slice(0,3).map(v=>{v=Number(v)/
    }
   }
  }
- await theme.selectOption('original');
+ await theme.selectOption('original',{force:true});
  for(const selector of selectors){assert.equal(await page.locator(selector).evaluate(e=>getComputedStyle(e).backgroundColor),selector==='.pill.blue'?'rgb(52, 151, 190)':'rgb(255, 250, 227)');}
  console.log('Scryfall skip links, pills, language and purchase links: contrast passes seven palettes and six accents; Original restored');
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

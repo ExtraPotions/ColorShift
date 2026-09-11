@@ -27,21 +27,21 @@ async function setup(browser,site='manapool',values={},source=code(site)) {
     const old=execFileSync('git',['show',`colorshift-0.0.2:colorshift-common.js`],{encoding:'utf8'})+'\n'+execFileSync('git',['show',`colorshift-0.0.2:colorshift-${site}.user.js`],{encoding:'utf8'});
     const source=`if(!localStorage.getItem('upgrade-now')){${old}}else{${code(site)}}`;
     const {context,page,panel}=await setup(browser,site,{},source);
-    await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('navy');
-    await panel.getByRole('combobox',{name:'Accent',exact:true}).selectOption('rose');
+    await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).selectOption('navy',{force:true});
+    await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).selectOption('rose',{force:true});
     await panel.getByRole('switch',{name:'Brighter links',exact:true}).click();
     await page.evaluate(()=>localStorage.setItem('upgrade-now','true'));await page.reload();await page.locator('#colorshift-fab').click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));
-    assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'navy');
-    assert.equal(await panel.getByRole('combobox',{name:'Accent',exact:true}).inputValue(),'rose');
+    assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).inputValue(),'navy');
+    assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).inputValue(),'rose');
     assert.equal(await panel.getByRole('switch',{name:'Brighter links',exact:true}).getAttribute('aria-checked'),'true');
     await panel.getByRole('button',{name:'Export',exact:true}).click();
     const exported=await page.evaluate(()=>window.exportedSettings);assert.equal(JSON.parse(exported).colorShift,true);
-    await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('black');
+    await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).selectOption('black',{force:true});
     page.once('dialog',d=>d.accept(exported));await panel.getByRole('button',{name:'Import',exact:true}).click();
-    assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'navy');
+    assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).inputValue(),'navy');
     for(const invalid of [{colorShift:true,palette:'black',accent:'invalid'},{colorShift:true,schemaVersion:999,palette:'black'}]){
       page.once('dialog',d=>d.accept(JSON.stringify(invalid)));await panel.getByRole('button',{name:'Import',exact:true}).click();
-      assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'navy');
+      assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).inputValue(),'navy');
     }
     await context.close();
   }
@@ -53,7 +53,7 @@ async function setup(browser,site='manapool',values={},source=code(site)) {
     });
     if(scenario!=='disabled')await panel.getByRole('switch',{name:'Quiet update notifications',exact:true}).click();
     await page.waitForTimeout(150);
-    for(let i=0;i<3;i++)await panel.getByRole('combobox',{name:'Accent',exact:true}).selectOption(i%2?'rose':'blue');
+    for(let i=0;i<3;i++)await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).selectOption(i%2?'rose':'blue',{force:true});
     assert.equal(requests,scenario==='disabled'?0:1,scenario+' caches/throttles checks');
     assert.equal(await page.locator('#colorshift-root').getAttribute('data-update-available'),scenario==='new'?'9.0.0':null);
     if(scenario==='new'){
@@ -71,8 +71,8 @@ async function setup(browser,site='manapool',values={},source=code(site)) {
       window.fetch=(_,options)=>{window.updateFetches++;return new Promise((resolve,reject)=>{window.resolveUpdate=()=>resolve({ok:true,json:async()=>({tag_name:'colorshift-9.0.0'})});options.signal.addEventListener('abort',()=>reject(new Error('aborted')));});};
     },timeout);
     await panel.getByRole('switch',{name:'Quiet update notifications',exact:true}).click();
-    await panel.getByRole('combobox',{name:'Accent',exact:true}).selectOption('blue');
-    await panel.getByRole('combobox',{name:'Accent',exact:true}).selectOption('rose');
+    await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).selectOption('blue',{force:true});
+    await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).selectOption('rose',{force:true});
     assert.equal(await page.evaluate(()=>window.updateFetches),1);
     if(timeout)await page.waitForTimeout(80);
     else {await panel.getByRole('switch',{name:'Quiet update notifications',exact:true}).click();await page.evaluate(()=>window.resolveUpdate());}

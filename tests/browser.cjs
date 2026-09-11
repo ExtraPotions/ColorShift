@@ -66,7 +66,7 @@ const version=require('../package.json').version;
 
       {
         for(const palette of ['lightGray','darkGray','navy','black','fireRed','leafGreen','heartGold']){
-          await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption(palette);
+          await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).selectOption(palette,{force:true});
           if(site==='steamgifts'){
             assert.equal(await page.locator('.esgst-gc').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(94, 178, 161)');
             assert.equal(await page.locator('.esgst-gc').evaluate(e=>getComputedStyle(e).color),'rgb(18, 52, 86)');
@@ -80,11 +80,11 @@ const version=require('../package.json').version;
             assert((luminance(style.fg)+.05)/(luminance(style.bg)+.05)>=4.5,`${palette} ${selector} contrast`);
           }
         }
-        await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('original');
+        await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).selectOption('original',{force:true});
         const nativeImage=await page.locator(site==='steamgifts'?'.esgst-heading-button':'#site-control').evaluate(el=>getComputedStyle(el).backgroundImage);
         if(site==='scryfall')assert.equal(nativeImage,'none'); // CSP rejects fixture inline styles.
         else assert.match(nativeImage,/linear-gradient/);
-        await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('darkGray');
+        await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).selectOption('darkGray',{force:true});
       }
       if(site==='tcgplayer'){
         const support=panel.getByRole('switch',{name:'Hide support chat',exact:true});
@@ -104,7 +104,7 @@ const version=require('../package.json').version;
       }
       for(const button of await panel.getByRole('switch').all()) {
         const before=await button.getAttribute('aria-checked');await button.click();assert.equal(await button.getAttribute('aria-checked'),String(before!=='true'));
-        const size=await button.boundingBox();assert.equal(size.width,44);assert.equal(size.height,44);
+        const size=await button.boundingBox();assert.equal(size.width,44);assert.equal(size.height,36);
       }
       if(site==='manapool'){
         assert.equal(await page.locator('article').first().isVisible(),false);
@@ -141,20 +141,20 @@ const version=require('../package.json').version;
         assert(Number(await page.locator('#gn-media').evaluate(el=>getComputedStyle(el).opacity))<=.5);
       }
       await panel.getByRole('switch',{name:'High contrast',exact:true}).click();
-      await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('navy');
+      await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).selectOption('navy',{force:true});
       assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(26, 35, 50)');
-      await page.reload();await fab.click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'navy');
+      await page.reload();await fab.click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).inputValue(),'navy');
       assert(Math.abs((await fab.boundingBox()).y-savedDock.y)<2);
       assert.equal(await panel.getByRole('switch',{name:'Brighter links',exact:true}).getAttribute('aria-checked'),'true');
-      await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('original');
+      await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).selectOption('original',{force:true});
       assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');
       await page.keyboard.press('Escape');assert.equal(await panel.isVisible(),false);
       await page.keyboard.press('Alt+g');assert.equal(await panel.isVisible(),false);await fab.click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));assert.equal(await panel.isVisible(),true);
       assert.equal(await panel.getByRole('textbox',{name:'Open menu shortcut'}).count(),0);assert.equal(await panel.getByRole('button',{name:'Close settings',exact:true}).count(),1);
       page.once('dialog',dialog=>dialog.accept('{"colorShift":true,"palette":"black"}'));
-      await panel.getByRole('button',{name:'Import',exact:true}).click();assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'black');
+      await panel.getByRole('button',{name:'Import',exact:true}).click();assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).inputValue(),'black');
       page.once('dialog',dialog=>dialog.accept('{"colorShift":true,"palette":"not-a-palette"}'));
-      await panel.getByRole('button',{name:'Import',exact:true}).click();assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'black');
+      await panel.getByRole('button',{name:'Import',exact:true}).click();assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).inputValue(),'black');
       await panel.getByRole('switch',{name:'Brighter links',exact:true}).focus();await page.keyboard.press('Space');assert.equal(await panel.getByRole('switch',{name:'Brighter links',exact:true}).getAttribute('aria-checked'),'false');
       await page.evaluate(()=>document.getElementById('colorshift-root').remove());await fab.waitFor();assert.equal(await page.locator('#colorshift-root').count(),1);
       await page.setViewportSize({width:360,height:640});await page.waitForTimeout(100);

@@ -5,9 +5,9 @@ const sites=['manapool','scryfall','steamgifts','tcgplayer','cardkingdom','goodr
  await context.addInitScript({content:fs.readFileSync('colorshift-'+site+'.user.js','utf8')});
  const page=await context.newPage();await page.goto('https://'+site+'.com');await page.locator('#colorshift-fab').click();
  await page.evaluate(()=>document.getElementById('colorshift-root').shadowRoot.querySelectorAll('details').forEach(e=>e.open=true));
- const panel=page.getByRole('dialog'),theme=panel.getByRole('combobox',{name:'Theme',exact:true});
+ const panel=page.getByRole('dialog'),theme=panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true});
  for(const palette of ['lightGray','darkGray','navy','black','fireRed','leafGreen','heartGold']){
-  await theme.selectOption(palette);await panel.getByRole('button',{name:'Close settings',exact:true}).click();
+  await theme.selectOption(palette,{force:true});await panel.getByRole('button',{name:'Close settings',exact:true}).click();
   if(site==='manapool'){
  assert.notEqual(await page.locator('#Layer_2 .cls-2').evaluate(e=>getComputedStyle(e).fill),'rgb(32, 43, 71)');assert.equal(await page.locator('#Layer_2 .cls-3').evaluate(e=>getComputedStyle(e).fill),'rgb(21, 21, 28)');const label=page.locator('.link-class');
  assert.notEqual(await label.evaluate(e=>getComputedStyle(e).color),'rgb(30, 63, 174)');
@@ -29,6 +29,6 @@ const control=page.locator('#control');
  await panel.getByRole('button',{name:'Scan theme coverage',exact:true}).click();
  const report=await panel.locator('.diagnostics-output').textContent();
  assert.match(report,/Surface outside palette: div#miss/);assert.match(report,/Low contrast .*div#miss/);assert(!report.includes('outside palette: div.chip'));
- await theme.selectOption('original');await panel.getByRole('button',{name:'Scan theme coverage',exact:true}).click();assert.match(await panel.locator('.diagnostics-output').textContent(),/Original mode/);
+ await theme.selectOption('original',{force:true});await panel.getByRole('button',{name:'Scan theme coverage',exact:true}).click();assert.match(await panel.locator('.diagnostics-output').textContent(),/Original mode/);
  await context.close();
 }console.log('Seven sites × seven palettes: normal, hover, focus contrast; focus indicators; disabled keyboard behavior; coverage findings and Original mode passed');}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

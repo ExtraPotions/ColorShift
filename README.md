@@ -4,13 +4,13 @@ Personalize ManaPool, Scryfall, SteamGifts, TCGPlayer, Card Kingdom, Goodreads a
 
 | Image | Site | Link |
 | :---: | --- | --- |
-| <img src="assets/manapool-colorshift-64.png" width="64" height="64" alt="ColorShift for ManaPool"> | ManaPool | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-manapool.user.js) |
-| <img src="assets/scryfall-colorshift-64.png" width="64" height="64" alt="ColorShift for Scryfall"> | Scryfall | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-scryfall.user.js) |
-| <img src="assets/steamgifts-colorshift-64.png" width="64" height="64" alt="ColorShift for SteamGifts"> | SteamGifts | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-steamgifts.user.js) |
-| <img src="assets/tcgplayer-colorshift-64.png" width="64" height="64" alt="ColorShift for TCGPlayer"> | TCGPlayer | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-tcgplayer.user.js) |
-| <img src="assets/cardkingdom-colorshift-64.png" width="64" height="64" alt="ColorShift for Card Kingdom"> | Card Kingdom | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-cardkingdom.user.js) |
-| <img src="assets/goodreads-colorshift-64.png" width="64" height="64" alt="ColorShift for Goodreads"> | Goodreads | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-goodreads.user.js) |
-| <img src="assets/genius-colorshift-64.png" width="64" height="64" alt="ColorShift for Genius"> | Genius | [Install ColorShift](https://github.com/ExtraPotions/super-octo-parakeet/releases/latest/download/colorshift-genius.user.js) |
+| <img src="assets/manapool-colorshift-64.png" width="64" height="64" alt="ColorShift for ManaPool"> | ManaPool | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-manapool.user.js) |
+| <img src="assets/scryfall-colorshift-64.png" width="64" height="64" alt="ColorShift for Scryfall"> | Scryfall | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-scryfall.user.js) |
+| <img src="assets/steamgifts-colorshift-64.png" width="64" height="64" alt="ColorShift for SteamGifts"> | SteamGifts | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-steamgifts.user.js) |
+| <img src="assets/tcgplayer-colorshift-64.png" width="64" height="64" alt="ColorShift for TCGPlayer"> | TCGPlayer | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-tcgplayer.user.js) |
+| <img src="assets/cardkingdom-colorshift-64.png" width="64" height="64" alt="ColorShift for Card Kingdom"> | Card Kingdom | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-cardkingdom.user.js) |
+| <img src="assets/goodreads-colorshift-64.png" width="64" height="64" alt="ColorShift for Goodreads"> | Goodreads | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-goodreads.user.js) |
+| <img src="assets/genius-colorshift-64.png" width="64" height="64" alt="ColorShift for Genius"> | Genius | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-genius.user.js) |
 
 **Version 4.4.0** · By [ExtraPotions](https://github.com/ExtraPotions)
 

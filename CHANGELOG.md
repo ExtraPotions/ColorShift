@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2
+
+- Improved muted-label contrast on shaded backgrounds, including Bluesky.
+- Fixed palette coverage for links styled as layout containers, including X.
+- Prevented core text-color adjustments from triggering repeated page updates while continuing to detect website changes.
+
 ## 0.2.1
 
 - Fixed palette coverage for layout containers such as GitHub’s file-search box.

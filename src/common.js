@@ -1,7 +1,7 @@
 /* ColorShift: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ColorShift = (() => {
   'use strict';
-  const version = '0.2.1';
+  const version = '0.2.2';
   const SETTINGS_SCHEMA = 1;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -117,7 +117,14 @@ var ColorShift = (() => {
     let coverageReport='Theme coverage: not scanned. Use Scan theme coverage after the page loads.';
     const protectedSurfaces='[class*="esgst-"],[class*="badge" i],[class*="chip" i],[class*="rating" i],[class*="status" i],[role="progressbar"],[data-colorshift-preserve],svg,canvas,picture,[data-userscript-launcher]';
     const parseColor=value=>{const n=value.match(/[\d.]+/g)?.map(Number);return n&&n.length>=3?n:null;};
-    const neutral=c=>c&&Math.max(...c.slice(0,3))-Math.min(...c.slice(0,3))<16;
+    const chroma=c=>Math.max(...c.slice(0,3))-Math.min(...c.slice(0,3));
+    const neutral=c=>c&&chroma(c)<16;
+    const ownedTextStyles=new WeakMap();
+    function setReadableText(node,value){
+      if(value)node.style.setProperty('--colorshift-readable-text',value);
+      else node.style.removeProperty('--colorshift-readable-text');
+      ownedTextStyles.set(node,node.getAttribute('style'));
+    }
     const luminance=c=>c.slice(0,3).map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((a,v,i)=>a+v*[.2126,.7152,.0722][i],0);
     // Only single, opaque, nearly uniform neutral gradients are layout surfaces.
     function neutralGradient(image){
@@ -133,7 +140,7 @@ var ColorShift = (() => {
       const nodes=query('main,header,footer,nav,aside,section,article,div,form,ul,li,p,span,a,button,h1,h2,h3,h4,label');
       // Only neutral, opaque surfaces without artwork are eligible. Semantic colours stay owned by the site.
       for(const node of nodes){
-        node.removeAttribute('data-colorshift-surface');node.removeAttribute('data-colorshift-text');node.style.removeProperty('--colorshift-readable-text');node.removeAttribute('data-colorshift-gradient');
+        node.removeAttribute('data-colorshift-surface');node.removeAttribute('data-colorshift-text');setReadableText(node,null);node.removeAttribute('data-colorshift-gradient');
         if(node===host||node.closest(protectedSurfaces))continue;
         const computed=getComputedStyle(node),bg=parseColor(computed.backgroundColor),gradient=neutralGradient(computed.backgroundImage);
         if(computed.display==='none'||(computed.backgroundImage!=='none'&&!gradient))continue;
@@ -142,7 +149,7 @@ var ColorShift = (() => {
           node.dataset.colorshiftSurface='details';
         }
         const layoutSurface=node.matches('main,header,footer,nav,aside,section,article,div,form,ul,li,h1,h2,h3,h4')||
-          (node.matches('span,label')&&['block','inline-block','flex','inline-flex','grid','inline-grid'].includes(computed.display));
+          (node.matches('span,label,a')&&['block','inline-block','flex','inline-flex','grid','inline-grid'].includes(computed.display));
         if((gradient||(neutral(bg)&&(bg[3]??1)===1))&&layoutSurface){
           const rect=node.getBoundingClientRect();
           if(rect.width>=80&&rect.height>=24&&(gradient||!surfacePalette.some(c=>c.every((v,i)=>v===bg[i])))){
@@ -159,7 +166,7 @@ var ColorShift = (() => {
         const fg=parseColor(computed.color);if(!fg)continue;
         let parent=node,back=null;
         while(parent){const style=getComputedStyle(parent);if(style.backgroundImage!=='none')break;const color=parseColor(style.backgroundColor);if(color&&(color[3]??1)===1){back=color;break;}parent=parent.parentElement;}
-        if(back&&(neutral(fg)||neutral(back)||node.matches('a')||surfacePalette.some(c=>c.every((v,i)=>v===back[i])))){
+        if(back&&(neutral(fg)||neutral(back)||(chroma(fg)<=64&&chroma(back)<=32)||node.matches('a')||surfacePalette.some(c=>c.every((v,i)=>v===back[i])))){
           const a=luminance(fg),b=luminance(back);
           if((Math.max(a,b)+.05)/(Math.min(a,b)+.05)<4.5){
             if(neutral(fg)||node.matches('a'))node.dataset.colorshiftText=b>.179?'dark':'light';
@@ -167,7 +174,7 @@ var ColorShift = (() => {
               // Keep semantic hues, moving toward the more readable endpoint.
               const target=b>.179?0:255;let adjusted=fg.slice(0,3);
               for(let step=1;step<=100;step++){adjusted=fg.slice(0,3).map(v=>Math.round(v+(target-v)*step/100));const l=luminance(adjusted);if((Math.max(l,b)+.05)/(Math.min(l,b)+.05)>=4.5)break;}
-              node.style.setProperty('--colorshift-readable-text','rgb('+adjusted.join(',')+')');node.dataset.colorshiftText='hue';
+              setReadableText(node,'rgb('+adjusted.join(',')+')');node.dataset.colorshiftText='hue';
             }
           }
         }
@@ -534,6 +541,7 @@ var ColorShift = (() => {
       const observer=new MutationObserver(records=>{
         for(const record of records){
           if(record.target===style||record.target===host)continue;
+          if(record.type==='attributes'&&record.attributeName==='style'&&ownedTextStyles.has(record.target)&&ownedTextStyles.get(record.target)===record.target.getAttribute('style'))continue;
           if(record.type==='childList'){
             dockScanAt=-Infinity;
             for(const node of record.addedNodes)queue(node);

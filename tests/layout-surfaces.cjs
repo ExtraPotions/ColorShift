@@ -7,7 +7,7 @@ const fs=require('fs'),{chromium}=require('playwright'),assert=require('node:ass
       #semantic{background:#cc0c39;color:white}#transparent{background:transparent}
       #small{width:16px;min-height:16px}#plain{background:#f0f0f0}
       </style><span id="search" class="box">Go to file <input aria-label="File name"></span>
-      <label id="label" class="box">Search label</label><span id="semantic" class="box">Sale badge</span>
+      <a id="link" class="box" href="#">Action</a><label id="label" class="box">Search label</label><span id="semantic" class="box">Sale badge</span>
       <span id="transparent" class="box">Transparent layout</span><span id="small" class="box">.</span>
       <span id="plain">Ordinary inline text</span>`}));
     await page.addInitScript({content:fs.readFileSync(require('./edition-path.cjs')('colorshift-'+site+'.user.js'),'utf8')});
@@ -18,7 +18,7 @@ const fs=require('fs'),{chromium}=require('playwright'),assert=require('node:ass
     const theme=page.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true});
     for(const palette of ['lightGray','darkGray','navy','black','fireRed','leafGreen','heartGold','pride']){
       await theme.selectOption(palette,{force:true});
-      for(const id of ['search','label'])assert.equal(await page.locator('#'+id).getAttribute('data-colorshift-surface'),'surface',site+'/'+palette+'/'+id);
+      for(const id of ['search','label','link'])assert.equal(await page.locator('#'+id).getAttribute('data-colorshift-surface'),'surface',site+'/'+palette+'/'+id);
       assert.notEqual(await page.locator('#search').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(240, 240, 240)');
       for(const id of ['semantic','transparent','small','plain'])assert.equal(await page.locator('#'+id).getAttribute('data-colorshift-surface'),null,site+'/'+palette+'/'+id);
     }

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           ColorShift Anywhere
 // @namespace      https://github.com/ExtraPotions/ColorShift
-// @version        0.2.0
+// @version        0.2.1
 // @description    Theme palettes, accessible settings and site enhancements.
 // @author         ExtraPotions
 // @license        CC-BY-NC-4.0
@@ -20,7 +20,7 @@
 /* ColorShift: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ColorShift = (() => {
   'use strict';
-  const version = '0.2.0';
+  const version = '0.2.1';
   const SETTINGS_SCHEMA = 1;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -160,7 +160,9 @@ var ColorShift = (() => {
         if(node.matches('div[class*="metadata" i]')&&(bg?.[3]===0)&&node.parentElement?.matches('[data-colorshift-surface]')&&node.parentElement.querySelector('img')){
           node.dataset.colorshiftSurface='details';
         }
-        if((gradient||(neutral(bg)&&(bg[3]??1)===1))&&node.matches('main,header,footer,nav,aside,section,article,div,form,ul,li,h1,h2,h3,h4')){
+        const layoutSurface=node.matches('main,header,footer,nav,aside,section,article,div,form,ul,li,h1,h2,h3,h4')||
+          (node.matches('span,label')&&['block','inline-block','flex','inline-flex','grid','inline-grid'].includes(computed.display));
+        if((gradient||(neutral(bg)&&(bg[3]??1)===1))&&layoutSurface){
           const rect=node.getBoundingClientRect();
           if(rect.width>=80&&rect.height>=24&&(gradient||!surfacePalette.some(c=>c.every((v,i)=>v===bg[i])))){
             let level=node.closest('header,footer,nav')?'header':'surface';
@@ -176,7 +178,7 @@ var ColorShift = (() => {
         const fg=parseColor(computed.color);if(!fg)continue;
         let parent=node,back=null;
         while(parent){const style=getComputedStyle(parent);if(style.backgroundImage!=='none')break;const color=parseColor(style.backgroundColor);if(color&&(color[3]??1)===1){back=color;break;}parent=parent.parentElement;}
-        if(back&&(neutral(fg)||node.matches('a')||surfacePalette.some(c=>c.every((v,i)=>v===back[i])))){
+        if(back&&(neutral(fg)||neutral(back)||node.matches('a')||surfacePalette.some(c=>c.every((v,i)=>v===back[i])))){
           const a=luminance(fg),b=luminance(back);
           if((Math.max(a,b)+.05)/(Math.min(a,b)+.05)<4.5){
             if(neutral(fg)||node.matches('a'))node.dataset.colorshiftText=b>.179?'dark':'light';

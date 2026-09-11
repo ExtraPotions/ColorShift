@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1
+
+- Fixed palette coverage for layout containers such as GitHub’s file-search box.
+- Improved colored-label contrast on neutral backgrounds, including Reddit’s BETA label, while preserving the original hue.
+- Shared fixes apply across Anywhere and built-in site modules; Original mode and protected content retain native styling.
+
 ## 0.2.0
 
 - Anywhere is now the sole download, with all seven site modules built in. Site tweaks appear only on recognized domains.

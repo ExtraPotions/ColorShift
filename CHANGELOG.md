@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.2
+
+- Compact tab navigation and distinct Theme and Accent cards in every edition.
+- Descriptions move to info buttons with desktop hover/focus and mobile tap support.
+- Larger recognizable header icon, concise subtitle, and status footer with release notes. Anywhere’s enable toggle now lives in the footer.
+- Enabled toggles follow the accent; disabled toggles remain gray.
+
+
 ## 0.1.1
 
 - Added Pride theme and accent with rainbow details. Color choices run lightest to darkest, with Pride last; System, Original, and Site default remain at the top.

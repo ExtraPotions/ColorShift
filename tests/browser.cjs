@@ -43,7 +43,7 @@ const version=require('../package.json').version;
         window.GM_setValue=(k,v)=>localStorage.setItem('gm-'+k,JSON.stringify(v));
         window.GM_registerMenuCommand=()=>{throw Error('Simulated manager menu failure');};
       });
-      const siteCode=fs.readFileSync(path.join(root,'colorshift-'+site+'.user.js'),'utf8');
+      const siteCode=fs.readFileSync(require("./edition-path.cjs")(path.join(root,'colorshift-'+site+'.user.js')),'utf8');
       await context.addInitScript({content:siteCode});
       const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
       await page.goto('https://'+site+'.com/');

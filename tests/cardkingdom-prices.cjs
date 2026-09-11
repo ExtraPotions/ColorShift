@@ -3,7 +3,7 @@ const luminance=color=>{const c=color.match(/[\d.]+/g).slice(0,3).map(v=>{v=Numb
 (async()=>{const browser=await chromium.launch();try{
  const page=await browser.newPage();
  await page.route('https://www.cardkingdom.com/**',r=>r.fulfill({contentType:'text/html',body:'<style>.slider-item-price{color:#777;background:transparent}</style><main id="landing-wrapper"><div class="section-wrapper"><div class="section-container"><div class="slider-item"><div class="slider-item-price">$19.99</div></div></div></div></main>'}));
- await page.addInitScript({content:fs.readFileSync('colorshift-cardkingdom.user.js','utf8')});
+ await page.addInitScript({content:fs.readFileSync(require("./edition-path.cjs")('colorshift-cardkingdom.user.js'),'utf8')});
  await page.goto('https://www.cardkingdom.com/');
  await page.locator('#colorshift-fab').click();
  await page.evaluate(()=>document.getElementById('colorshift-root').shadowRoot.querySelectorAll('details').forEach(e=>e.open=true));

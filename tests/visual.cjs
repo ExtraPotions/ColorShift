@@ -10,7 +10,7 @@ const fixture=`<html><head><style>body{margin:0;font:16px/1.5 Arial}header{paddi
  for(const site of sites){
   const context=await browser.newContext({viewport:{width:1100,height:850},reducedMotion:'reduce'});
   await context.route(`https://${site}.com/**`,r=>r.fulfill({contentType:'text/html',body:fixture}));
-  await context.addInitScript({content:fs.readFileSync(`colorshift-${site}.user.js`,'utf8')});
+  await context.addInitScript({content:fs.readFileSync(require("./edition-path.cjs")(`colorshift-${site}.user.js`),'utf8')});
   const page=await context.newPage();await page.goto(`https://${site}.com/`);await page.locator('#colorshift-fab').click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));
   const panel=page.getByRole('dialog'),theme=panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true});
   for(const palette of ['lightGray','darkGray','navy','black','fireRed','leafGreen','heartGold']){

@@ -3,7 +3,7 @@ const {chromium}=require('playwright'),fs=require('fs'),assert=require('node:ass
 for(const site of ['manapool','scryfall','steamgifts','tcgplayer','cardkingdom','goodreads','genius']){
  const context=await browser.newContext();
  await context.route(`https://${site}.com/**`,r=>r.fulfill({contentType:'text/html',body:'<style>.missed{width:300px;height:60px;background:white;color:#333}.chip{background:#fca;color:#234}.art{background-image:linear-gradient(red,blue)}</style><main><div class="missed" id="surface">Feed text</div><div class="missed chip" id="chip">Badge</div><div class="missed art" id="art">Art</div></main>'}));
- await context.addInitScript({content:fs.readFileSync(`colorshift-${site}.user.js`,'utf8')});
+ await context.addInitScript({content:fs.readFileSync(require("./edition-path.cjs")(`colorshift-${site}.user.js`),'utf8')});
  const page=await context.newPage();await page.goto(`https://${site}.com`);await page.locator('#colorshift-fab').click();
  await page.evaluate(()=>document.getElementById('colorshift-root').shadowRoot.querySelectorAll('details').forEach(e=>e.open=true));
  const theme=page.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true});

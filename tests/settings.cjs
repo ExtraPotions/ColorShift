@@ -3,7 +3,7 @@ const fs=require('node:fs');
 const {execFileSync}=require('node:child_process');
 const assert=require('node:assert/strict');
 const sites=['manapool','scryfall','steamgifts','tcgplayer','cardkingdom','goodreads','genius'];
-const code=site=>fs.readFileSync(`colorshift-${site}.user.js`,'utf8');
+const code=site=>fs.readFileSync(require("./edition-path.cjs")(`colorshift-${site}.user.js`),'utf8');
 async function setup(browser,site='manapool',values={},source=code(site)) {
   const context=await browser.newContext();
   await context.route(`https://${site}.com/**`,r=>r.fulfill({contentType:'text/html',body:'<main><h1>Settings test</h1></main>'}));

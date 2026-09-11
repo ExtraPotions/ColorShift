@@ -7,7 +7,7 @@ try{await Promise.all(Object.entries(sites).filter(([site])=>!process.env.COLORS
  const context=await browser.newContext({viewport:{width:1280,height:900}});const page=await context.newPage();
  const result={site,url:'https://'+site+'.com/',status:'failed',checks:[],scope:'Public homepage; authenticated feeds are not covered.'};
  try{
-  await context.addInitScript({content:fs.readFileSync('colorshift-'+site+'.user.js','utf8')});
+  await context.addInitScript({content:fs.readFileSync(require("./edition-path.cjs")('colorshift-'+site+'.user.js'),'utf8')});
   let response;try{response=await page.goto(result.url,{waitUntil:'domcontentloaded',timeout:30000});}catch(e){result.status='blocked';throw e;}
   const title=await page.title();
   if(!response?.ok()||/just a moment|access denied|captcha|robot|attention required/i.test(title)){result.status='blocked';throw Error('HTTP '+response?.status()+': '+title);}

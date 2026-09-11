@@ -4,7 +4,7 @@
 
 Your palette, across the web. Best-effort website theming, with nine complementary accents and a menu that stays in view.
 
-**0.1.2** · [Download ColorShift Anywhere](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-anywhere.user.js)
+**0.2.0** · [Download ColorShift Anywhere](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-anywhere.user.js)
 
 ## Get started
 
@@ -22,19 +22,19 @@ Anywhere works on ordinary HTTP and HTTPS pages where your userscript manager ca
 
 If something looks wrong, switch Anywhere off for that site. **Settings → About & diagnostics → Scan theme coverage** can help identify contrast problems; a clean scan does not guarantee every part of a page is correct.
 
-## Tailored site editions
+## Built-in site tweaks
 
-These editions include extra site-specific fixes and controls. Use one ColorShift edition per website; exclude a site from Anywhere in your userscript manager when using its tailored edition.
+Anywhere includes the tailored controls for ManaPool, Scryfall, SteamGifts, TCGPlayer, Card Kingdom, Goodreads, and Genius. SteamTrades and SGTools use the SteamGifts module. The Site tweaks tab appears automatically on supported domains. Enable Anywhere on the site to activate its fixes and saved options. Other websites keep best-effort theming.
 
-| Image | Site | Link |
-| :---: | --- | --- |
-| <img src="assets/manapool-colorshift-64.png" width="64" height="64" alt="ColorShift for ManaPool"> | ManaPool | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-manapool.user.js) |
-| <img src="assets/scryfall-colorshift-64.png" width="64" height="64" alt="ColorShift for Scryfall"> | Scryfall | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-scryfall.user.js) |
-| <img src="assets/steamgifts-colorshift-64.png" width="64" height="64" alt="ColorShift for SteamGifts"> | SteamGifts | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-steamgifts.user.js) |
-| <img src="assets/tcgplayer-colorshift-64.png" width="64" height="64" alt="ColorShift for TCGPlayer"> | TCGPlayer | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-tcgplayer.user.js) |
-| <img src="assets/cardkingdom-colorshift-64.png" width="64" height="64" alt="ColorShift for Card Kingdom"> | Card Kingdom | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-cardkingdom.user.js) |
-| <img src="assets/goodreads-colorshift-64.png" width="64" height="64" alt="ColorShift for Goodreads"> | Goodreads | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-goodreads.user.js) |
-| <img src="assets/genius-colorshift-64.png" width="64" height="64" alt="ColorShift for Genius"> | Genius | [Install ColorShift](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-genius.user.js) |
+### Moving from a separate edition
+
+1. On each site, open the old script’s Settings and select Export. Save the copied settings.
+2. Disable that standalone script in your userscript manager, enable Anywhere, and reload the site.
+3. In Anywhere, use Settings → Import, paste the saved settings, then enable it on the site.
+
+Theme, accent, and supported setting switches transfer. Manually positioned launchers and options are imported too; custom collapsed-section history is not included in the settings export. Your userscript manager keeps each script’s private storage separate, so migration requires this explicit transfer.
+
+Keep only Anywhere enabled on each site to avoid competing styles. Anywhere is the only distributed script. Site modules are built in.
 
 ## Settings
 

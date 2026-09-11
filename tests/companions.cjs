@@ -9,7 +9,7 @@ const amazon=fs.readFileSync('../velvet-crane-orbit/amazon-dark-pattern-blocker.
    await context.route('https://fixture.test/**',r=>r.fulfill({contentType:'text/html',body:'<p>Gay bisexual lesbian</p>'}));
    const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('https://fixture.test/');
    await page.evaluate(()=>{window.GM_getValue=(k,d)=>d;window.GM_setValue=()=>{};window.GM_registerMenuCommand=()=>{};});
-   const primary=site==='amazon'?amazon:fs.readFileSync('colorshift-'+site+'.user.js','utf8');
+   const primary=site==='amazon'?amazon:fs.readFileSync(require("./edition-path.cjs")('colorshift-'+site+'.user.js'),'utf8');
    for(const content of (reverse?[prism,primary]:[primary,prism]))await page.addScriptTag({content});
    const primaryFab=page.locator(site==='amazon'?'#adpb-settings-fab':'#colorshift-fab');
    const secondary=page.locator('.pfh-fab');

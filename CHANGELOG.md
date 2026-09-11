@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0
+
+- Anywhere is now the sole download, with all seven site modules built in. Site tweaks appear only on recognized domains.
+- Import exported settings from your old edition, then disable the old script.
+- Replaced personal author aliases in current files with ExtraPotions attribution and neutral control identifiers.
+
+
 ## 0.1.2
 
 - Compact tab navigation and distinct Theme and Accent cards in every edition.

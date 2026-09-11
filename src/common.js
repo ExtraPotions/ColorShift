@@ -1,7 +1,7 @@
 /* ColorShift: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ColorShift = (() => {
   'use strict';
-  const version = '0.1.2';
+  const version = '0.2.0';
   const SETTINGS_SCHEMA = 1;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -56,22 +56,22 @@ var ColorShift = (() => {
     return {publish:schedule};
   }
   // DOM-based opt-in works across userscript sandboxes; only ExtraPotions companions yield.
-  function coordinateExtraPotionsControls(anchor, registered = []) {
-    const candidates = new Set([...document.querySelectorAll('[data-userscript-launcher="userscript-launcher-v1"],[data-ExtraPotions-control="secondary"],#pfh-fab,.pfh-fab'), ...registered]);
+  function coordinateCompanionControls(anchor, registered = []) {
+    const candidates = new Set([...document.querySelectorAll('[data-userscript-launcher="userscript-launcher-v1"],[data-colorshift-control="secondary"],#pfh-fab,.pfh-fab'), ...registered]);
     const anchorNode=anchor.getRootNode().host||anchor;
     const anchorPriority=Number(anchorNode.dataset.launcherPriority||100);
     const primary = [anchor];
-    for (const host of document.querySelectorAll('[data-ExtraPotions-dock-root]')) {
-      const control = host.shadowRoot?.querySelector('[data-ExtraPotions-control="primary"]');
+    for (const host of document.querySelectorAll('[data-colorshift-dock-root]')) {
+      const control = host.shadowRoot?.querySelector('[data-colorshift-control="primary"]');
       if (control && control !== anchor) primary.push(control);
     }
     const occupied = primary.map(el=>el.getBoundingClientRect()).filter(r=>r.width&&r.height);
     const origin=anchor.getBoundingClientRect();
     const overlaps=r=>occupied.some(o=>r.left<o.right+8&&r.right>o.left-8&&r.top<o.bottom+8&&r.bottom>o.top-8);
     for (const el of candidates) {
-      if (!el.isConnected || el===anchorNode || primary.includes(el) || el.dataset.ExtraPotionsControl==='primary' || Number(el.dataset.launcherPriority||0)>=anchorPriority) continue;
+      if (!el.isConnected || el===anchorNode || primary.includes(el) || el.dataset.colorshiftControl==='primary' || Number(el.dataset.launcherPriority||0)>=anchorPriority) continue;
       const ownerRoot=el.getRootNode().host;
-      if(ownerRoot?.dataset.ExtraPotionsDockRoot==='primary')continue;
+      if(ownerRoot?.dataset.colorshiftDockRoot==='primary')continue;
       let rect=el.getBoundingClientRect();
       if (!rect.width || !rect.height || !['fixed','sticky'].includes(getComputedStyle(el).position)) continue;
       if(overlaps(rect)){
@@ -291,7 +291,7 @@ var ColorShift = (() => {
         panel.style.top=(mobile?upper+height-panel.offsetHeight-margin:Math.max(upper+margin,Math.min(preferred,upper+height-panel.offsetHeight-margin)))+'px';
       }
       // Primary controls keep their saved position; only companions yield.
-      if(!site.anywhere)coordinateExtraPotionsControls(fab);
+      if(!site.anywhere)coordinateCompanionControls(fab);
       launcher?.publish();
     }
     function readableAccent(accent,colors) {
@@ -422,13 +422,13 @@ var ColorShift = (() => {
     function mount() {
       if(!document.body) return;
       if(document.getElementById('colorshift-root')) return;
-      host=element('div',{id:'colorshift-root','data-colorshift-primary-control':'true','data-ExtraPotions-dock-root':'primary'});
+      host=element('div',{id:'colorshift-root','data-colorshift-primary-control':'true','data-colorshift-dock-root':'primary'});
       host.style.cssText='all:initial!important;position:fixed!important;inset:0!important;z-index:2147483647!important;pointer-events:none!important;';
       root=host.attachShadow({mode:'open'});
       const sheet=new CSSStyleSheet();sheet.replaceSync(UI_CSS);root.adoptedStyleSheets=[sheet];
       fab=element('button',{id:'colorshift-fab',type:'button',class:'fab',title:'ColorShift for '+site.name,'aria-label':'ColorShift for '+site.name+' settings','aria-controls':'colorshift-panel','aria-expanded':'false','data-floating-control':'primary'});
       const icon=element('img',{src:site.icon,alt:'',draggable:'false'});fab.append(icon);
-      fab.dataset.ExtraPotionsControl='primary';
+      fab.dataset.colorshiftControl='primary';
       panel=element('div',{id:'colorshift-panel',role:'dialog','aria-label':'ColorShift for '+site.name+' settings',class:'panel'});panel.hidden=true;
       const header=element('header'),heading=element('div');heading.append(element('h2',{},site.anywhere?'ColorShift Anywhere':'ColorShift'),element('p',{},site.anywhere?location.hostname:site.name));header.append(element('img',{src:site.icon,alt:'',class:'header-icon'}),heading);const close=action(header,'×',()=>setOpen(false));close.className='menu-close';close.setAttribute('aria-label','Close settings');header.append(close);panel.append(header);
       if(site.anywhere)toggles(panel,[['enabled','Enable on this site']]);
@@ -463,7 +463,7 @@ var ColorShift = (() => {
       }
       const appearanceTools=element('div',{class:'group-tools'});groupReset(appearanceTools,'appearance',['palette','accent','intensity']);
       const pageTools=element('div',{class:'group-tools'});groupReset(pageTools,'page settings',shared.map(([key])=>key));const pageOptions=appearance;toggles(pageOptions,shared);const resetTools=element('div',{class:'group-tools reset-tools'});resetTools.append(...appearanceTools.children,...pageTools.children);appearance.append(resetTools);
-      const siteOptions=site.anywhere?null:section(site.name);if(siteOptions){toggles(siteOptions,site.options);groupReset(siteOptions,site.name+' options',site.options.map(([key])=>key));}
+      const moduleOptions=site.options.filter(([key])=>key!=='enabled');const siteOptions=site.anywhere&&!site.moduleName?null:section(site.anywhere?'Site tweaks':site.name);if(siteOptions){toggles(siteOptions,moduleOptions);groupReset(siteOptions,(site.moduleName||site.name)+' options',moduleOptions.map(([key])=>key));}
       const disclosure=section('Accessibility');toggles(disclosure,accessibility);groupReset(disclosure,'accessibility',accessibility.map(([key])=>key));
       if(site.actions) { const group=siteOptions;for(const [title,fn] of site.actions)action(group,title,()=>fn(api)); }
       const tools=section('Settings');

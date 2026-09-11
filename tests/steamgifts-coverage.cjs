@@ -3,7 +3,7 @@ const lum=color=>{const c=color.match(/[\d.]+/g).slice(0,3).map(v=>{v=Number(v)/
 (async()=>{const browser=await chromium.launch();try{
  const page=await browser.newPage();
  await page.route('https://www.steamgifts.com/**',r=>r.fulfill({contentType:'text/html',body:'<style>.pinned-giveaways-tab{background:linear-gradient(white,#ddd);color:#888}.fanatical_new{background:#f80;color:white}.homepage_table_column_heading{color:#333}</style><div class="page__inner-wrap"><div class="pinned-giveaways-tab">Featured</div><span class="fanatical_new">New</span><span class="homepage_table_column_heading">Discussion</span></div>'}));
- await page.addInitScript({content:fs.readFileSync('colorshift-steamgifts.user.js','utf8')});
+ await page.addInitScript({content:fs.readFileSync(require("./edition-path.cjs")('colorshift-steamgifts.user.js'),'utf8')});
  await page.goto('https://www.steamgifts.com/');await page.locator('#colorshift-fab').click();
  await page.evaluate(()=>document.getElementById('colorshift-root').shadowRoot.querySelectorAll('details').forEach(e=>e.open=true));
  const theme=page.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}),accent=page.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true});

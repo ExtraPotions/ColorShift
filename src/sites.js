@@ -283,5 +283,9 @@
     }
   };
   const site=adapters[siteId];site.icon=icons[siteId];
+  site.deactivate=()=>{
+    for(const record of sections.values()){record.button.remove();for(const node of record.content)node.classList.remove('colorshift-section-hidden');}
+    sections.clear();
+  };
   ColorShift.start(site);
 })();

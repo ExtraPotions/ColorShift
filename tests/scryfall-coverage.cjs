@@ -5,7 +5,7 @@ const lum=color=>{const c=color.match(/[\d.]+/g).slice(0,3).map(v=>{v=Number(v)/
  const selectors=['.skip-links a','.pill.blue','.print-langs-item.current','a.currency-usd','a.currency-eur','a.currency-tix','a.card-kingdom','span.price.currency-usd'];
  const body='<style>a,span.price{background:#fffae3;color:#333}.pill.blue{background:#3497be;color:white}</style><div class="skip-links"><a href="#main">Skip to main content</a></div><main id="main"><span class="pill blue">New</span><a class="print-langs-item current" href="#">en</a><a class="currency-usd" href="#">$4.90</a><a class="currency-eur" href="#">€4.00</a><a class="currency-tix" href="#">1.00</a><a class="card-kingdom" href="#">$5.00</a><span class="price currency-usd">$5.00</span></main>';
  await page.route('https://scryfall.com/**',r=>r.fulfill({contentType:'text/html',body}));
- await page.addInitScript({content:fs.readFileSync('colorshift-scryfall.user.js','utf8')});
+ await page.addInitScript({content:fs.readFileSync(require("./edition-path.cjs")('colorshift-scryfall.user.js'),'utf8')});
  await page.goto('https://scryfall.com/');await page.locator('#colorshift-fab').click();
  await page.evaluate(()=>document.getElementById('colorshift-root').shadowRoot.querySelectorAll('details').forEach(e=>e.open=true));
  const theme=page.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}),accent=page.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true});

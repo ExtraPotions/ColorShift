@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const version = require('../package.json').version;
 const repo = 'https://github.com/ExtraPotions/ColorShift';
-const sites = ['anywhere','manapool','scryfall','steamgifts','tcgplayer','cardkingdom','goodreads','genius'];
+const sites = ['anywhere'];
 assert.equal(fs.readdirSync('.').filter(f => f.endsWith('.user.js')).length, sites.length);
 for (const site of sites) {
   const script = fs.readFileSync('colorshift-' + site + '.user.js','utf8');

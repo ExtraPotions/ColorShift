@@ -494,6 +494,8 @@ var ColorShift = (() => {
         header a[href="/"]{color:${accent}!important}
         svg#Layer_2 .cls-2{fill:${accent}!important}
         canvas[data-colorshift-sales]{filter:url(#colorshift-sales-accent)!important}
+        button[data-popover-trigger] svg.text-primary{color:${accent}!important}
+        div.text-xs.text-primary{color:#eee!important}
         button[aria-label="Open profile menu"]{border-radius:999px!important}
         nav[aria-label="Breadcrumb"]{opacity:1!important}
         nav[aria-label="Breadcrumb"] ol{background:${colors[2]}!important;color:#ddd!important}
@@ -504,6 +506,7 @@ var ColorShift = (() => {
         [data-popover-content] img[alt$="set icon"]{filter:brightness(0) invert(1)!important}`)+
         siteControls(state,colors,accent,'button:not([role=switch]),a[role=button],a.bg-blue-700,a.bg-blue-600,select,input:not([type=checkbox]):not([type=radio]),textarea')+
         (state.palette==='original'?'':'.text-gray-500,.text-gray-600,.text-gray-700,.text-gray-800,.text-gray-900{color:#d0d0cc!important}')+
+        'div.h-12.w-24:has(>button.h-full.w-full:only-child){width:72px!important;height:36px!important}'+
         '.colorshift-section-hidden{display:none!important}.colorshift-section-heading{display:block!important;visibility:visible!important}.colorshift-section-button{border-radius:6px;padding:4px 8px;margin-right:8px;cursor:pointer}'+
         (state.dense?'ul.grid,.grid{gap:.5rem!important}article{margin:0!important}':'')+
         (state.hideSoldOut?'[data-colorshift-sold=true]{display:none!important}':'')+

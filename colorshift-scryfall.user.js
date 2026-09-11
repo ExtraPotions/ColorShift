@@ -208,9 +208,9 @@ var ColorShift = (() => {
       if(!Object.hasOwn(defaults,key)||!valid(key,value)) throw new Error('Invalid setting: '+key);
       state[key]=value; write(key,value); apply();
     }
-    function setOpen(value) {
+    function setOpen(value,focus=true) {
       open=value; panel.hidden=!value; fab.setAttribute('aria-expanded',String(value));
-      if(value) { position();refreshDiagnostics();panel.querySelector('.menu-close').focus(); }
+      if(value) { position();refreshDiagnostics();if(focus)panel.querySelector('.menu-close').focus(); }
       else fab.focus({preventScroll:true});
     }
     let dockCandidates=[],dockScanAt=0;
@@ -467,6 +467,7 @@ var ColorShift = (() => {
       window.addEventListener('resize',position);motion.addEventListener('change',apply);contrast.addEventListener('change',apply);systemTheme.addEventListener('change',()=>{if(state.palette==='system'||state.palette==='original')apply();});
       try {if(typeof GM_registerMenuCommand==='function')GM_registerMenuCommand('ColorShift settings',()=>setOpen(true));}catch(error){console.warn('ColorShift: extension menu registration unavailable',error);}
       site.mount?.(api);apply();updatePage();
+      if(site.anywhere&&!state.enabled)setOpen(true,false);
       const pending=new Set();
       function queue(node){if(!node)return;if(node.nodeType!==1&&node.nodeType!==9)node=node.parentElement;if(!node||node===host||node===style||host.contains(node))return;pending.add(node);if(pending.size>40){pending.clear();pending.add(document);} }
       const observer=new MutationObserver(records=>{

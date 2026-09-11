@@ -2,6 +2,10 @@
 
 ## 0.0.3
 
+- Compact searchable menu with four collapsed sections, without shortcut controls or Close buttons.
+- Updated site icons with slightly smaller facets and larger names.
+- Simplified the README for users.
+
 - Each install file includes its runtime and icon; no shared-code download is required.
 - Update checks now handle failed requests, malformed releases, timeouts, and repeated requests quietly.
 - Settings upgrades and export/import are covered by release-to-release browser tests.

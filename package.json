@@ -5,7 +5,7 @@
   "scripts": {
     "build": "node scripts/build.cjs",
     "build:check": "node scripts/build.cjs --check",
-    "test": "node tests/distribution.cjs && node tests/browser.cjs && node tests/settings.cjs && node tests/visual.cjs && node tests/performance.cjs && node tests/usability.cjs",
+    "test": "node tests/distribution.cjs && node tests/browser.cjs && node tests/settings.cjs && node tests/visual.cjs && node tests/performance.cjs && node tests/usability.cjs && node tests/menu.cjs",
     "test:live": "node tests/live.cjs",
     "release:check": "node scripts/release-check.cjs"
   },

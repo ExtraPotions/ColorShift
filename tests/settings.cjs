@@ -16,7 +16,7 @@ async function setup(browser,site='manapool',values={},source=code(site)) {
   },values);
   await context.addInitScript({content:source});
   const page=await context.newPage();
-  await page.goto(`https://${site}.com/`);await page.locator('#colorshift-fab').click();
+  await page.goto(`https://${site}.com/`);await page.locator('#colorshift-fab').click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));
   return {context,page,panel:page.getByRole('dialog')};
 }
 (async()=>{
@@ -30,7 +30,7 @@ async function setup(browser,site='manapool',values={},source=code(site)) {
     await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('navy');
     await panel.getByRole('combobox',{name:'Accent',exact:true}).selectOption('rose');
     await panel.getByRole('switch',{name:'Brighter links',exact:true}).click();
-    await page.evaluate(()=>localStorage.setItem('upgrade-now','true'));await page.reload();await page.locator('#colorshift-fab').click();
+    await page.evaluate(()=>localStorage.setItem('upgrade-now','true'));await page.reload();await page.locator('#colorshift-fab').click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));
     assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'navy');
     assert.equal(await panel.getByRole('combobox',{name:'Accent',exact:true}).inputValue(),'rose');
     assert.equal(await panel.getByRole('switch',{name:'Brighter links',exact:true}).getAttribute('aria-checked'),'true');

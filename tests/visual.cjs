@@ -11,7 +11,7 @@ const fixture=`<html><head><style>body{margin:0;font:16px/1.5 Arial}header{paddi
   const context=await browser.newContext({viewport:{width:1100,height:850},reducedMotion:'reduce'});
   await context.route(`https://${site}.com/**`,r=>r.fulfill({contentType:'text/html',body:fixture}));
   await context.addInitScript({content:fs.readFileSync(`colorshift-${site}.user.js`,'utf8')});
-  const page=await context.newPage();await page.goto(`https://${site}.com/`);await page.locator('#colorshift-fab').click();
+  const page=await context.newPage();await page.goto(`https://${site}.com/`);await page.locator('#colorshift-fab').click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));
   const panel=page.getByRole('dialog'),theme=panel.getByRole('combobox',{name:'Theme',exact:true});
   for(const palette of ['lightGray','darkGray','navy','black','fireRed','leafGreen','heartGold']){
    await theme.selectOption(palette);
@@ -32,7 +32,7 @@ const fixture=`<html><head><style>body{margin:0;font:16px/1.5 Arial}header{paddi
    const restored=await page.screenshot({animations:'disabled'});
    assert(difference(first,restored)<.001,`${site} ${width} theme restoration screenshot mismatch`);
    const box=await panel.boundingBox();assert(box.x>=0&&box.x+box.width<=width&&box.y>=0&&box.y+box.height<=850);
-   const input=panel.getByRole('textbox',{name:'Open menu shortcut',exact:true});await input.focus();await page.keyboard.press('Tab');
+   await theme.focus();await page.keyboard.press('Tab');
    assert(await panel.evaluate(el=>el.contains(el.getRootNode().activeElement)),'Tab remains inside dialog');
   }
   await context.close();

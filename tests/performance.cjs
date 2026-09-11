@@ -5,8 +5,8 @@ const context=await browser.newContext();
 const cards=Array.from({length:2000},(_,i)=>`<article id="card-${i}">Card ${i}<span>Available</span></article>`).join('');
 await context.route('https://manapool.com/**',r=>r.fulfill({contentType:'text/html',body:'<main>'+cards+'</main>'}));
 await context.addInitScript({content:fs.readFileSync('colorshift-manapool.user.js','utf8')});
-const page=await context.newPage();await page.goto('https://manapool.com/');await page.locator('#colorshift-fab').click();
-await page.getByText('About & diagnostics',{exact:true}).click();
+const page=await context.newPage();await page.goto('https://manapool.com/');await page.locator('#colorshift-fab').click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));
+
 const metrics=async()=>{const text=await page.locator('.diagnostics-output').textContent();return text.match(/Page updates: (\d+) · Elements inspected: (\d+) · Style writes: (\d+)/).slice(1).map(Number);};
 await page.waitForTimeout(200);const before=await metrics();
 await page.evaluate(()=>{const span=document.querySelector('#card-100 span');for(let i=0;i<100;i++)span.firstChild.data=i===99?'Sold out':'Changing '+i;});

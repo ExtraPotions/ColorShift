@@ -48,17 +48,17 @@ const version=require('../package.json').version;
       await page.waitForFunction(()=>document.getElementById('colorshift-root')?.dataset.launcherOccupiedArea);
       const declaration=await page.locator('#colorshift-root').evaluate(el=>({...el.dataset}));
       assert.equal(declaration.userscriptLauncher,'userscript-launcher-v1');assert.equal(declaration.launcherOwner,'ExtraPotions');assert.equal(declaration.launcherPriority,'100');assert.equal(declaration.launcherPreferredPosition,'right-bottom');assert.doesNotThrow(()=>JSON.parse(declaration.launcherOccupiedArea));
-      assert.equal(declaration.launcherShortcutCollision,'true');
+
       const start=await fab.boundingBox();
       if(site!=='scryfall'){const companion=await page.locator('#pfh-fab').boundingBox();assert(companion.x+companion.width<=start.x-7);}
       await page.mouse.move(start.x+24,start.y+24);await page.mouse.down();await page.mouse.move(start.x+24,420,{steps:6});await page.mouse.up();
       const savedDock=await fab.boundingBox();assert(Math.abs(savedDock.y-396)<2);
       // A drag suppresses the following synthetic click.
-      await fab.click();const panel=page.getByRole('dialog');await panel.waitFor();
+      await fab.click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));const panel=page.getByRole('dialog');await panel.waitFor();
       assert.equal(await page.getByRole('checkbox').count(),0);
       const rowStyle=await panel.locator('.row').first().evaluate(el=>getComputedStyle(el).display);assert.equal(rowStyle,'flex');
-      await panel.getByText('About & diagnostics',{exact:true}).click();assert.match(await panel.locator('.diagnostics-output').textContent(),new RegExp('ColorShift '+version.replaceAll('.','\\.')+'[\\s\\S]*Site:'));
-      await panel.getByText('Accessibility',{exact:true}).click();
+      assert.match(await panel.locator('.diagnostics-output').textContent(),new RegExp('ColorShift '+version.replaceAll('.','\\.')+'[\\s\\S]*Site:'));
+
       {
         for(const palette of ['lightGray','darkGray','navy','black','fireRed','leafGreen','heartGold']){
           await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption(palette);
@@ -116,14 +116,14 @@ const version=require('../package.json').version;
       await panel.getByRole('switch',{name:'High contrast',exact:true}).click();
       await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('navy');
       assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(26, 35, 50)');
-      await page.reload();await fab.click();assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'navy');
+      await page.reload();await fab.click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'navy');
       assert(Math.abs((await fab.boundingBox()).y-savedDock.y)<2);
       assert.equal(await panel.getByRole('switch',{name:'Brighter links',exact:true}).getAttribute('aria-checked'),'true');
       await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('original');
       assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');
       await page.keyboard.press('Escape');assert.equal(await panel.isVisible(),false);
-      await page.keyboard.press('Alt+g');assert.equal(await panel.isVisible(),true);
-      const shortcutInput=panel.getByRole('textbox',{name:'Open menu shortcut',exact:true});await shortcutInput.fill('Alt+T');await shortcutInput.press('Tab');await page.keyboard.press('Escape');await page.keyboard.press('Alt+g');assert.equal(await panel.isVisible(),false);await page.keyboard.press('Alt+t');assert.equal(await panel.isVisible(),true);
+      await page.keyboard.press('Alt+g');assert.equal(await panel.isVisible(),false);await fab.click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));assert.equal(await panel.isVisible(),true);
+      assert.equal(await panel.getByRole('textbox',{name:'Open menu shortcut'}).count(),0);assert.equal(await panel.getByRole('button',{name:/^Close/}).count(),0);
       page.once('dialog',dialog=>dialog.accept('{"colorShift":true,"palette":"black"}'));
       await panel.getByRole('button',{name:'Import',exact:true}).click();assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'black');
       page.once('dialog',dialog=>dialog.accept('{"colorShift":true,"palette":"not-a-palette"}'));

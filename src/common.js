@@ -32,15 +32,6 @@ var ColorShift = (() => {
     return el;
   }
   const LAUNCHER_PROTOCOL='userscript-launcher-v1';
-  function normaliseShortcut(value) {
-    if(typeof value!=='string')return 'Alt+G';const raw=value.trim();if(!raw||/^off$/i.test(raw))return '';
-    const parts=raw.split('+').map(part=>part.trim()).filter(Boolean),key=parts.pop();if(!key)return '';
-    const mods=['Ctrl','Alt','Shift','Meta'].filter(mod=>parts.some(part=>part.toLowerCase()===mod.toLowerCase()));
-    return [...mods,key.length===1?key.toUpperCase():key].join('+');
-  }
-  function eventShortcut(event){return [...(event.ctrlKey?['Ctrl']:[]),...(event.altKey?['Alt']:[]),...(event.shiftKey?['Shift']:[]),...(event.metaKey?['Meta']:[]),event.key.length===1?event.key.toUpperCase():event.key].join('+');}
-  function editableTarget(target){return target?.matches?.('input,textarea,select,[contenteditable="true"]');}
-  function shortcutBlocked(node,shortcut){const priority=Number(node?.dataset.launcherPriority||0),id=node?.dataset.launcherId||'';return [...document.querySelectorAll('[data-userscript-launcher="userscript-launcher-v1"]')].some(el=>{if(el===node)return false;let shortcuts=[];try{shortcuts=JSON.parse(el.dataset.launcherShortcuts||'[]');}catch{}const other=Number(el.dataset.launcherPriority||0);return shortcuts.includes(shortcut)&&(other>priority||(other===priority&&(el.dataset.launcherId||'').localeCompare(id)<0));});}
   function declareLauncher(node,controls,meta) {
     const watched=()=>controls().filter(el=>el?.isConnected&&el.getClientRects().length);
     node.dataset.userscriptLauncher=LAUNCHER_PROTOCOL;
@@ -58,8 +49,6 @@ var ColorShift = (() => {
     const schedule=()=>{if(!frame)frame=requestAnimationFrame(publish);};
     if(typeof ResizeObserver!=='undefined'){const observer=new ResizeObserver(schedule);for(const el of controls().filter(Boolean))observer.observe(el);}
     window.addEventListener('resize',schedule,{passive:true});
-    const checkCollision=()=>{let own=[];try{own=JSON.parse(node.dataset.launcherShortcuts||'[]');}catch{}const collision=[...document.querySelectorAll('[data-userscript-launcher="userscript-launcher-v1"]')].some(el=>{if(el===node)return false;try{return JSON.parse(el.dataset.launcherShortcuts||'[]').some(value=>own.includes(value));}catch{return false;}});node.dataset.launcherShortcutCollision=String(collision);};
-    window.addEventListener('userscript-launcher:change',checkCollision);queueMicrotask(checkCollision);
     return {publish:schedule};
   }
   // DOM-based opt-in works across userscript sandboxes; only ExtraPotions companions yield.
@@ -98,7 +87,7 @@ var ColorShift = (() => {
     }
   }
   function start(site) {
-    const defaults={palette:'darkGray',accent:'site',intensity:'normal',fabTop:null,shortcut:'Alt+G',updateNotifications:false};
+    const defaults={palette:'darkGray',accent:'site',intensity:'normal',fabTop:null,updateNotifications:false};
     for(const [key] of [...shared,...site.options,...accessibility]) defaults[key]=false;
     const state={...defaults};
     function valid(key,value) {
@@ -106,7 +95,6 @@ var ColorShift = (() => {
       if(key==='accent') return Object.hasOwn(accents,value);
       if(key==='intensity') return ['normal','soft'].includes(value);
       if(key==='fabTop') return value===null || (typeof value==='number' && Number.isFinite(value));
-      if(key==='shortcut') return typeof value==='string'&&value.length<=40;
       return typeof value==='boolean';
     }
     const storedSchema=Number(read(SCHEMA_KEY,0))||0;
@@ -131,7 +119,7 @@ var ColorShift = (() => {
     }
     function setOpen(value) {
       open=value; panel.hidden=!value; fab.setAttribute('aria-expanded',String(value));
-      if(value) { position();refreshDiagnostics();if(host.dataset.launcherShortcutCollision==='true')notice.textContent='Shortcut conflict detected; the higher-priority launcher responds first.';panel.querySelector('select,button').focus(); }
+      if(value) { position();refreshDiagnostics();panel.querySelector('.settings-search').focus(); }
       else fab.focus({preventScroll:true});
     }
     function position() {
@@ -164,7 +152,6 @@ var ColorShift = (() => {
       }
       host.toggleAttribute('data-motion',state.reducedMotion||motion.matches);
       host.toggleAttribute('data-contrast',state.highContrast||contrast.matches);
-      host.dataset.launcherShortcuts=JSON.stringify(state.shortcut?[normaliseShortcut(state.shortcut)]:[]);
       host.style.setProperty('--accent',accent);
       position();refreshDiagnostics();
       if(state.updateNotifications)checkForUpdate();else {host.removeAttribute('data-update-available');fab.title='ColorShift for '+site.name;if(notice.textContent.startsWith('Update available:'))notice.textContent='';}
@@ -198,7 +185,7 @@ var ColorShift = (() => {
       const active=Object.entries(state).filter(([key,value])=>typeof defaults[key]==='boolean'&&value).length;
       return [`ColorShift ${version}`,`Site: ${site.name} (${location.hostname})`,`Page: ${location.pathname||'/'}`,`Active options: ${active}`,`Page updates: ${metrics.updates} · Elements inspected: ${metrics.inspected} · Style writes: ${metrics.styles}`,`Last processed: ${lastProcessed?new Date(lastProcessed).toISOString():'Not yet'}`,`Errors: ${diagnosticErrors.length}${diagnosticErrors.length?' · '+diagnosticErrors.at(-1):''}`].join('\n');
     }
-    function refreshDiagnostics(){const out=panel?.querySelector('.diagnostics-output');if(out)out.textContent=diagnosticText();}
+    function refreshDiagnostics(){const out=panel?.querySelector('.diagnostics-output');if(out)out.textContent=diagnosticText();const status=panel?.querySelector('.theme-status');if(status)status.textContent=palettes[state.palette][0]+' · '+Object.entries(state).filter(([key,value])=>typeof defaults[key]==='boolean'&&value).length+' options on';}
     const descriptions={
       palette:'System follows your device: native site colours in light mode, dark gray in dark mode.',
       brighterLinks:'Use brighter blue links throughout the page.',hideAds:'Hide recognised advertising and promotional blocks.',
@@ -212,7 +199,7 @@ var ColorShift = (() => {
     function row(section,label,control,description) {
       const line=element('label',{class:'row'}); const caption=element('span',{},label);if(description){const hint=element('small',{id:'hint-'+control.getAttribute('data-setting')},description);caption.append(hint);control.setAttribute('aria-describedby',hint.id);}line.append(caption,control);section.append(line);
     }
-    function section(title) { const block=element('section');block.append(element('h3',{},title));panel.append(block);return block; }
+    function section(title) { const block=element('details',{class:'settings-group'});block.append(element('summary',{},title));panel.append(block);block.addEventListener('toggle',()=>{if(open)position();});return block; }
     function toggles(block,options) {
       for(const [key,label] of options) {
         const button=element('button',{type:'button',role:'switch','aria-label':label,'aria-checked':String(state[key]),class:'switch'});
@@ -232,22 +219,36 @@ var ColorShift = (() => {
       const icon=element('img',{src:site.icon,alt:'',draggable:'false'});fab.append(icon);
       fab.dataset.ExtraPotionsControl='primary';
       panel=element('div',{id:'colorshift-panel',role:'dialog','aria-label':'ColorShift for '+site.name+' settings',class:'panel'});panel.hidden=true;
-      const header=element('header');header.append(element('h2',{},'ColorShift · '+site.name),element('p',{},'Customize colours and site behaviour.'));action(header,'Close settings',()=>setOpen(false)).className='close-menu';panel.append(header);
+      const header=element('header'),heading=element('div');heading.append(element('h2',{},'ColorShift'),element('p',{},site.name+' · Themes and page settings'));header.append(element('img',{src:site.icon,alt:'',class:'header-icon'}),heading);panel.append(header);
+      const status=element('div',{class:'status-strip'});status.append(element('strong',{},'Changes save automatically'),element('p',{class:'theme-status'}));panel.append(status);
+      const search=element('input',{type:'search',class:'settings-search',placeholder:'Find in settings…','aria-label':'Find in settings'});panel.append(search);
+      const empty=element('p',{class:'empty-search',role:'status'},'No matching settings.');empty.hidden=true;panel.append(empty);
+      const savedOpen=new Map();
+      search.addEventListener('input',()=>{
+        const term=search.value.trim().toLowerCase();
+        let visible=0;
+        for(const group of panel.querySelectorAll(':scope > .settings-group')){
+          if(term&&!savedOpen.has(group))savedOpen.set(group,group.open);
+          const title=group.querySelector('summary').textContent.toLowerCase(),titleMatch=title.includes(term);
+          let matches=titleMatch;
+          for(const item of group.children){if(item.tagName==='SUMMARY')continue;const match=!term||titleMatch||item.textContent.toLowerCase().includes(term);item.hidden=!match;matches ||= match;}
+          group.hidden=!!term&&!matches;if(!group.hidden)visible++;
+          if(term)group.open=matches;else if(savedOpen.has(group)){group.open=savedOpen.get(group);savedOpen.delete(group);}
+        }
+        empty.hidden=visible>0;position();
+      });
       const appearance=section('Appearance');
       for(const [key,label,values] of [['palette','Theme',palettes],['accent','Accent',accents]]) {
         const select=element('select',{'aria-label':label});for(const [value,[name]] of Object.entries(values))select.append(element('option',{value},name));
         select.addEventListener('change',()=>set(key,select.value));select.setAttribute('data-setting',key);controls.set(key,select);row(appearance,label,select,descriptions[key]);
       }
       groupReset(appearance,'appearance',['palette','accent','intensity']);
-      const pageOptions=section('Page settings');toggles(pageOptions,shared);groupReset(pageOptions,'page settings',shared.map(([key])=>key));
+      const pageOptions=appearance;toggles(pageOptions,shared);groupReset(pageOptions,'page settings',shared.map(([key])=>key));
       const siteOptions=section(site.name);toggles(siteOptions,site.options);groupReset(siteOptions,site.name+' options',site.options.map(([key])=>key));
-      const disclosure=element('details');disclosure.append(element('summary',{},'Accessibility'));toggles(disclosure,accessibility);groupReset(disclosure,'accessibility',accessibility.map(([key])=>key));panel.append(disclosure);
-      if(site.actions) { const group=section('Home sections');for(const [title,fn] of site.actions)action(group,title,()=>fn(api)); }
+      const disclosure=section('Accessibility');toggles(disclosure,accessibility);groupReset(disclosure,'accessibility',accessibility.map(([key])=>key));
+      if(site.actions) { const group=siteOptions;for(const [title,fn] of site.actions)action(group,title,()=>fn(api)); }
       const tools=section('Settings');
       toggles(tools,[['updateNotifications','Quiet update notifications']]);
-      const shortcut=element('input',{type:'text','aria-label':'Open menu shortcut',placeholder:'Off',value:state.shortcut});
-      shortcut.addEventListener('change',()=>{set('shortcut',normaliseShortcut(shortcut.value));shortcut.value=state.shortcut;const collision=[...document.querySelectorAll('[data-userscript-launcher="userscript-launcher-v1"]')].some(el=>{if(el===host)return false;try{return JSON.parse(el.dataset.launcherShortcuts||'[]').includes(state.shortcut);}catch{return false;}});notice.textContent=collision?'Shortcut is also used by another installed script.':'Shortcut saved.';});controls.set('shortcut',shortcut);row(tools,'Open menu shortcut',shortcut);
-      action(tools,'Disable shortcut',()=>{set('shortcut','');shortcut.value='';notice.textContent='Keyboard shortcut disabled.';});
       action(tools,'Export',async()=>{
         const json=JSON.stringify({colorShift:true,schemaVersion:SETTINGS_SCHEMA,...state},null,2);
         try { await navigator.clipboard.writeText(json);notice.textContent='Settings copied.'; } catch { window.prompt('Copy settings JSON',json); }
@@ -263,14 +264,12 @@ var ColorShift = (() => {
         } catch {notice.textContent='Import failed: invalid ColorShift settings.';}
       });
       action(tools,'Reset defaults',()=>{if(!confirm('Reset ColorShift settings?'))return;for(const [k,v]of Object.entries(defaults)){state[k]=v;write(k,v);}apply();notice.textContent='Settings reset.';});
-      action(tools,'Close',()=>setOpen(false));
       const diagnostics=element('details');diagnostics.append(element('summary',{},'About & diagnostics'));
       diagnostics.append(element('pre',{class:'diagnostics-output'},diagnosticText()));
-      action(diagnostics,'Copy diagnostics',async()=>{const text=diagnosticText();try{await navigator.clipboard.writeText(text);notice.textContent='Diagnostics copied.';}catch{window.prompt('Copy diagnostics',text);}});panel.append(diagnostics);
-      notice=element('p',{role:'status','aria-live':'polite',class:'notice'});panel.append(notice,element('footer',{},'Drag to position · configurable shortcut · Esc · v'+version));
+      action(diagnostics,'Copy diagnostics',async()=>{const text=diagnosticText();try{await navigator.clipboard.writeText(text);notice.textContent='Diagnostics copied.';}catch{window.prompt('Copy diagnostics',text);}});tools.append(diagnostics);
+      notice=element('p',{role:'status','aria-live':'polite',class:'notice'});panel.append(notice,element('footer',{},'Drag to position · Tap outside to close · v'+version));
       root.append(fab,panel);document.body.append(host);
       launcher=declareLauncher(host,()=>[fab,panel],{owner:'ExtraPotions',id:'colorshift-'+site.name.toLowerCase(),priority:100,preferredPosition:'right-bottom'});
-      host.dataset.launcherShortcuts=JSON.stringify(state.shortcut?[state.shortcut]:[]);
       style=element('style',{id:'colorshift-site-style'});document.head.append(style);
       siteSheet=new CSSStyleSheet();document.adoptedStyleSheets=[...document.adoptedStyleSheets,siteSheet];
       let drag=null,suppress=false;
@@ -281,7 +280,6 @@ var ColorShift = (() => {
       fab.addEventListener('click',()=>{if(suppress){suppress=false;return;}setOpen(!open);});
       document.addEventListener('keydown',e=>{
         if(e.key==='Escape'&&open){e.preventDefault();setOpen(false);}
-        else if(state.shortcut&&!editableTarget(e.target)&&eventShortcut(e)===normaliseShortcut(state.shortcut)&&!shortcutBlocked(host,normaliseShortcut(state.shortcut))){e.preventDefault();setOpen(!open);}
       });
       panel.addEventListener('keydown',e=>{
         if(e.key!=='Tab')return;
@@ -322,40 +320,21 @@ var ColorShift = (() => {
     return api;
   }
   const UI_CSS=`
-    :host { all:initial; font:13px/1.4 system-ui,sans-serif; color:#eee; }
-    *,*::before,*::after { box-sizing:border-box; }
-    .panel {font:13px/1.4 system-ui,sans-serif;}
-    [hidden] { display:none!important; }
-    button,select,input { font:inherit; color:inherit; }
-    button { cursor:pointer; }
-    button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible { outline:2px solid #82dcff; outline-offset:3px; }
-    .fab { position:fixed; right:16px; width:48px; height:48px; padding:0; z-index:2147483647; border:1px solid #ffffff33; border-radius:13px; background:#121722; box-shadow:0 5px 18px #0006; touch-action:none; overflow:hidden; pointer-events:auto; }
-    .fab img { width:100%;height:100%;object-fit:contain;pointer-events:none; }
-    .fab:hover { box-shadow:0 0 0 2px #82dcff,0 8px 22px #0006; }
-    .panel { position:fixed;right:16px;z-index:2147483647;width:min(312px,calc(100vw - 32px));overflow:auto;background:#282826;color:#ddd;border:1px solid #ffffff22;border-radius:14px;box-shadow:0 16px 40px #0007;pointer-events:auto; }
-    header {padding:14px 18px 10px;} h2 {font-size:15px;margin:0 0 3px;} p {margin:0;font-size:12px;color:#bbb;}
-    section,details {padding:9px 18px;border-top:1px solid #ffffff14;}
-    h3 {font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#aaa;margin:0 0 4px;}
-    .row {display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;}
-    .row select,.row input {flex:0 0 124px;width:124px;}
-    .row small {display:block;font-size:11px;line-height:1.4;color:#bfc3c8;margin:3px 0 6px;overflow-wrap:anywhere;}
-    .section-reset {font-size:11px;color:#cbd7ee;}
-    .close-menu {margin-top:8px;border:1px solid #768093;background:#1c2230;border-radius:8px;padding:6px 10px;}
-    .row + .row {border-top:1px solid #ffffff0c;}.row>span {min-width:0;}
-    select,input,section>button,details>button {border:1px solid #ffffff22;background:#1c2230;border-radius:8px;padding:5px 8px;max-width:145px;min-height:36px;min-width:0;}
-    section>button {margin:3px 4px 3px 0;}section>button:hover {background:#273044;}
-    .switch {flex:0 0 44px;position:relative;width:44px;height:44px;padding:0;border:0;background:transparent;}
-    .switch::before {content:'';position:absolute;inset:12px 4px;border:1px solid #ffffff99;border-radius:999px;background:#596171;}
-    .switch span {position:absolute;top:15px;left:7px;width:14px;height:14px;border-radius:50%;background:white;box-shadow:0 1px 3px #0006;transition:transform .15s;}
-    .switch[aria-checked=true]::before {background:#287aa3;}.switch[aria-checked=true] span {transform:translateX(16px);}
-    summary {cursor:pointer;min-height:44px;align-content:center;}footer {padding:8px 18px 12px;color:#aaa;font-size:10px;}.notice {padding:0 18px;}
-    .diagnostics-output{white-space:pre-wrap;overflow-wrap:anywhere;margin:6px 0;padding:7px;border-radius:6px;background:#171715;color:#c8c8c4;font:11px/1.35 ui-monospace,monospace}
-    :host([data-motion]) * {transition:none!important;animation:none!important;}
-    :host([data-contrast]) .panel {border:2px solid white;color:white;background:black;}
-    :host([data-contrast]) .switch::before {border:2px solid white;background:black;}
-    :host([data-contrast]) .switch[aria-checked=true]::before {background:white;}
-    :host([data-contrast]) .switch[aria-checked=true] span {background:black;}
-    @media(forced-colors:active) {.switch::before {forced-color-adjust:none;border-color:ButtonText;background:Canvas;}.switch span {background:ButtonText;}.switch[aria-checked=true]::before {background:Highlight;}.switch[aria-checked=true] span {background:HighlightText;}}
+    :host{all:initial;font:12px/1.4 Arial,sans-serif;color:#f5f5f5}*,*::before,*::after{box-sizing:border-box}[hidden]{display:none!important}
+    button,input,select{font:inherit;color:inherit}button,summary{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #9ad8f8;outline-offset:2px}
+    .fab{position:fixed;right:16px;width:48px;height:48px;padding:0;z-index:2147483647;border:1px solid #ffffff55;border-radius:13px;background:#121722;box-shadow:0 5px 18px #0006;touch-action:none;overflow:hidden;pointer-events:auto}.fab img{width:100%;height:100%;object-fit:contain;pointer-events:none}.fab:hover{box-shadow:0 0 0 2px #9ad8f8}
+    .panel{position:fixed;right:16px;z-index:2147483647;width:min(300px,calc(100vw - 24px));overflow:auto;overscroll-behavior:contain;background:#333;color:#f5f5f5;border:1px solid #777;border-radius:16px;padding:8px;box-shadow:0 12px 30px #0006;pointer-events:auto;font:12px/1.4 Arial,sans-serif}
+    header{display:flex;gap:10px;align-items:center;padding:2px 2px 6px}.header-icon{width:32px;height:32px;border-radius:8px}h2{font-size:15px;margin:0;font-weight:800}header p{margin:2px 0 0;font-size:11px;color:#eee}
+    .status-strip{background:#62404c;border:1px solid #b16480;border-radius:9px;padding:7px 8px;margin-bottom:5px;font-size:11px}.status-strip strong{font-weight:600}.theme-status{margin:1px 0 0;color:#f2e9ed}
+    .settings-search{display:block;width:100%;max-width:none;min-height:30px;border:1px solid #777;background:#252525;border-radius:8px;padding:5px 8px;margin:0 0 5px}.settings-search::placeholder{color:#eee;opacity:1}
+    .settings-group{border:1px solid #777;border-radius:9px;background:#444;margin-top:4px;overflow:hidden}.settings-group>summary{list-style:none;min-height:32px;padding:7px 8px;font-weight:700;display:flex;align-items:center;justify-content:space-between}.settings-group>summary::-webkit-details-marker{display:none}.settings-group>summary::after{content:'›';font-size:16px;line-height:1}.settings-group[open]>summary::after{transform:rotate(90deg)}.settings-group[open]>summary{border-bottom:1px solid #666}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;padding:6px 8px}.row+.row{border-top:1px solid #ffffff18}.row>span{min-width:0}.row small{display:block;color:#ddd;font-size:10px;line-height:1.4;margin-top:3px}.row select{flex:0 0 108px;width:108px;min-width:0;min-height:32px;background:#292929;border:1px solid #999;border-radius:7px;padding:4px}
+    .settings-group>button,.settings-group details>button{margin:5px 0 6px 8px;border:1px solid #888;background:#292929;border-radius:7px;padding:6px 8px;min-height:32px}.settings-group>button:hover{background:#555}.section-reset{font-size:11px}
+    .switch{flex:0 0 44px;position:relative;width:44px;height:44px;padding:0;border:0;background:transparent}.switch::before{content:'';position:absolute;inset:12px 4px;border:1px solid #ccc;border-radius:999px;background:#626873}.switch span{position:absolute;top:15px;left:7px;width:14px;height:14px;border-radius:50%;background:white;transition:transform .15s}.switch[aria-checked=true]::before{background:#287aa3}.switch[aria-checked=true] span{transform:translateX(16px)}
+    .settings-group details{padding:6px 8px;border-top:1px solid #666}.settings-group details>summary{min-height:32px;padding:6px 0}.diagnostics-output{white-space:pre-wrap;overflow-wrap:anywhere;padding:7px;background:#252525;border-radius:6px;font:11px/1.4 monospace}
+    .notice:empty{display:none}.notice,.empty-search{padding:5px 2px;font-size:11px;margin:0}footer{padding:6px 2px 0;font-size:10px;color:#ddd}
+    :host([data-motion]) *{transition:none!important;animation:none!important}:host([data-contrast]) .panel,:host([data-contrast]) .settings-group{background:#000;color:white;border-color:white}:host([data-contrast]) .switch::before{border:2px solid white;background:black}:host([data-contrast]) .switch[aria-checked=true]::before{background:white}:host([data-contrast]) .switch[aria-checked=true] span{background:black}
+    @media(forced-colors:active){.switch::before{forced-color-adjust:none;border-color:ButtonText;background:Canvas}.switch span{background:ButtonText}.switch[aria-checked=true]::before{background:Highlight}.switch[aria-checked=true] span{background:HighlightText}}
   `;
   return {version,start};
 })();

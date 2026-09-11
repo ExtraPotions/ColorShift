@@ -3,7 +3,7 @@
 ## 0.1.0
 
 - Introduced ColorShift Anywhere as the primary offering: best-effort theming, enabled separately per website, with origin-scoped settings and immediate restoration when disabled.
-- Added separate page, section, and raised-card shades with subtle card outlines; accent contrast includes the raised surfaces.
+- Shared core now separates repaired page, section, and nested-card surfaces across all editions, with subtle card outlines and accent contrast checks for raised surfaces. Existing tailored styling and protected artwork remain intact.
 - Added amber-and-coral globe/facet branding. Seven tailored editions remain available.
 - Responsive menus choose the roomier side on desktop and use a bottom sheet on mobile. One section opens at a time, with section-only scrolling and a persistent header; extremely small viewports retain a whole-menu scrolling fallback.
 - Simplified theme names, expanded to eight accents plus Site default, and added color previews.

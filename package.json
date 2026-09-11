@@ -5,7 +5,7 @@
   "scripts": {
     "build": "node scripts/build.cjs",
     "build:check": "node scripts/build.cjs --check",
-    "test": "node tests/distribution.cjs && node tests/browser.cjs && node tests/settings.cjs && node tests/visual.cjs && node tests/performance.cjs && node tests/usability.cjs && node tests/menu.cjs && node tests/surfaces.cjs && node tests/core-coverage.cjs && node tests/interaction-states.cjs && node tests/manapool-details.cjs && node tests/steamgifts-accent.cjs && node tests/cardkingdom-prices.cjs && node tests/steamgifts-coverage.cjs && node tests/scryfall-coverage.cjs && node tests/remaining-coverage.cjs && node tests/manapool-contrast.cjs",
+    "test": "node tests/distribution.cjs && node tests/browser.cjs && node tests/settings.cjs && node tests/visual.cjs && node tests/performance.cjs && node tests/usability.cjs && node tests/menu.cjs && node tests/surfaces.cjs && node tests/core-coverage.cjs && node tests/interaction-states.cjs && node tests/manapool-details.cjs && node tests/steamgifts-accent.cjs && node tests/cardkingdom-prices.cjs && node tests/steamgifts-coverage.cjs && node tests/scryfall-coverage.cjs && node tests/remaining-coverage.cjs && node tests/manapool-contrast.cjs && node tests/menu-position.cjs",
     "test:live": "node tests/live.cjs",
     "release:check": "node scripts/release-check.cjs"
   },

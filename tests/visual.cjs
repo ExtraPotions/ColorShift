@@ -15,7 +15,7 @@ const fixture=`<html><head><style>body{margin:0;font:16px/1.5 Arial}header{paddi
   const panel=page.getByRole('dialog'),theme=panel.getByRole('combobox',{name:'Theme',exact:true});
   for(const palette of ['lightGray','darkGray','navy','black','fireRed','leafGreen','heartGold']){
    await theme.selectOption(palette);
-   for(const accent of ['site','blue','green','amber','violet','rose']){
+   for(const accent of ['site','blue','green','amber','violet','rose','teal','coral','silver']){
     await panel.getByRole('combobox',{name:'Accent',exact:true}).selectOption(accent);
     const ratio=await page.locator('#sample-link').evaluate(el=>{
       const lum=color=>color.match(/\d+/g).slice(0,3).map(Number).map(x=>x/255).map(x=>x<=.04045?x/12.92:((x+.055)/1.055)**2.4).reduce((a,x,i)=>a+x*[.2126,.7152,.0722][i],0);

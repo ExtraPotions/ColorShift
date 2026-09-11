@@ -23,14 +23,14 @@ var ColorShift = (() => {
   const SETTINGS_SCHEMA = 1;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
-    system: ['System'], original: ['Original'], lightGray: ['Light Gray','#3f3f3c','#4a4a46','#333330'],
-    darkGray: ['Dark Gray','#252522','#2a2a28','#1c1c1a'],
+    system: ['System'], original: ['Original'], lightGray: ['Graphite','#3f3f3c','#4a4a46','#333330'],
+    darkGray: ['Charcoal','#252522','#2a2a28','#1c1c1a'],
     navy: ['Navy','#1a2332','#243044','#141c28'], black: ['Black','#0a0a0a','#111111','#050505'],
-    fireRed: ['Fire Red','#211516','#382123','#481f22'],
-    leafGreen: ['Leaf Green','#131d17','#213329','#24442f'],
-    heartGold: ['Heart Gold','#211d13','#39301d','#493a1d']
+    fireRed: ['Ember','#211516','#382123','#481f22'],
+    leafGreen: ['Forest','#131d17','#213329','#24442f'],
+    heartGold: ['Antique Gold','#211d13','#39301d','#493a1d']
   };
-  const accents = {site:['Site default',null],blue:['Blue','#5eb0ef'],green:['Green','#63d989'],amber:['Amber','#f0c14b'],violet:['Violet','#b57aef'],rose:['Rose','#f5b0c8']};
+  const accents = {site:['Site default',null],blue:['Blue','#5eb0ef'],green:['Green','#63d989'],amber:['Amber','#f0c14b'],violet:['Violet','#b57aef'],rose:['Rose','#f5b0c8'],teal:['Teal','#78dcca'],coral:['Coral','#ffb09b'],silver:['Silver','#cbd5e1']};
   const shared = [['brighterLinks','Brighter links'],['hideAds','Hide ads / promos']];
   const accessibility = [['reducedMotion','Reduce motion'],['highContrast','High contrast']];
   const memory = new Map();
@@ -192,10 +192,21 @@ var ColorShift = (() => {
       else fab.focus({preventScroll:true});
     }
     function position() {
-      const top=Math.max(8,Math.min(innerHeight-56,state.fabTop ?? innerHeight-64));
+      const viewport=window.visualViewport;
+      const left=viewport?.offsetLeft||0,upper=viewport?.offsetTop||0;
+      const width=viewport?.width||innerWidth,height=viewport?.height||innerHeight;
+      const margin=Math.min(12,width/4,height/4);
+      const top=Math.max(upper+8,Math.min(upper+height-56,state.fabTop ?? upper+height-64));
       fab.style.top=top+'px';
-      panel.style.maxHeight=Math.max(100,innerHeight-24)+'px';
-      if(open) panel.style.top=Math.max(12,Math.min(top-panel.offsetHeight-8,innerHeight-panel.offsetHeight-12))+'px';
+      fab.style.right='auto';fab.style.left=Math.max(left,left+width-64)+'px';
+      panel.style.boxSizing='border-box';
+      panel.style.width=Math.min(300,Math.max(0,width-2*margin))+'px';
+      panel.style.maxHeight=Math.max(0,height-2*margin)+'px';
+      if(open){
+        panel.style.right='auto';
+        panel.style.left=Math.max(left+margin,left+width-panel.offsetWidth-16)+'px';
+        panel.style.top=Math.max(upper+margin,Math.min(top-panel.offsetHeight-8,upper+height-panel.offsetHeight-margin))+'px';
+      }
       // Primary controls keep their saved position; only companions yield.
       coordinateExtraPotionsControls(fab);
       launcher?.publish();
@@ -223,7 +234,13 @@ var ColorShift = (() => {
       site.themeChanged?.(api);
       repairSurfaces();
       for(const [key,control] of controls) {
-        if(control.tagName==='SELECT'||control.tagName==='INPUT') control.value=state[key];
+        if(control.tagName==='SELECT'||control.tagName==='INPUT') {
+          control.value=state[key];
+          if(control.tagName==='SELECT'){
+            const color=key==='accent'?(accents[state.accent][1]||site.accent):(palettes[state.palette][2]||'linear-gradient(135deg,#fafafa 50%,#252522 50%)');
+            control.parentElement.style.setProperty('--preview-color',color);
+          }
+        }
         else control.setAttribute('aria-checked',String(state[key]));
       }
       host.toggleAttribute('data-motion',state.reducedMotion||motion.matches);
@@ -303,8 +320,13 @@ var ColorShift = (() => {
       const header=element('header'),heading=element('div');heading.append(element('h2',{},'ColorShift'),element('p',{},site.name+' · Themes and page settings'));header.append(element('img',{src:site.icon,alt:'',class:'header-icon'}),heading);const close=action(header,'×',()=>setOpen(false));close.className='menu-close';close.setAttribute('aria-label','Close settings');header.append(close);panel.append(header);
       const appearance=section('Appearance');
       for(const [key,label,values] of [['palette','Theme',palettes],['accent','Accent',accents]]) {
-        const select=element('select',{'aria-label':label});for(const [value,[name]] of Object.entries(values))select.append(element('option',{value},name));
-        select.addEventListener('change',()=>set(key,select.value));select.setAttribute('data-setting',key);controls.set(key,select);row(appearance,label,select,descriptions[key]);
+        const select=element('select',{'aria-label':label,class:'color-select'});
+        for(const [value,[name,color,surface]] of Object.entries(values)){
+          const option=element('option',{value},name);
+          option.style.setProperty('--option-color',(key==='accent'?(color||site.accent):(surface||'linear-gradient(135deg,#fafafa 50%,#252522 50%)')));
+          select.append(option);
+        }
+        select.addEventListener('change',()=>set(key,select.value));select.setAttribute('data-setting',key);controls.set(key,select);const picker=element('span',{class:'color-picker'});picker.append(element('span',{class:'color-dot','aria-hidden':'true'}),select);row(appearance,label,picker,descriptions[key]);
       }
       groupReset(appearance,'appearance',['palette','accent','intensity']);
       const pageOptions=appearance;toggles(pageOptions,shared);groupReset(pageOptions,'page settings',shared.map(([key])=>key));
@@ -354,6 +376,11 @@ var ColorShift = (() => {
         else if(!e.shiftKey&&root.activeElement===last){e.preventDefault();first.focus();}
       });
       document.addEventListener('pointerdown',e=>{if(open&&!e.composedPath().includes(host))setOpen(false);});
+      const menuResizeObserver=new ResizeObserver(()=>{if(open)position();});
+      menuResizeObserver.observe(panel);
+      panel.addEventListener('toggle',()=>{if(open)position();},true);
+      window.visualViewport?.addEventListener('resize',position,{passive:true});
+      window.visualViewport?.addEventListener('scroll',position,{passive:true});
       window.addEventListener('resize',position);motion.addEventListener('change',apply);contrast.addEventListener('change',apply);systemTheme.addEventListener('change',()=>{if(state.palette==='system'||state.palette==='original')apply();});
       try {if(typeof GM_registerMenuCommand==='function')GM_registerMenuCommand('ColorShift settings',()=>setOpen(true));}catch(error){console.warn('ColorShift: extension menu registration unavailable',error);}
       site.mount?.(api);apply();updatePage();
@@ -386,6 +413,14 @@ var ColorShift = (() => {
   const UI_CSS=`
     :host{all:initial;font:12px/1.4 Arial,sans-serif;color:#f5f5f5}*,*::before,*::after{box-sizing:border-box}[hidden]{display:none!important}
     button,input,select{font:inherit;color:inherit}button,summary{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #9ad8f8;outline-offset:2px}
+    .color-picker{display:inline-flex;align-items:center;gap:6px;min-width:0}.color-dot{width:12px;height:12px;flex:0 0 12px;border-radius:50%;border:1px solid #888;background:var(--preview-color)}
+    @supports (appearance:base-select){
+      .color-select,.color-select::picker(select){appearance:base-select}
+      .color-select::picker(select){background:var(--menu-control);color:var(--menu-text);border:1px solid var(--menu-border);border-radius:8px;max-height:60dvh;overflow:auto}
+      .color-select option{display:flex;align-items:center;gap:8px;padding:6px 10px}
+      .color-select option::before{content:'';width:12px;height:12px;border-radius:50%;border:1px solid #888;background:var(--option-color);flex-shrink:0}
+      .color-select option:checked{font-weight:bold}.color-select option:hover,.color-select option:focus{background:var(--menu-bg)}
+    }
     .fab{position:fixed;right:16px;width:48px;height:48px;padding:0;z-index:2147483647;border:1px solid #ffffff55;border-radius:13px;background:#121722;box-shadow:0 5px 18px #0006;touch-action:none;overflow:hidden;pointer-events:auto}.fab img{width:100%;height:100%;object-fit:contain;pointer-events:none}.fab:hover{box-shadow:0 0 0 2px #9ad8f8}
     .panel{position:fixed;right:16px;z-index:2147483647;width:min(300px,calc(100vw - 24px));overflow:auto;overscroll-behavior:contain;background:#333;color:#f5f5f5;border:1px solid #777;border-radius:16px;padding:8px;box-shadow:0 12px 30px #0006;pointer-events:auto;font:12px/1.4 Arial,sans-serif}
     header{display:flex;gap:10px;align-items:center;padding:2px 2px 6px}.header-icon{width:32px;height:32px;border-radius:8px}h2{font-size:15px;margin:0;font-weight:800}header p{margin:2px 0 0;font-size:11px;color:#eee}

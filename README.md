@@ -24,9 +24,20 @@ Your userscript manager handles updates. Optional notifications let you know whe
 
 ## Controls
 
-Tap the ColorShift button to open or close settings. Expand a section or use “Find in settings” to reach an option. You can also tap outside the menu to close it. Drag the button vertically to reposition it.
+Tap the ColorShift button to open or close settings. Expand a section to reach an option. Use the × button or tap outside the menu to close it. Drag the button vertically to reposition it.
 
 Choose a palette and accent, or select **System** to follow your device: native site colours in light mode and dark gray in dark mode. Adjust site options and use export/import to transfer settings. Each section has its own reset, which leaves other sections unchanged. Reduced motion, high contrast, diagnostics, and optional update notices are included. Original mode restores site colours while retaining enabled site options.
+
+## What's new in 0.0.3
+
+- A compact menu that matches your palette, with an × close button.
+- More consistent page backgrounds and readable accents, including newly loaded content.
+- ManaPool card contrast, Sets menu, sales-graph accents, rounded profile buttons, and themed breadcrumbs.
+- Improved Card Kingdom, Goodreads, and Genius page colours.
+- Readable SteamGifts/ESGST statistics and links, with category-chip colours preserved.
+- Separate switches for Genius's News, Charts, Videos, Latest, and Community sections, plus an option to hide TCGPlayer support chat.
+
+If something looks off, open **Settings → About & diagnostics → Scan theme coverage** to check the page. Some images, gradients, and site-specific controls still need visual review.
 
 ## Releases
 

@@ -5,12 +5,12 @@ var ColorShift = (() => {
   const SETTINGS_SCHEMA = 1;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
-    system: ['System'], original: ['Original'], lightGray: ['Light gray','#3f3f3c','#4a4a46','#333330'],
-    darkGray: ['Dark gray','#252522','#2a2a28','#1c1c1a'],
+    system: ['System'], original: ['Original'], lightGray: ['Light Gray','#3f3f3c','#4a4a46','#333330'],
+    darkGray: ['Dark Gray','#252522','#2a2a28','#1c1c1a'],
     navy: ['Navy','#1a2332','#243044','#141c28'], black: ['Black','#0a0a0a','#111111','#050505'],
-    fireRed: ['Fire red','#211516','#382123','#481f22'],
-    leafGreen: ['Leaf green','#131d17','#213329','#24442f'],
-    heartGold: ['Heart gold','#211d13','#39301d','#493a1d']
+    fireRed: ['Fire Red','#211516','#382123','#481f22'],
+    leafGreen: ['Leaf Green','#131d17','#213329','#24442f'],
+    heartGold: ['Heart Gold','#211d13','#39301d','#493a1d']
   };
   const accents = {site:['Site default',null],blue:['Blue','#5eb0ef'],green:['Green','#63d989'],amber:['Amber','#f0c14b'],violet:['Violet','#b57aef'],rose:['Rose','#f5b0c8']};
   const shared = [['brighterLinks','Brighter links'],['hideAds','Hide ads / promos']];
@@ -107,7 +107,58 @@ var ColorShift = (() => {
     const diagnosticErrors=[];
     const metrics={updates:0,inspected:0,styles:0};let updateRoots=[document],lastCSS='';
     function query(selector){const found=new Set();for(const node of updateRoots){if(node.nodeType===1){if(node.matches(selector))found.add(node);let parent=node.parentElement?.closest(selector);while(parent){found.add(parent);parent=parent.parentElement?.closest(selector);}}for(const item of node.querySelectorAll(selector))found.add(item);}metrics.inspected+=found.size;return [...found];}
-    function updatePage(roots=[document]){updateRoots=roots;metrics.updates++;try{site.update?.(api);}catch(error){diagnosticErrors.push(String(error?.message||error));if(diagnosticErrors.length>10)diagnosticErrors.shift();}finally{updateRoots=[document];}lastProcessed=Date.now();refreshDiagnostics();}
+    function updatePage(roots=[document]){updateRoots=roots;metrics.updates++;try{site.update?.(api);repairSurfaces();}catch(error){diagnosticErrors.push(String(error?.message||error));if(diagnosticErrors.length>10)diagnosticErrors.shift();}finally{updateRoots=[document];}lastProcessed=Date.now();refreshDiagnostics();}
+    let surfacePalette=null;
+    let coverageReport='Theme coverage: not scanned. Use Scan theme coverage after the page loads.';
+    const protectedSurfaces='[class*="esgst-"],[class*="badge" i],[class*="chip" i],[class*="rating" i],[class*="status" i],[role="progressbar"],[data-colorshift-preserve],svg,canvas,picture,[data-userscript-launcher]';
+    const parseColor=value=>{const n=value.match(/[\d.]+/g)?.map(Number);return n&&n.length>=3?n:null;};
+    const neutral=c=>c&&Math.max(...c.slice(0,3))-Math.min(...c.slice(0,3))<16;
+    const luminance=c=>c.slice(0,3).map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((a,v,i)=>a+v*[.2126,.7152,.0722][i],0);
+    function repairSurfaces(){
+      if(!surfacePalette)return;
+      const nodes=query('main,header,footer,nav,aside,section,article,div,form,ul,li,p,span,h1,h2,h3,h4,label');
+      // Only neutral, opaque surfaces without artwork are eligible. Semantic colours stay owned by the site.
+      for(const node of nodes){
+        node.removeAttribute('data-colorshift-surface');node.removeAttribute('data-colorshift-text');
+        if(node===host||node.closest(protectedSurfaces))continue;
+        const computed=getComputedStyle(node),bg=parseColor(computed.backgroundColor);
+        if(computed.display==='none'||computed.backgroundImage!=='none')continue;
+        if(neutral(bg)&&(bg[3]??1)===1&&node.matches('main,header,footer,nav,aside,section,article,div,form,ul,li')){
+          const rect=node.getBoundingClientRect();
+          if(rect.width>=80&&rect.height>=24&&!surfacePalette.some(c=>c.every((v,i)=>v===bg[i])))node.dataset.colorshiftSurface=node.closest('header,footer,nav')?'header':'surface';
+        }
+        if(![...node.childNodes].some(n=>n.nodeType===3&&n.textContent.trim()))continue;
+        const fg=parseColor(computed.color);if(!neutral(fg))continue;
+        let parent=node,back=null;
+        while(parent){const style=getComputedStyle(parent);if(style.backgroundImage!=='none')break;const color=parseColor(style.backgroundColor);if(color&&(color[3]??1)===1){back=color;break;}parent=parent.parentElement;}
+        if(back&&surfacePalette.some(c=>c.every((v,i)=>v===back[i]))){const a=luminance(fg),b=luminance(back);if((Math.max(a,b)+.05)/(Math.min(a,b)+.05)<4.5)node.dataset.colorshiftText='true';}
+      }
+    }
+    function scanCoverage(){
+      if(!surfacePalette){coverageReport='Theme coverage: Original mode; no theme audit needed.';refreshDiagnostics();return;}
+      const findings=[];let scanned=0,unknown=0,protectedCount=0;
+      const nodes=document.querySelectorAll('main,header,footer,nav,section,article,div,p,span,a,button,input,select,textarea,label,h1,h2,h3,h4');
+      for(const node of nodes){
+        if(node===host||!node.getClientRects().length)continue;
+        if(node.closest(protectedSurfaces)){protectedCount++;continue;}
+        if(scanned>=5000)break;scanned++;
+        const style=getComputedStyle(node);if(style.visibility==='hidden'||style.opacity==='0')continue;
+        const label=node.tagName.toLowerCase()+(node.id?'#'+node.id:node.classList.length?'.'+[...node.classList].slice(0,2).join('.'):'');
+        const bg=parseColor(style.backgroundColor),rect=node.getBoundingClientRect();
+        if(style.backgroundImage!=='none'){unknown++;continue;}
+        if(neutral(bg)&&(bg[3]??1)===1&&rect.width>=80&&rect.height>=24&&!surfacePalette.some(c=>c.every((v,i)=>v===bg[i])))findings.push('Surface outside palette: '+label);
+        if(node.matches(':disabled,[aria-disabled="true"]'))continue;
+        if(!node.matches('input,select,textarea')&&![...node.childNodes].some(n=>n.nodeType===3&&n.textContent.trim()))continue;
+        let parent=node,back=null;
+        while(parent){const s=getComputedStyle(parent),c=parseColor(s.backgroundColor);if(s.backgroundImage!=='none'||Number(s.opacity)<1)break;if(c&&(c[3]??1)>0){if((c[3]??1)===1)back=c;break;}parent=parent.parentElement;}
+        const fg=parseColor(style.color);if(!back||!fg||(fg[3]??1)!==1){unknown++;continue;}
+        const a=luminance(fg),b=luminance(back),ratio=(Math.max(a,b)+.05)/(Math.min(a,b)+.05);
+        const large=parseFloat(style.fontSize)>=24||(parseFloat(style.fontSize)>=18.66&&parseInt(style.fontWeight)>=700);
+        if(ratio<(large?3:4.5))findings.push('Low contrast '+ratio.toFixed(2)+': '+label);
+      }
+      coverageReport=['Theme coverage ('+new Date().toISOString()+'): '+scanned+' elements checked',findings.length+' potential issues · '+unknown+' require visual review · '+protectedCount+' protected elements skipped',...(scanned>=5000?['Scan limited to 5000 elements.']:[]),...findings.slice(0,20),...(findings.length>20?['Additional findings omitted.']:[])].join('\n');
+      refreshDiagnostics();
+    }
     const controls=new Map();
     const motion=matchMedia('(prefers-reduced-motion: reduce)');
     const contrast=matchMedia('(prefers-contrast: more)');
@@ -119,7 +170,7 @@ var ColorShift = (() => {
     }
     function setOpen(value) {
       open=value; panel.hidden=!value; fab.setAttribute('aria-expanded',String(value));
-      if(value) { position();refreshDiagnostics();panel.querySelector('.settings-search').focus(); }
+      if(value) { position();refreshDiagnostics();panel.querySelector('.menu-close').focus(); }
       else fab.focus({preventScroll:true});
     }
     function position() {
@@ -140,12 +191,19 @@ var ColorShift = (() => {
       return result;
     }
     function apply() {
+      coverageReport='Theme coverage: not scanned for current settings. Use Scan theme coverage.';
       const effectiveState={...state,palette:state.palette==='system'?(systemTheme.matches?'darkGray':'original'):state.palette};
       const colors=palettes[effectiveState.palette],accent=readableAccent(accents[state.accent][1]||site.accent,colors);
+      api.theme={palette:effectiveState.palette,colors,accent};
+      surfacePalette=effectiveState.palette==='original'?null:colors.slice(1).map(hex=>hex.slice(1).match(/../g).map(v=>parseInt(v,16)));
+      if(!surfacePalette)for(const node of document.querySelectorAll('[data-colorshift-surface],[data-colorshift-text]')){node.removeAttribute('data-colorshift-surface');node.removeAttribute('data-colorshift-text');}
       const css=site.css(effectiveState,colors,accent)+
+        (surfacePalette?`[data-colorshift-surface="surface"]{background-color:${colors[2]}!important}[data-colorshift-surface="header"]{background-color:${colors[3]}!important}[data-colorshift-text]{color:#eee!important}`:'')+
         ((state.reducedMotion||motion.matches)?'*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}':'')+
         ((state.highContrast||contrast.matches)&&effectiveState.palette!=='original'?'html,body,main,article,section,[role=dialog],[role=menu],input,textarea,select,button{background:#000!important;color:#fff!important;border-color:#fff!important}a{color:#9ad8f8!important}':'');
       if(css!==lastCSS){siteSheet.replaceSync(css);lastCSS=css;metrics.styles++;}
+      site.themeChanged?.(api);
+      repairSurfaces();
       for(const [key,control] of controls) {
         if(control.tagName==='SELECT'||control.tagName==='INPUT') control.value=state[key];
         else control.setAttribute('aria-checked',String(state[key]));
@@ -153,6 +211,11 @@ var ColorShift = (() => {
       host.toggleAttribute('data-motion',state.reducedMotion||motion.matches);
       host.toggleAttribute('data-contrast',state.highContrast||contrast.matches);
       host.style.setProperty('--accent',accent);
+      const native=effectiveState.palette==='original',light=native&&!systemTheme.matches;
+      const menu=native?(light?['#f4f4f2','#ffffff','#e8e8e5']:['#252522','#30302c','#1c1c1a']):colors.slice(1);
+      const high=state.highContrast||contrast.matches;
+      const variables={'--menu-bg':high?'#000':menu[0],'--menu-surface':high?'#000':menu[1],'--menu-control':high?'#000':menu[2],'--menu-text':high?'#fff':light?'#202020':'#f5f5f5','--menu-muted':high?'#fff':light?'#454545':'#ddd','--menu-border':high?'#fff':light?'#888':'#858580','--menu-accent':high?'#fff':light?'#185b88':accent};
+      for(const [key,value]of Object.entries(variables))host.style.setProperty(key,value);
       position();refreshDiagnostics();
       if(state.updateNotifications)checkForUpdate();else {host.removeAttribute('data-update-available');fab.title='ColorShift for '+site.name;if(notice.textContent.startsWith('Update available:'))notice.textContent='';}
     }
@@ -183,9 +246,9 @@ var ColorShift = (() => {
     }
     function diagnosticText() {
       const active=Object.entries(state).filter(([key,value])=>typeof defaults[key]==='boolean'&&value).length;
-      return [`ColorShift ${version}`,`Site: ${site.name} (${location.hostname})`,`Page: ${location.pathname||'/'}`,`Active options: ${active}`,`Page updates: ${metrics.updates} · Elements inspected: ${metrics.inspected} · Style writes: ${metrics.styles}`,`Last processed: ${lastProcessed?new Date(lastProcessed).toISOString():'Not yet'}`,`Errors: ${diagnosticErrors.length}${diagnosticErrors.length?' · '+diagnosticErrors.at(-1):''}`].join('\n');
+      return [`ColorShift ${version}`,`Site: ${site.name} (${location.hostname})`,`Page: ${location.pathname||'/'}`,`Active options: ${active}`,`Page updates: ${metrics.updates} · Elements inspected: ${metrics.inspected} · Style writes: ${metrics.styles}`,`Last processed: ${lastProcessed?new Date(lastProcessed).toISOString():'Not yet'}`,`Errors: ${diagnosticErrors.length}${diagnosticErrors.length?' · '+diagnosticErrors.at(-1):''}`,coverageReport].join('\n');
     }
-    function refreshDiagnostics(){const out=panel?.querySelector('.diagnostics-output');if(out)out.textContent=diagnosticText();const status=panel?.querySelector('.theme-status');if(status)status.textContent=palettes[state.palette][0]+' · '+Object.entries(state).filter(([key,value])=>typeof defaults[key]==='boolean'&&value).length+' options on';}
+    function refreshDiagnostics(){const out=panel?.querySelector('.diagnostics-output');if(out)out.textContent=diagnosticText();}
     const descriptions={
       palette:'System follows your device: native site colours in light mode, dark gray in dark mode.',
       brighterLinks:'Use brighter blue links throughout the page.',hideAds:'Hide recognised advertising and promotional blocks.',
@@ -219,24 +282,7 @@ var ColorShift = (() => {
       const icon=element('img',{src:site.icon,alt:'',draggable:'false'});fab.append(icon);
       fab.dataset.ExtraPotionsControl='primary';
       panel=element('div',{id:'colorshift-panel',role:'dialog','aria-label':'ColorShift for '+site.name+' settings',class:'panel'});panel.hidden=true;
-      const header=element('header'),heading=element('div');heading.append(element('h2',{},'ColorShift'),element('p',{},site.name+' · Themes and page settings'));header.append(element('img',{src:site.icon,alt:'',class:'header-icon'}),heading);panel.append(header);
-      const status=element('div',{class:'status-strip'});status.append(element('strong',{},'Changes save automatically'),element('p',{class:'theme-status'}));panel.append(status);
-      const search=element('input',{type:'search',class:'settings-search',placeholder:'Find in settings…','aria-label':'Find in settings'});panel.append(search);
-      const empty=element('p',{class:'empty-search',role:'status'},'No matching settings.');empty.hidden=true;panel.append(empty);
-      const savedOpen=new Map();
-      search.addEventListener('input',()=>{
-        const term=search.value.trim().toLowerCase();
-        let visible=0;
-        for(const group of panel.querySelectorAll(':scope > .settings-group')){
-          if(term&&!savedOpen.has(group))savedOpen.set(group,group.open);
-          const title=group.querySelector('summary').textContent.toLowerCase(),titleMatch=title.includes(term);
-          let matches=titleMatch;
-          for(const item of group.children){if(item.tagName==='SUMMARY')continue;const match=!term||titleMatch||item.textContent.toLowerCase().includes(term);item.hidden=!match;matches ||= match;}
-          group.hidden=!!term&&!matches;if(!group.hidden)visible++;
-          if(term)group.open=matches;else if(savedOpen.has(group)){group.open=savedOpen.get(group);savedOpen.delete(group);}
-        }
-        empty.hidden=visible>0;position();
-      });
+      const header=element('header'),heading=element('div');heading.append(element('h2',{},'ColorShift'),element('p',{},site.name+' · Themes and page settings'));header.append(element('img',{src:site.icon,alt:'',class:'header-icon'}),heading);const close=action(header,'×',()=>setOpen(false));close.className='menu-close';close.setAttribute('aria-label','Close settings');header.append(close);panel.append(header);
       const appearance=section('Appearance');
       for(const [key,label,values] of [['palette','Theme',palettes],['accent','Accent',accents]]) {
         const select=element('select',{'aria-label':label});for(const [value,[name]] of Object.entries(values))select.append(element('option',{value},name));
@@ -266,6 +312,7 @@ var ColorShift = (() => {
       action(tools,'Reset defaults',()=>{if(!confirm('Reset ColorShift settings?'))return;for(const [k,v]of Object.entries(defaults)){state[k]=v;write(k,v);}apply();notice.textContent='Settings reset.';});
       const diagnostics=element('details');diagnostics.append(element('summary',{},'About & diagnostics'));
       diagnostics.append(element('pre',{class:'diagnostics-output'},diagnosticText()));
+      action(diagnostics,'Scan theme coverage',scanCoverage);
       action(diagnostics,'Copy diagnostics',async()=>{const text=diagnosticText();try{await navigator.clipboard.writeText(text);notice.textContent='Diagnostics copied.';}catch{window.prompt('Copy diagnostics',text);}});tools.append(diagnostics);
       notice=element('p',{role:'status','aria-live':'polite',class:'notice'});panel.append(notice,element('footer',{},'Drag to position · Tap outside to close · v'+version));
       root.append(fab,panel);document.body.append(host);
@@ -289,7 +336,7 @@ var ColorShift = (() => {
         else if(!e.shiftKey&&root.activeElement===last){e.preventDefault();first.focus();}
       });
       document.addEventListener('pointerdown',e=>{if(open&&!e.composedPath().includes(host))setOpen(false);});
-      window.addEventListener('resize',position);motion.addEventListener('change',apply);contrast.addEventListener('change',apply);systemTheme.addEventListener('change',()=>{if(state.palette==='system')apply();});
+      window.addEventListener('resize',position);motion.addEventListener('change',apply);contrast.addEventListener('change',apply);systemTheme.addEventListener('change',()=>{if(state.palette==='system'||state.palette==='original')apply();});
       try {if(typeof GM_registerMenuCommand==='function')GM_registerMenuCommand('ColorShift settings',()=>setOpen(true));}catch(error){console.warn('ColorShift: extension menu registration unavailable',error);}
       site.mount?.(api);apply();updatePage();
       const pending=new Set();
@@ -297,7 +344,6 @@ var ColorShift = (() => {
       const observer=new MutationObserver(records=>{
         for(const record of records){
           if(record.target===style||record.target===host)continue;
-          if(record.attributeName==='style'&&!record.target.matches('#pfh-fab,.pfh-fab,#adpb-settings-fab,[data-userscript-launcher]'))continue;
           if(record.type==='childList'){
             for(const node of record.addedNodes)queue(node);
             if(record.removedNodes.length)queue(record.target);
@@ -325,16 +371,18 @@ var ColorShift = (() => {
     .fab{position:fixed;right:16px;width:48px;height:48px;padding:0;z-index:2147483647;border:1px solid #ffffff55;border-radius:13px;background:#121722;box-shadow:0 5px 18px #0006;touch-action:none;overflow:hidden;pointer-events:auto}.fab img{width:100%;height:100%;object-fit:contain;pointer-events:none}.fab:hover{box-shadow:0 0 0 2px #9ad8f8}
     .panel{position:fixed;right:16px;z-index:2147483647;width:min(300px,calc(100vw - 24px));overflow:auto;overscroll-behavior:contain;background:#333;color:#f5f5f5;border:1px solid #777;border-radius:16px;padding:8px;box-shadow:0 12px 30px #0006;pointer-events:auto;font:12px/1.4 Arial,sans-serif}
     header{display:flex;gap:10px;align-items:center;padding:2px 2px 6px}.header-icon{width:32px;height:32px;border-radius:8px}h2{font-size:15px;margin:0;font-weight:800}header p{margin:2px 0 0;font-size:11px;color:#eee}
-    .status-strip{background:#62404c;border:1px solid #b16480;border-radius:9px;padding:7px 8px;margin-bottom:5px;font-size:11px}.status-strip strong{font-weight:600}.theme-status{margin:1px 0 0;color:#f2e9ed}
-    .settings-search{display:block;width:100%;max-width:none;min-height:30px;border:1px solid #777;background:#252525;border-radius:8px;padding:5px 8px;margin:0 0 5px}.settings-search::placeholder{color:#eee;opacity:1}
     .settings-group{border:1px solid #777;border-radius:9px;background:#444;margin-top:4px;overflow:hidden}.settings-group>summary{list-style:none;min-height:32px;padding:7px 8px;font-weight:700;display:flex;align-items:center;justify-content:space-between}.settings-group>summary::-webkit-details-marker{display:none}.settings-group>summary::after{content:'›';font-size:16px;line-height:1}.settings-group[open]>summary::after{transform:rotate(90deg)}.settings-group[open]>summary{border-bottom:1px solid #666}
     .row{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;padding:6px 8px}.row+.row{border-top:1px solid #ffffff18}.row>span{min-width:0}.row small{display:block;color:#ddd;font-size:10px;line-height:1.4;margin-top:3px}.row select{flex:0 0 108px;width:108px;min-width:0;min-height:32px;background:#292929;border:1px solid #999;border-radius:7px;padding:4px}
     .settings-group>button,.settings-group details>button{margin:5px 0 6px 8px;border:1px solid #888;background:#292929;border-radius:7px;padding:6px 8px;min-height:32px}.settings-group>button:hover{background:#555}.section-reset{font-size:11px}
     .switch{flex:0 0 44px;position:relative;width:44px;height:44px;padding:0;border:0;background:transparent}.switch::before{content:'';position:absolute;inset:12px 4px;border:1px solid #ccc;border-radius:999px;background:#626873}.switch span{position:absolute;top:15px;left:7px;width:14px;height:14px;border-radius:50%;background:white;transition:transform .15s}.switch[aria-checked=true]::before{background:#287aa3}.switch[aria-checked=true] span{transform:translateX(16px)}
     .settings-group details{padding:6px 8px;border-top:1px solid #666}.settings-group details>summary{min-height:32px;padding:6px 0}.diagnostics-output{white-space:pre-wrap;overflow-wrap:anywhere;padding:7px;background:#252525;border-radius:6px;font:11px/1.4 monospace}
-    .notice:empty{display:none}.notice,.empty-search{padding:5px 2px;font-size:11px;margin:0}footer{padding:6px 2px 0;font-size:10px;color:#ddd}
+    .notice:empty{display:none}.notice{padding:5px 2px;font-size:11px;margin:0}footer{padding:6px 2px 0;font-size:10px;color:#ddd}
     :host([data-motion]) *{transition:none!important;animation:none!important}:host([data-contrast]) .panel,:host([data-contrast]) .settings-group{background:#000;color:white;border-color:white}:host([data-contrast]) .switch::before{border:2px solid white;background:black}:host([data-contrast]) .switch[aria-checked=true]::before{background:white}:host([data-contrast]) .switch[aria-checked=true] span{background:black}
     @media(forced-colors:active){.switch::before{forced-color-adjust:none;border-color:ButtonText;background:Canvas}.switch span{background:ButtonText}.switch[aria-checked=true]::before{background:Highlight}.switch[aria-checked=true] span{background:HighlightText}}
+    .panel{background:var(--menu-bg);color:var(--menu-text);border-color:var(--menu-border)}header{gap:8px}header>div{flex:1;min-width:0}header p,.row small,footer{color:var(--menu-muted)}
+    .menu-close{flex:0 0 32px;width:32px;height:32px;align-self:flex-start;padding:0;border:0;border-radius:6px;background:transparent;color:var(--menu-text);font-size:22px;line-height:1}.menu-close:hover{background:var(--menu-surface)}
+    .settings-group{background:var(--menu-surface);border-color:var(--menu-border)}.settings-group[open]>summary,.settings-group details{border-color:var(--menu-border)}.row select,.settings-group>button,.settings-group details>button,.diagnostics-output{background:var(--menu-control);color:var(--menu-text);border-color:var(--menu-border)}.settings-group>button:hover{background:var(--menu-bg)}
+    button:focus-visible,select:focus-visible,summary:focus-visible{outline-color:var(--menu-accent)}.switch[aria-checked=true]::before{background:var(--menu-accent)}.switch[aria-checked=true] span{background:var(--menu-control)}
   `;
   return {version,start};
 })();

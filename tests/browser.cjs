@@ -8,11 +8,11 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
 <ul class="toolbox-links"></ul><div class="card-content-warning">Content warning</div>
 <div class="giveaway__row-outer-wrap" id="entered"><div class="giveaway__row-inner-wrap is-faded">Entered</div></div>
 <div class="giveaway__row-outer-wrap" id="ended"><span title="Ended">Ended</span></div>
-<div class="featured__container">Featured</div><button class="sidebar__entry-insert">Enter giveaway</button>
+<div class="featured__container"><div class="featured__outer-wrap" style="background:linear-gradient(white,#ccc)"><div class="featured__inner-wrap" style="background:white">Featured</div></div></div><button class="sidebar__entry-insert">Enter giveaway</button>
 <div class="esgst-heading-button" style="background:linear-gradient(white,#ccc);color:#6b7a8c">Filters</div>
 <div class="esgst-gf-container" style="background:#e8eaef"><div class="esgst-gf-box">Filter settings</div></div>
 <div class="giveaway__columns"><div class="esgst-gwc" style="background:linear-gradient(white,#ccc);color:#6b7a8c">Chance</div></div>
-<a class="esgst-gc esgst-gc-singleplayer" style="background:#5eb2a1">Singleplayer</a>
+<div class="esgst-gwr" style="background:linear-gradient(white,#ccc);color:#6b7a8c"><span>20:1</span></div><a class="esgst-gc esgst-gc-singleplayer" style="background:#5eb2a1;color:#123456">Singleplayer</a>
 <div class="fanatical_description" style="background:#dde0e7">Promotion</div>
 <a role="button" class="button-n manapool bg-blue-700" id="site-control" style="background:linear-gradient(white,#ccc);color:#444">Shop</a>
 <div class="search-results" id="tcg-grid"><div class="search-result" id="tcg-in-stock"><div class="search-result__content" style="background:linear-gradient(white,#ccc);color:#444">Lightning Bolt in stock</div></div>
@@ -20,12 +20,16 @@ const fixture=`<html><head><style>button{padding:40px;border-radius:0}label{disp
 <div class="listing-item" id="tcg-listing" style="padding:16px">Seller listing</div>
 <div class="marketplace__content" id="tcg-canvas" style="background:#f8f9fa;height:48px">Homepage canvas</div>
 <div class="merchandising-filmstrip product-carousel" id="tcg-merch">Recommended products</div>
-<div class="martech-promos-banner" id="tcg-promo">Sponsored promo</div>
+<iframe id="forethought-chat"></iframe><iframe id="unrelated-frame"></iframe><div class="martech-promos-banner" id="tcg-promo">Sponsored promo</div>
+<div id="landing-wrapper"><section class="section-wrapper"><div class="section-container dark-section">Section</div><div class="img-wrapper shape-square" style="background:linear-gradient(white,#ccc)"><div class="edition-img" style="background-image:url(https://example.invalid/art.png)">Artwork</div></div></section></div>
+<div class="desktop-menu-content open" style="background:white">Menu</div><a class="desktop-menu-callout rounded-pill" style="background:orange;color:navy">Sell Us Your Cards!</a>
+<footer id="footer"><div class="bg-ck-light-blue-gradient" style="background:linear-gradient(white,blue)"><span class="footer-callout-title">Footer</span></div></footer>
+<div id="autocomplete" class="rounded-pill" style="background:white"><form id="header-search-form"><input id="header-search-input" placeholder="Search Card Kingdom"><button class="input-icon">Search</button></form></div><ul id="autoCompleteSearchResults"><li>Suggestion</li></ul>
 <form class="sidesearch" id="ck-filters"><div class="filterContainer"><button class="sideSearchApply btn btn-primary">Apply filters</button></div></form>
 <div class="productItemWrapper productCardWrapper" id="ck-in-stock"><div class="itemContentWrapper"><div class="productDetailTitle">Lightning Bolt</div><div class="addToCartByType oneRow"><span class="stylePrice">$1.99</span><button class="addToCartButton btn">Add to Cart</button></div></div></div>
 <div class="productItemWrapper productCardWrapper" id="ck-sold"><div class="outOfStockNotice">Out of stock.</div></div>
-<div class="mainContent" id="gr-reading"><div class="elementList" id="gr-book">A book</div><div class="ReviewCard" id="gr-review">A review</div><section id="gr-recommendations"><h2>Readers also enjoyed</h2></section></div>
-<main class="Page__Container" id="gn-page"><div data-lyrics-container="true" id="gn-lyrics">Lyrics</div><div class="Annotation__Container" id="gn-annotation">Annotation</div><iframe id="gn-media"></iframe><section id="gn-recommendations"><h2>You might also like</h2></section></main>
+<div class="gr-newsfeed" style="color:#333"><div class="gr-newsfeedItem" style="background:white"><div class="gr-childNewsfeedItem u-defaultType" style="color:#333">Update</div><div class="gr-commentForm" style="background:#ddd">Comment</div></div></div><div class="mainContent" id="gr-reading"><div class="elementList" id="gr-book">A book</div><div class="ReviewCard" id="gr-review">A review</div><section id="gr-recommendations"><h2>Readers also enjoyed</h2></section></div>
+<nav id="sticky-nav" style="background:yellow"><form class="StickyNavSearch-desktop__Form-sc-test">Search</form></nav><footer class="PageFooter-desktop__Container-sc-test"><div class="PageFooter-desktop__Section-sc-test" style="background:white">Footer</div></footer><main class="Page__Container" id="gn-page"><section id="featured-stories" class="HomeContent-desktop__Section-sc-test" style="background:white">News</section><section id="top-songs" class="HomeContent-desktop__Section-sc-test">Charts</section><section id="videos" class="HomeContent-desktop__Section-sc-test">Videos</section><section id="gn-latest" class="HomeContent-desktop__Section-sc-test"><div class="PageGrid-desktop-sc-test" style="background:white"><h2>Latest</h2>Latest stories</div></section><section id="community" class="HomeContent-desktop__Section-sc-test">Community</section><div data-lyrics-container="true" id="gn-lyrics">Lyrics</div><div class="Annotation__Container" id="gn-annotation">Annotation</div><iframe id="gn-media"></iframe><section id="gn-recommendations"><h2>You might also like</h2></section></main>
 <button id="pfh-fab" data-userscript-launcher="userscript-launcher-v1" data-launcher-owner="ExtraPotions" data-launcher-id="fixture-companion" data-launcher-priority="50" data-launcher-preferred-position="right-bottom" data-launcher-shortcuts='["Alt+G"]' style="position:fixed;right:16px;bottom:16px;width:48px;height:48px;padding:0">P</button></body></html>`;
 const version=require('../package.json').version;
 (async()=>{
@@ -43,6 +47,7 @@ const version=require('../package.json').version;
       await context.addInitScript({content:siteCode});
       const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
       await page.goto('https://'+site+'.com/');
+      await page.locator('#colorshift-fab').waitFor();
       assert.equal(await page.evaluate(()=>localStorage.getItem('gm-settingsSchema')),'1','settings schema is initialized');
       const fab=page.locator('#colorshift-fab');await fab.waitFor();
       await page.waitForFunction(()=>document.getElementById('colorshift-root')?.dataset.launcherOccupiedArea);
@@ -62,7 +67,13 @@ const version=require('../package.json').version;
       {
         for(const palette of ['lightGray','darkGray','navy','black','fireRed','leafGreen','heartGold']){
           await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption(palette);
-          for(const selector of (site==='steamgifts'?['.esgst-heading-button','.esgst-gf-container','.esgst-gwc','.esgst-gc','.fanatical_description']:site==='tcgplayer'?['#site-control','.search-result__content','.listing-item']:site==='cardkingdom'?['#ck-filters','#ck-in-stock','.addToCartButton']:site==='goodreads'?['#gr-reading','#gr-review']:site==='genius'?['#gn-page','#gn-lyrics']:['#site-control'])){
+          if(site==='steamgifts'){
+            assert.equal(await page.locator('.esgst-gc').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(94, 178, 161)');
+            assert.equal(await page.locator('.esgst-gc').evaluate(e=>getComputedStyle(e).color),'rgb(18, 52, 86)');
+            assert.equal(await page.locator('.esgst-gwc').evaluate(e=>getComputedStyle(e).backgroundImage),'none');
+          }
+          if(site==='cardkingdom')assert.match(await page.locator('.edition-img').evaluate(e=>getComputedStyle(e).backgroundImage),/art.png/);
+          for(const selector of (site==='steamgifts'?['.esgst-heading-button','.esgst-gf-container','.esgst-gwc','.esgst-gwr','.featured__outer-wrap','.featured__inner-wrap','.fanatical_description']:site==='tcgplayer'?['#site-control','.search-result__content','.listing-item']:site==='cardkingdom'?['#ck-filters','#ck-in-stock','.addToCartButton','.desktop-menu-callout','.desktop-menu-content','#footer .bg-ck-light-blue-gradient','#autocomplete','#autoCompleteSearchResults','#landing-wrapper .section-container','#landing-wrapper .img-wrapper']:site==='goodreads'?['#gr-reading','#gr-review','.gr-newsfeed','.gr-newsfeedItem','.gr-childNewsfeedItem','.gr-commentForm']:site==='genius'?['#gn-page','#gn-lyrics','#sticky-nav','.PageFooter-desktop__Section-sc-test','#featured-stories','.PageGrid-desktop-sc-test']:['#site-control'])){
             const style=await page.locator(selector).evaluate(el=>{const s=getComputedStyle(el);return {bg:s.backgroundColor,fg:s.color,image:s.backgroundImage};});
             assert.equal(style.image,'none');
             const luminance=color=>{const c=color.match(/\d+/g).slice(0,3).map(Number).map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return c[0]*.2126+c[1]*.7152+c[2]*.0722;};
@@ -74,6 +85,22 @@ const version=require('../package.json').version;
         if(site==='scryfall')assert.equal(nativeImage,'none'); // CSP rejects fixture inline styles.
         else assert.match(nativeImage,/linear-gradient/);
         await panel.getByRole('combobox',{name:'Theme',exact:true}).selectOption('darkGray');
+      }
+      if(site==='tcgplayer'){
+        const support=panel.getByRole('switch',{name:'Hide support chat',exact:true});
+        assert(await page.locator('#forethought-chat').isVisible());await support.click();
+        assert.equal(await page.locator('#forethought-chat').isVisible(),false);assert(await page.locator('#unrelated-frame').isVisible());
+        await support.click();assert(await page.locator('#forethought-chat').isVisible());
+      }
+      if(site==='genius'){
+        const sections={Community:'#community',Latest:'#gn-latest',Videos:'#videos',Charts:'#top-songs',News:'#featured-stories'};
+        for(const [name,selector] of Object.entries(sections)){
+          const control=panel.getByRole('switch',{name:'Hide '+name+' section',exact:true});
+          assert.equal(await control.getAttribute('aria-checked'),'false');await control.click();
+          assert.equal(await page.locator(selector).isVisible(),false);
+          for(const other of Object.values(sections).filter(s=>s!==selector))assert(await page.locator(other).isVisible());
+          await control.click();assert(await page.locator(selector).isVisible());
+        }
       }
       for(const button of await panel.getByRole('switch').all()) {
         const before=await button.getAttribute('aria-checked');await button.click();assert.equal(await button.getAttribute('aria-checked'),String(before!=='true'));
@@ -123,7 +150,7 @@ const version=require('../package.json').version;
       assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).backgroundColor),'rgba(0, 0, 0, 0)');
       await page.keyboard.press('Escape');assert.equal(await panel.isVisible(),false);
       await page.keyboard.press('Alt+g');assert.equal(await panel.isVisible(),false);await fab.click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));assert.equal(await panel.isVisible(),true);
-      assert.equal(await panel.getByRole('textbox',{name:'Open menu shortcut'}).count(),0);assert.equal(await panel.getByRole('button',{name:/^Close/}).count(),0);
+      assert.equal(await panel.getByRole('textbox',{name:'Open menu shortcut'}).count(),0);assert.equal(await panel.getByRole('button',{name:'Close settings',exact:true}).count(),1);
       page.once('dialog',dialog=>dialog.accept('{"colorShift":true,"palette":"black"}'));
       await panel.getByRole('button',{name:'Import',exact:true}).click();assert.equal(await panel.getByRole('combobox',{name:'Theme',exact:true}).inputValue(),'black');
       page.once('dialog',dialog=>dialog.accept('{"colorShift":true,"palette":"not-a-palette"}'));

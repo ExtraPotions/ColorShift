@@ -564,6 +564,12 @@ var ColorShift = (() => {
     button,input,select{font:inherit;color:inherit}button,summary{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #9ad8f8;outline-offset:2px}
     :host([data-pride]) .panel>header,:host([data-pride]) .settings-group[open]>summary{background-image:linear-gradient(90deg,#ef6572,#f4ad62,#ead96c,#70cd91,#72b6f1,#bd94ea);background-size:100% 3px;background-repeat:no-repeat;background-position:bottom;padding-bottom:7px}
     :host([data-pride]) .switch[aria-checked=true]::before{background:linear-gradient(90deg,#ef6572,#f4ad62,#ead96c,#70cd91,#72b6f1,#bd94ea)}
+    :host([data-pride]){--pride-rainbow:linear-gradient(90deg,#ef6572,#f4ad62,#ead96c,#70cd91,#72b6f1,#bd94ea);--pride-wash:linear-gradient(100deg,#ef657218,#f4ad6218,#ead96c18,#70cd9118,#72b6f118,#bd94ea18)}
+    :host([data-pride]) .panel{background-image:var(--pride-wash)}
+    :host([data-pride]) .settings-group[open],:host([data-pride]) .settings-group:has(>summary:hover){border-color:transparent;background-image:linear-gradient(var(--menu-surface),var(--menu-surface)),var(--pride-rainbow);background-origin:padding-box,border-box;background-clip:padding-box,border-box;box-shadow:none}
+    :host([data-pride]) :is(.row:hover,.row:focus-within,.settings-group>summary:hover,.settings-group>summary:focus-visible,.theme-choices button:hover,.theme-choices button:focus-visible,.theme-choices button[aria-pressed=true],.group-tools button:hover,.menu-close:hover){background-image:var(--pride-wash);box-shadow:inset 0 -2px #ffffff40}
+    :host([data-pride]) .theme-choices button[aria-pressed=true]{border-color:transparent;background-image:linear-gradient(var(--menu-control),var(--menu-control)),var(--pride-rainbow);background-origin:padding-box,border-box;background-clip:padding-box,border-box}
+    :host([data-pride]) .fab:hover{background-image:var(--pride-rainbow);box-shadow:0 0 0 2px #bd94ea,0 0 16px #72b6f166}
     .theme-pickers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:6px}
     .theme-field{min-width:0;font-size:11px}.theme-field>span{display:block;margin-bottom:4px}
     .settings-group .theme-chooser{padding:0;border:0;margin:0}

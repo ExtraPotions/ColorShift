@@ -116,13 +116,14 @@ var ColorShift = (() => {
     function updatePage(roots=[document]){updateRoots=roots;metrics.updates++;try{site.update?.(api);repairSurfaces();}catch(error){diagnosticErrors.push(String(error?.message||error));if(diagnosticErrors.length>10)diagnosticErrors.shift();}finally{updateRoots=[document];}lastProcessed=Date.now();refreshDiagnostics();}
     let surfacePalette=null;
     let coverageReport='Theme coverage: not scanned. Use Scan theme coverage after the page loads.';
+    let fullCoverageReport=coverageReport;
     const protectedSurfaces='[class*="esgst-"],[class*="badge" i],[class*="chip" i],[class*="rating" i],[class*="status" i],[role="progressbar"],[data-colorshift-preserve],svg,canvas,picture,[data-userscript-launcher]';
     const parseColor=value=>{const n=value.match(/[\d.]+/g)?.map(Number);return n&&n.length>=3?n:null;};
     const chroma=c=>Math.max(...c.slice(0,3))-Math.min(...c.slice(0,3));
     const neutral=c=>c&&chroma(c)<16;
     // Modern sites often tint their neutral containers blue/green. Treat low-chroma
     // dark and light tints as surfaces while leaving saturated semantic colours alone.
-    const neutralSurface=c=>c&&chroma(c)<=42&&Math.max(...c.slice(0,3))<248;
+    const neutralSurface=c=>c&&(neutral(c)||chroma(c)<=42);
     const ownedTextStyles=new WeakMap();
     function setReadableText(node,value){
       if(value)node.style.setProperty('--colorshift-readable-text',value);
@@ -211,7 +212,7 @@ var ColorShift = (() => {
     }
     function scanCoverage(){
       if(!surfacePalette){coverageReport='Theme coverage: Original mode; no theme audit needed.';refreshDiagnostics();return;}
-      const findings=[];let scanned=0,unknown=0,protectedCount=0;
+      const findings=[],visualReview=[];let scanned=0,unknown=0,protectedCount=0;
       const nodes=document.querySelectorAll('main,header,footer,nav,section,article,div,p,span,a,button,input,select,textarea,label,h1,h2,h3,h4');
       for(const node of nodes){
         if(node===host||!node.getClientRects().length||visuallyHidden(node))continue;
@@ -220,18 +221,20 @@ var ColorShift = (() => {
         const style=getComputedStyle(node);if(style.visibility==='hidden'||style.opacity==='0')continue;
         const label=node.tagName.toLowerCase()+(node.id?'#'+node.id:node.classList.length?'.'+[...node.classList].slice(0,2).join('.'):'');
         const bg=parseColor(style.backgroundColor),rect=node.getBoundingClientRect();
-        if(style.backgroundImage!=='none'){unknown++;continue;}
+        if(style.backgroundImage!=='none'){unknown++;if(visualReview.length<100)visualReview.push('Visual review: '+label+' (background image or gradient)');continue;}
         if(neutralSurface(bg)&&(bg[3]??1)===1&&rect.width>=80&&rect.height>=24&&!surfacePalette.some(c=>c.every((v,i)=>v===bg[i])))findings.push('Surface outside palette: '+label);
         if(node.matches(':disabled,[aria-disabled="true"]'))continue;
         if(!node.matches('input,select,textarea')&&![...node.childNodes].some(n=>n.nodeType===3&&n.textContent.trim()))continue;
         let parent=node,back=null;
         while(parent){const s=getComputedStyle(parent),c=parseColor(s.backgroundColor);if(s.backgroundImage!=='none'||Number(s.opacity)<1)break;if(c&&(c[3]??1)>0){if((c[3]??1)===1)back=c;break;}parent=parent.parentElement;}
-        const fg=parseColor(style.color);if(!back||!fg||(fg[3]??1)!==1){unknown++;continue;}
+        const fg=parseColor(style.color);if(!back||!fg||(fg[3]??1)!==1){unknown++;if(visualReview.length<100)visualReview.push('Visual review: '+label+' (unresolved colors)');continue;}
         const a=luminance(fg),b=luminance(back),ratio=(Math.max(a,b)+.05)/(Math.min(a,b)+.05);
         const large=parseFloat(style.fontSize)>=24||(parseFloat(style.fontSize)>=18.66&&parseInt(style.fontWeight)>=700);
         if(ratio<(large?3:4.5))findings.push('Low contrast '+ratio.toFixed(2)+': '+label);
       }
-      coverageReport=['Theme coverage ('+new Date().toISOString()+'): '+scanned+' elements checked',findings.length+' potential issues · '+unknown+' require visual review · '+protectedCount+' protected elements skipped',...(scanned>=5000?['Scan limited to 5000 elements.']:[]),...findings.slice(0,20),...(findings.length>20?['Additional findings omitted.']:[])].join('\n');
+      const header=['Theme coverage ('+new Date().toISOString()+'): '+scanned+' elements checked',findings.length+' potential issues · '+unknown+' require visual review · '+protectedCount+' protected elements skipped',...(scanned>=5000?['Scan limited to 5000 elements.']:[])];
+      fullCoverageReport=[...header,'','Potential issues (complete):',...(findings.length?findings:['None recorded']),'','Visual-review candidates (complete scan, capped at 100):',...(visualReview.length?visualReview:['None recorded'])].join('\n');
+      coverageReport=[...header,...findings.slice(0,20),...(findings.length>20?['Additional findings omitted.']:[]),'','Top visual-review candidates (up to 100):',...(visualReview.length?visualReview:['None recorded'])].join('\n');
       refreshDiagnostics();
     }
     const controls=new Map();
@@ -496,10 +499,10 @@ var ColorShift = (() => {
         } catch {notice.textContent='Import failed: invalid ColorShift settings.';}
       });
       action(tools,'Reset defaults',()=>{if(!confirm('Reset ColorShift settings?'))return;for(const [k,v]of Object.entries(defaults)){state[k]=v;write(k,v);}apply();notice.textContent='Settings reset.';});
-      const diagnostics=element('details');diagnostics.append(element('summary',{},'About & diagnostics'));
+      const diagnostics=section('About & diagnostics');diagnostics.append(element('p',{},'Run a deeper scan to find contrast issues and surfaces that need visual review.'));
       diagnostics.append(element('pre',{class:'diagnostics-output'},diagnosticText()));
       action(diagnostics,'Scan theme coverage',scanCoverage);
-      action(diagnostics,'Copy diagnostics',async()=>{const text=diagnosticText();try{await navigator.clipboard.writeText(text);notice.textContent='Diagnostics copied.';}catch{window.prompt('Copy diagnostics',text);}});tools.append(diagnostics);
+      action(diagnostics,'Copy diagnostics',async()=>{const text=diagnosticText().replace(coverageReport,fullCoverageReport);try{await navigator.clipboard.writeText(text);notice.textContent='Complete diagnostics copied.';}catch{window.prompt('Copy complete diagnostics',text);}});panel.append(diagnostics);
       notice=element('p',{role:'status','aria-live':'polite',class:'notice'});const footer=element('footer',{class:'menu-footer'});footer.append(element('span',{class:'footer-status',role:'status'}),element('a',{href:'https://github.com/ExtraPotions/ColorShift/releases/tag/colorshift-'+version,target:'_blank',rel:'noopener noreferrer','aria-label':'Release notes for ColorShift '+version},'v'+version));panel.append(notice,footer);
       for(const group of panel.querySelectorAll(':scope > .settings-group')){
         const content=element('div',{class:'section-content'});
@@ -508,7 +511,7 @@ var ColorShift = (() => {
       }
       if(site.anywhere){const toggle=controls.get('enabled'),row=toggle.closest('.row');footer.insertBefore(toggle,footer.lastElementChild);row.remove();}
       const tabs=element('div',{class:'menu-tabs',role:'group','aria-label':'Settings sections'}),groups=[...panel.querySelectorAll(':scope>.settings-group')];panel.insertBefore(tabs,groups[0]);
-      for(const group of groups){const summary=group.querySelector(':scope>summary'),button=element('button',{type:'button','aria-expanded':String(group.open)},summary.textContent);group.classList.add('menu-section');button.addEventListener('click',()=>{const next=!group.open;for(const other of groups)other.open=false;group.open=next;});group.addEventListener('toggle',()=>button.setAttribute('aria-expanded',String(group.open)));tabs.append(button);}
+      for(const group of groups){const summary=group.querySelector(':scope>summary'),button=element('button',{type:'button','aria-expanded':String(group.open)},summary.textContent==='About & diagnostics'?'Diagnostics':summary.textContent);group.classList.add('menu-section');button.addEventListener('click',()=>{const next=!group.open;for(const other of groups)other.open=false;group.open=next;});group.addEventListener('toggle',()=>button.setAttribute('aria-expanded',String(group.open)));tabs.append(button);}
       root.append(fab,panel);document.body.append(host);
       launcher=declareLauncher(host,()=>[fab,panel],{owner:'ExtraPotions',id:'colorshift-'+site.name.toLowerCase(),priority:100,preferredPosition:'right-bottom'});
       style=element('style',{id:'colorshift-site-style'});document.head.append(style);

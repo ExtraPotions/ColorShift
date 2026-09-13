@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.3
+
+- Anywhere now starts enabled on new sites with Original appearance selected, while the menu stays collapsed.
+
+
 ## 0.2.2
 
 - Improved muted-label contrast on shaded backgrounds, including Bluesky.

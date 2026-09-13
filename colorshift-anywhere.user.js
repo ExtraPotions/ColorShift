@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           ColorShift Anywhere
 // @namespace      https://github.com/ExtraPotions/ColorShift
-// @version        0.2.2
+// @version        0.2.3
 // @description    Theme palettes, accessible settings and site enhancements.
 // @author         ExtraPotions
 // @license        CC-BY-NC-4.0
@@ -20,7 +20,7 @@
 /* ColorShift: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ColorShift = (() => {
   'use strict';
-  const version = '0.2.2';
+  const version = '0.2.3';
   const SETTINGS_SCHEMA = 1;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -113,6 +113,7 @@ var ColorShift = (() => {
     if(site.anywhere){if(window.top!==window.self)return;storagePrefix="anywhere:"+location.origin+":";}
     const defaults={palette:'darkGray',accent:'site',intensity:'normal',fabTop:null,updateNotifications:false};
     for(const [key] of [...shared,...site.options,...accessibility]) defaults[key]=false;
+    if(site.anywhere){defaults.enabled=true;defaults.palette='original';}
     const state={...defaults};
     function valid(key,value) {
       if(key==='palette') return Object.hasOwn(palettes,value);
@@ -554,7 +555,6 @@ var ColorShift = (() => {
       window.addEventListener('resize',position);motion.addEventListener('change',apply);contrast.addEventListener('change',apply);systemTheme.addEventListener('change',()=>{if(state.palette==='system'||state.palette==='original')apply();});
       try {if(typeof GM_registerMenuCommand==='function')GM_registerMenuCommand('ColorShift settings',()=>setOpen(true));}catch(error){console.warn('ColorShift: extension menu registration unavailable',error);}
       site.mount?.(api);apply();updatePage();
-      if(site.anywhere&&!state.enabled)setOpen(true,false);
       const pending=new Set();
       function queue(node){if(!node)return;if(node.nodeType!==1&&node.nodeType!==9)node=node.parentElement;if(!node||node===host||node===style||host.contains(node))return;pending.add(node);if(pending.size>40){pending.clear();pending.add(document);} }
       const observer=new MutationObserver(records=>{

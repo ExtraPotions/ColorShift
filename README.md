@@ -4,7 +4,7 @@
 
 Your palette, across the web. Best-effort website theming, with nine complementary accents and a menu that stays in view.
 
-**0.2.2** · [Download ColorShift Anywhere](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-anywhere.user.js)
+**0.2.3** · [Download ColorShift Anywhere](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-anywhere.user.js)
 
 ## Get started
 

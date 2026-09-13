@@ -139,6 +139,9 @@ var ColorShift = (() => {
     const parseColor=value=>{const n=value.match(/[\d.]+/g)?.map(Number);return n&&n.length>=3?n:null;};
     const chroma=c=>Math.max(...c.slice(0,3))-Math.min(...c.slice(0,3));
     const neutral=c=>c&&chroma(c)<16;
+    // Modern sites often tint their neutral containers blue/green. Treat low-chroma
+    // dark and light tints as surfaces while leaving saturated semantic colours alone.
+    const neutralSurface=c=>c&&chroma(c)<=42&&Math.max(...c.slice(0,3))<248;
     const ownedTextStyles=new WeakMap();
     function setReadableText(node,value){
       if(value)node.style.setProperty('--colorshift-readable-text',value);
@@ -170,7 +173,7 @@ var ColorShift = (() => {
         }
         const layoutSurface=node.matches('main,header,footer,nav,aside,section,article,div,form,ul,li,h1,h2,h3,h4')||
           (node.matches('span,label,a')&&['block','inline-block','flex','inline-flex','grid','inline-grid'].includes(computed.display));
-        if((gradient||(neutral(bg)&&(bg[3]??1)===1))&&layoutSurface){
+        if((gradient||(neutralSurface(bg)&&(bg[3]??1)===1))&&layoutSurface){
           const rect=node.getBoundingClientRect();
           if(rect.width>=80&&rect.height>=24&&(gradient||!surfacePalette.some(c=>c.every((v,i)=>v===bg[i])))){
             let level=node.closest('header,footer,nav')?'header':'surface';
@@ -186,7 +189,7 @@ var ColorShift = (() => {
         const fg=parseColor(computed.color);if(!fg)continue;
         let parent=node,back=null;
         while(parent){const style=getComputedStyle(parent);if(style.backgroundImage!=='none')break;const color=parseColor(style.backgroundColor);if(color&&(color[3]??1)===1){back=color;break;}parent=parent.parentElement;}
-        if(back&&(neutral(fg)||neutral(back)||(chroma(fg)<=64&&chroma(back)<=32)||node.matches('a')||surfacePalette.some(c=>c.every((v,i)=>v===back[i])))){
+        if(back&&(neutral(fg)||neutralSurface(back)||(chroma(fg)<=64&&chroma(back)<=32)||node.matches('a')||surfacePalette.some(c=>c.every((v,i)=>v===back[i])))){
           const a=luminance(fg),b=luminance(back);
           if((Math.max(a,b)+.05)/(Math.min(a,b)+.05)<4.5){
             if(neutral(fg)||node.matches('a'))node.dataset.colorshiftText=b>.179?'dark':'light';
@@ -237,7 +240,7 @@ var ColorShift = (() => {
         const label=node.tagName.toLowerCase()+(node.id?'#'+node.id:node.classList.length?'.'+[...node.classList].slice(0,2).join('.'):'');
         const bg=parseColor(style.backgroundColor),rect=node.getBoundingClientRect();
         if(style.backgroundImage!=='none'){unknown++;continue;}
-        if(neutral(bg)&&(bg[3]??1)===1&&rect.width>=80&&rect.height>=24&&!surfacePalette.some(c=>c.every((v,i)=>v===bg[i])))findings.push('Surface outside palette: '+label);
+        if(neutralSurface(bg)&&(bg[3]??1)===1&&rect.width>=80&&rect.height>=24&&!surfacePalette.some(c=>c.every((v,i)=>v===bg[i])))findings.push('Surface outside palette: '+label);
         if(node.matches(':disabled,[aria-disabled="true"]'))continue;
         if(!node.matches('input,select,textarea')&&![...node.childNodes].some(n=>n.nodeType===3&&n.textContent.trim()))continue;
         let parent=node,back=null;

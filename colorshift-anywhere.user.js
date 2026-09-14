@@ -125,7 +125,7 @@ var ColorShift = (() => {
     const storedSchema=Number(read(SCHEMA_KEY,0))||0;
     for(const key of Object.keys(defaults)) { const value=read(key,defaults[key]); if(valid(key,value)) state[key]=value; }
     if(storedSchema<SETTINGS_SCHEMA) {
-      if(storedSchema>0) { for(const [key,value] of Object.entries(defaults)) state[key]=value; if(site.anywhere) state.enabled=true; }
+      if(storedSchema>0) { const savedFabTop=state.fabTop; for(const [key,value] of Object.entries(defaults)) state[key]=value; state.fabTop=savedFabTop; if(site.anywhere) state.enabled=true; }
       for(const [key,value] of Object.entries(state)) write(key,value);
       write(SCHEMA_KEY,SETTINGS_SCHEMA);
     }
@@ -654,7 +654,7 @@ var ColorShift = (() => {
     .notice:empty{display:none}.notice{padding:5px 2px;font-size:11px;margin:0}footer{padding:3px 2px 0;font-size:10px;color:#ddd}
     :host([data-motion]) *{transition:none!important;animation:none!important}:host([data-contrast]) .panel,:host([data-contrast]) .settings-group{background:#000;color:white;border-color:white}:host([data-contrast]) .switch::before{border:2px solid white;background:black}:host([data-contrast]) .switch[aria-checked=true]::before{background:white}:host([data-contrast]) .switch[aria-checked=true] span{background:black}
     @media(forced-colors:active){.switch::before{forced-color-adjust:none;border-color:ButtonText;background:Canvas}.switch span{background:ButtonText}.switch[aria-checked=true]::before{background:Highlight}.switch[aria-checked=true] span{background:HighlightText}}
-    .panel{background:var(--menu-bg);color:var(--menu-text);border-color:var(--menu-border)}header{gap:6px}header>div{flex:1;min-width:0}header p,.row small,footer{color:var(--menu-muted)}
+    .panel{background:var(--menu-bg,#252522);color:var(--menu-text,#f5f5f5);border-color:var(--menu-border,#858580)}header{gap:6px}header>div{flex:1;min-width:0}header p,.row small,footer{color:var(--menu-muted,#ddd)}
     .menu-close{flex:0 0 32px;width:32px;height:32px;align-self:flex-start;padding:0;border:0;border-radius:6px;background:transparent;color:var(--menu-text);font-size:22px;line-height:1}.menu-close:hover{background:var(--menu-surface)}
     .settings-group{background:var(--menu-surface);border-color:var(--menu-border)}.settings-group[open]>summary,.settings-group details{border-color:var(--menu-border)}.row select,.section-content>button,.settings-group details>button,.diagnostics-output{background:var(--menu-control);color:var(--menu-text);border-color:var(--menu-border)}.section-content>button:hover{background:var(--menu-bg)}
     .switch[aria-checked=false]::before{background:#626873;border:0}.switch[aria-checked=false] span{background:white}
@@ -662,7 +662,6 @@ var ColorShift = (() => {
   `;
   return {version,start};
 })();
-
 
 /* Site adapters: theme surfaces and features are separate from the shared menu. */
 function colorShiftSiteModule(siteId) {

@@ -3,7 +3,7 @@ const {chromium}=require('playwright');const fs=require('fs'),assert=require('no
 for(const site of ['manapool','scryfall','steamgifts','tcgplayer','cardkingdom','goodreads','genius']){
 const context=await browser.newContext({viewport:{width:360,height:640}});await context.route(`https://${site}.com/**`,r=>r.fulfill({contentType:'text/html',body:'<main><h1>Page content</h1></main>'}));await context.addInitScript({content:fs.readFileSync(require("./edition-path.cjs")(`colorshift-${site}.user.js`),'utf8')});
 const page=await context.newPage();await page.goto(`https://${site}.com/`);const fab=page.locator('#colorshift-fab');await fab.click();const panel=page.getByRole('dialog');
-assert.equal(await panel.locator(':scope > .settings-group').count(),5);assert.equal(await panel.locator(':scope > .settings-group[open]').count(),0);assert((await panel.boundingBox()).height<360);
+assert.equal(await panel.locator(':scope > .settings-group').count(),5);assert.equal(await panel.locator(':scope > .settings-group[open]').count(),5);assert((await panel.boundingBox()).height<=640);
 assert.equal(await panel.getByRole('button',{name:'Close settings',exact:true}).count(),1);assert.equal(await panel.getByRole('textbox',{name:/shortcut/i}).count(),0);
 assert.equal(await panel.getByRole('searchbox').count(),0);assert.equal(await panel.getByText('Changes save automatically').count(),0);
 await panel.locator(':scope > .menu-tabs > button').first().click();

@@ -1,7 +1,7 @@
 /* ColorShift: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ColorShift = (() => {
   'use strict';
-  const version = '0.2.8';
+  const version = '0.3.0';
   const SETTINGS_SCHEMA = 2;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -57,7 +57,7 @@ var ColorShift = (() => {
   }
   // DOM-based opt-in works across userscript sandboxes; only ExtraPotions companions yield.
   function coordinateCompanionControls(anchor, registered = []) {
-    const candidates = new Set([...document.querySelectorAll('[data-userscript-launcher="userscript-launcher-v1"],[data-colorshift-control="secondary"],#pfh-fab,.pfh-fab'), ...registered]);
+    const candidates = new Set([...document.querySelectorAll('[data-userscript-launcher="userscript-launcher-v1"],[data-colorshift-control="secondary"],[data-floating-control],[data-userscript-badge],#pfh-fab,.pfh-fab,[id*="fab" i],[class*="fab" i],[id*="badge" i][role="button"],[class*="badge" i][role="button"]'), ...registered]);
     const anchorNode=anchor.getRootNode().host||anchor;
     const anchorPriority=Number(anchorNode.dataset.launcherPriority||100);
     const primary = [anchor];
@@ -252,7 +252,7 @@ var ColorShift = (() => {
     }
     function setOpen(value,focus=true) {
       open=value; panel.hidden=!value; fab.setAttribute('aria-expanded',String(value));
-      if(value) { position();refreshDiagnostics();if(focus)panel.querySelector('.menu-close').focus(); }
+      if(value) { for(const group of panel.querySelectorAll(':scope > .settings-group'))group.open=true; position();refreshDiagnostics();if(focus)panel.querySelector('.menu-close').focus(); }
       else fab.focus({preventScroll:true});
     }
     let dockCandidates=[],dockScanAt=0;
@@ -311,7 +311,7 @@ var ColorShift = (() => {
         panel.style.top=(mobile?upper+height-panel.offsetHeight-margin:Math.max(upper+margin,Math.min(preferred,upper+height-panel.offsetHeight-margin)))+'px';
       }
       // Primary controls keep their saved position; only companions yield.
-      if(!site.anywhere)coordinateCompanionControls(fab);
+      coordinateCompanionControls(fab);
       launcher?.publish();
     }
     function readableAccent(accent,colors) {

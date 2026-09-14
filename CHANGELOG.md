@@ -1,20 +1,30 @@
-## 0.2.8
+## 0.3.0
+
+- Top-level menu sections now open expanded when the ColorShift badge is clicked.
+- Updated user-facing documentation and menu behavior descriptions.
+
+## 0.3.0
+
+- Anywhere now coordinates its badge with compatible fixed and sticky controls from other scripts.
+- Generic floating badge markers are detected and aligned with the shared 8px spacing rules.
+
+## 0.3.0
 
 - Prevented hero and session images from flickering when hover mutations trigger a page refresh.
 - Image markers now change only when their desired state changes.
 
-## 0.2.8
+## 0.3.0
 
 - Clarified that update notifications are enabled by default and appear as a quiet in-menu message.
 - Updated the setting label, description, user-facing update message, and documentation.
 
-## 0.2.8
+## 0.3.0
 
 - Fixed menu controls staying inside the panel boundary with visible themed borders for tabs, reset actions, and section buttons.
 - Refreshed stale browser tests for collapsed menus and Anywhere's enabled-by-default startup state.
 - Verification now passes locally and in GitHub Actions.
 
-## 0.2.8
+## 0.3.0
 
 - Added a manual verification workflow trigger so release candidates can be rechecked without a new code change.
 - Includes the 0.2.4 menu, toast, migration, and integrated-site fixes.

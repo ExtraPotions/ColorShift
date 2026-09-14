@@ -1,7 +1,9 @@
 /* ColorShift: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
-var ColorShift = (() => {
+  var ColorShift = (() => {
   'use strict';
-  const version = '0.3.0';
+  const ColorShiftCore=window.ColorShiftCore||{name:'ColorShift Core',version:'1.0.0',plugins:new Map(),registerPlugin(id,meta={}){if(!id)return null;const entry={id,...meta,core:'ColorShift Core'};this.plugins.set(id,entry);window.dispatchEvent(new CustomEvent('colorshift-core:plugin-registered',{detail:entry}));return entry;}};
+  window.ColorShiftCore=ColorShiftCore;
+  const version = '0.4.0';
   const SETTINGS_SCHEMA = 2;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -36,9 +38,19 @@ var ColorShift = (() => {
     return el;
   }
   const LAUNCHER_PROTOCOL='userscript-launcher-v1';
+  const LAUNCHER_PROTOCOL_VERSION=1;
+  const LauncherBridge=window.ExtraPotionsLauncher||{
+    protocol:LAUNCHER_PROTOCOL,
+    version:LAUNCHER_PROTOCOL_VERSION,
+    participants:new Map(),
+    register(node,meta={}){if(!node)return null;const entry={node,...meta,protocol:this.protocol,version:this.version};this.participants.set(meta.id||node.id||String(this.participants.size),entry);return entry;},
+    announce(detail={}){const payload={protocol:this.protocol,version:this.version,...detail};window.dispatchEvent(new CustomEvent('userscript-launcher:announce',{detail:payload}));return payload;}
+  };
+  window.ExtraPotionsLauncher=LauncherBridge;
   function declareLauncher(node,controls,meta) {
     const watched=()=>controls().filter(el=>el?.isConnected&&el.getClientRects().length);
     node.dataset.userscriptLauncher=LAUNCHER_PROTOCOL;
+    node.dataset.launcherProtocolVersion=String(LAUNCHER_PROTOCOL_VERSION);
     node.dataset.launcherOwner=meta.owner;
     node.dataset.launcherId=meta.id;
     node.dataset.launcherPriority=String(meta.priority);
@@ -48,7 +60,9 @@ var ColorShift = (() => {
       frame=0;const rects=watched().map(el=>el.getBoundingClientRect());if(!rects.length)return;
       const area={left:Math.round(Math.min(...rects.map(r=>r.left))),top:Math.round(Math.min(...rects.map(r=>r.top))),right:Math.round(Math.max(...rects.map(r=>r.right))),bottom:Math.round(Math.max(...rects.map(r=>r.bottom)))};
       node.dataset.launcherOccupiedArea=JSON.stringify(area);
-      window.dispatchEvent(new CustomEvent('userscript-launcher:change',{detail:{protocol:LAUNCHER_PROTOCOL,owner:meta.owner,id:meta.id,priority:meta.priority,preferredPosition:meta.preferredPosition,occupiedArea:area}}));
+      const detail={protocol:LAUNCHER_PROTOCOL,version:LAUNCHER_PROTOCOL_VERSION,owner:meta.owner,id:meta.id,priority:meta.priority,preferredPosition:meta.preferredPosition,occupiedArea:area};
+      LauncherBridge.register(node,meta); LauncherBridge.announce(detail);
+      window.dispatchEvent(new CustomEvent('userscript-launcher:change',{detail}));
     };
     const schedule=()=>{if(!frame)frame=requestAnimationFrame(publish);};
     if(typeof ResizeObserver!=='undefined'){const observer=new ResizeObserver(schedule);for(const el of controls().filter(Boolean))observer.observe(el);}
@@ -649,5 +663,3 @@ var ColorShift = (() => {
   `;
   return {version,start};
 })();
-
-

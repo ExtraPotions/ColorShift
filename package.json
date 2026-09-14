@@ -1,7 +1,7 @@
 {
   "name": "colorshift",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "scripts": {
     "build": "node scripts/build.cjs",
     "build:check": "node scripts/build.cjs --check",

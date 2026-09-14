@@ -75,13 +75,14 @@ async function setup(browser,site='manapool',values={},source=code(site)) {
     await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).selectOption('rose',{force:true});
     assert(await page.evaluate(()=>window.updateFetches)<=1);
     if(timeout)await page.waitForTimeout(80);
-    else {await panel.getByRole('switch',{name:'Quiet update notifications',exact:true}).click();await page.evaluate(()=>window.resolveUpdate());}
+    else {await panel.getByRole('switch',{name:'Quiet update notifications',exact:true}).click();await page.evaluate(()=>window.resolveUpdate?.());}
     assert.equal(await page.locator('#colorshift-root').getAttribute('data-update-available'),null);
     await context.close();
   }
   console.log('Previous-release upgrades, settings round trips, atomic imports, and update failures passed');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
+
 
 
 

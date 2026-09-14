@@ -1,7 +1,7 @@
 /* ColorShift: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ColorShift = (() => {
   'use strict';
-  const version = '0.2.7';
+  const version = '0.2.8';
   const SETTINGS_SCHEMA = 2;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -189,15 +189,18 @@ var ColorShift = (() => {
     }
     function repairImageBlending(){
       for(const img of query('img')){
-        img.removeAttribute('data-colorshift-image');
-        if(img.closest(protectedSurfaces.split(',').filter(selector=>selector!=='picture').join(','))||!img.closest('[data-colorshift-surface]')||getComputedStyle(img).mixBlendMode!=='multiply')continue;
+        let shouldMark=false;
+        if(!(img.closest(protectedSurfaces.split(',').filter(selector=>selector!=='picture').join(','))||!img.closest('[data-colorshift-surface]')||getComputedStyle(img).mixBlendMode!=='multiply')){
         let parent=img.parentElement;
         while(parent){
           const style=getComputedStyle(parent),bg=parseColor(style.backgroundColor);
           if(style.backgroundImage!=='none')break;
-          if(bg&&(bg[3]??1)===1){if(surfacePalette.some(c=>c.every((v,i)=>v===bg[i])))img.dataset.colorshiftImage='normal';break;}
+          if(bg&&(bg[3]??1)===1){shouldMark=surfacePalette.some(c=>c.every((v,i)=>v===bg[i]));break;}
           parent=parent.parentElement;
         }
+        }
+        if(shouldMark){if(img.dataset.colorshiftImage!=='normal')img.dataset.colorshiftImage='normal';}
+        else if(img.hasAttribute('data-colorshift-image'))img.removeAttribute('data-colorshift-image');
       }
     }
     function visuallyHidden(node){

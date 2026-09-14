@@ -1,15 +1,20 @@
-## 0.2.7
+## 0.2.8
+
+- Prevented hero and session images from flickering when hover mutations trigger a page refresh.
+- Image markers now change only when their desired state changes.
+
+## 0.2.8
 
 - Clarified that update notifications are enabled by default and appear as a quiet in-menu message.
 - Updated the setting label, description, user-facing update message, and documentation.
 
-## 0.2.7
+## 0.2.8
 
 - Fixed menu controls staying inside the panel boundary with visible themed borders for tabs, reset actions, and section buttons.
 - Refreshed stale browser tests for collapsed menus and Anywhere's enabled-by-default startup state.
 - Verification now passes locally and in GitHub Actions.
 
-## 0.2.7
+## 0.2.8
 
 - Added a manual verification workflow trigger so release candidates can be rechecked without a new code change.
 - Includes the 0.2.4 menu, toast, migration, and integrated-site fixes.

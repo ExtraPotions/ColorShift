@@ -2,18 +2,18 @@
 var ColorShift = (() => {
   'use strict';
   const version = '0.2.3';
-  const SETTINGS_SCHEMA = 1;
+  const SETTINGS_SCHEMA = 2;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
     system: ['System'], original: ['Original'], lightGray: ['Graphite','#3f3f3c','#4a4a46','#333330'],
     darkGray: ['Charcoal','#252522','#2a2a28','#1c1c1a'],
-    navy: ['Navy','#1a2332','#243044','#141c28'], black: ['Black','#0a0a0a','#111111','#050505'],
+    navy: ['Midnight','#1a2332','#243044','#141c28'], black: ['Obsidian','#0a0a0a','#111111','#050505'],
     fireRed: ['Ember','#211516','#382123','#481f22'],
-    leafGreen: ['Forest','#131d17','#213329','#24442f'],
-    heartGold: ['Antique Gold','#211d13','#39301d','#493a1d'],
+    leafGreen: ['Pine','#131d17','#213329','#24442f'],
+    heartGold: ['Cinder','#211d13','#39301d','#493a1d'],
     pride: ['Pride','#19171f','#28242f','#211d29']
   };
-  const accents = {site:['Site default',null],blue:['Blue','#5eb0ef'],green:['Green','#63d989'],amber:['Amber','#f0c14b'],violet:['Violet','#b57aef'],rose:['Rose','#f5b0c8'],teal:['Teal','#78dcca'],coral:['Coral','#ffb09b'],silver:['Silver','#cbd5e1'],pride:['Pride','#ffb4ce']};
+  const accents = {site:['Site default',null],blue:['Sky','#69bdf2'],green:['Mint','#63d99a'],amber:['Amber','#e8b94f'],violet:['Amethyst','#b487ed'],rose:['Blush','#ed9fba'],teal:['Aqua','#61d7ca'],coral:['Coral','#f29a82'],silver:['Silver','#c6d0dc'],pride:['Pride','#f2a6c4']};
   const shared = [['brighterLinks','Brighter links'],['hideAds','Hide ads / promos']];
   const accessibility = [['reducedMotion','Reduce motion'],['highContrast','High contrast']];
   const memory = new Map();
@@ -92,7 +92,7 @@ var ColorShift = (() => {
   }
   function start(site) {
     if(site.anywhere){if(window.top!==window.self)return;storagePrefix="anywhere:"+location.origin+":";}
-    const defaults={palette:'darkGray',accent:'site',intensity:'normal',fabTop:null,updateNotifications:false};
+    const defaults={palette:'system',accent:'site',intensity:'normal',fabTop:null,updateNotifications:true};
     for(const [key] of [...shared,...site.options,...accessibility]) defaults[key]=false;
     if(site.anywhere){defaults.enabled=true;defaults.palette='original';}
     const state={...defaults};
@@ -106,6 +106,7 @@ var ColorShift = (() => {
     const storedSchema=Number(read(SCHEMA_KEY,0))||0;
     for(const key of Object.keys(defaults)) { const value=read(key,defaults[key]); if(valid(key,value)) state[key]=value; }
     if(storedSchema<SETTINGS_SCHEMA) {
+      if(storedSchema>0) { for(const [key,value] of Object.entries(defaults)) state[key]=value; if(site.anywhere) state.enabled=true; }
       for(const [key,value] of Object.entries(state)) write(key,value);
       write(SCHEMA_KEY,SETTINGS_SCHEMA);
     }
@@ -324,6 +325,7 @@ var ColorShift = (() => {
       const effectiveState={...state,palette:site.anywhere&&!state.enabled?'original':state.palette==='system'?(systemTheme.matches?'darkGray':'original'):state.palette};
       const colors=palettes[effectiveState.palette],accent=readableAccent(accents[state.accent][1]||site.accent,colors);
       api.theme={palette:effectiveState.palette,colors,accent};
+      if(appearanceSummary) appearanceSummary.textContent=`${palettes[effectiveState.palette][0]} · ${accents[state.accent][0]}`;
       const enabled=site.anywhere?state.enabled:effectiveState.palette!=='original';
       fab.dataset.themeEnabled=String(enabled);
       const footerStatus=panel.querySelector('.footer-status');if(footerStatus)footerStatus.textContent=site.anywhere?(enabled?'Enabled on this site':'Disabled on this site'):(enabled?'Theme active':'Original appearance');
@@ -333,6 +335,7 @@ var ColorShift = (() => {
       if(surfacePalette)surfacePalette.push(raised);
       if(!surfacePalette)for(const node of document.querySelectorAll('[data-colorshift-surface],[data-colorshift-text],[data-colorshift-image]')){node.removeAttribute('data-colorshift-surface');node.removeAttribute('data-colorshift-text');node.style.removeProperty('--colorshift-readable-text');node.removeAttribute('data-colorshift-gradient');node.removeAttribute('data-colorshift-image');}
       const css=(site.anywhere&&!state.enabled)?'':site.css(effectiveState,colors,accent)+
+        (surfacePalette?`:is(button,a[role="button"],a.btn,a.btn-sm,a.button,input[type="submit"]):not([data-colorshift-preserve]){background-color:${colors[3]}!important;background-image:none!important;color:#fff!important;border-color:#888!important;text-shadow:none!important}`:'')+
         (surfacePalette&&(state.palette==='pride'||state.accent==='pride')?'[data-colorshift-surface=header]{border-image:linear-gradient(90deg,#ef6572,#f4ad62,#ead96c,#70cd91,#72b6f1,#bd94ea) 1;border-bottom:3px solid transparent!important}':'')+
         (surfacePalette?`[data-colorshift-surface=details]{background-color:${colors[3]}!important;box-shadow:inset 0 1px 0 #ffffff30!important}[data-colorshift-image=normal]{mix-blend-mode:normal!important}[data-colorshift-gradient]{background-image:none!important}[data-colorshift-surface="surface"]{background-color:${colors[2]}!important}[data-colorshift-surface="header"]{background-color:${colors[3]}!important}[data-colorshift-text][data-colorshift-text][data-colorshift-text]{color:#eee!important}[data-colorshift-text=hue][data-colorshift-text][data-colorshift-text]{color:var(--colorshift-readable-text)!important}[data-colorshift-text=dark][data-colorshift-text][data-colorshift-text]{color:#000!important}[data-colorshift-text=light][data-colorshift-text][data-colorshift-text]{color:#fff!important}${'[data-colorshift-surface=page]{background-color:'+colors[1]+'!important}[data-colorshift-surface=raised]{background-color:rgb('+raised.join(',')+')!important}article[data-colorshift-surface],section[data-colorshift-surface],[class*=card i][data-colorshift-surface],[class*=panel i][data-colorshift-surface]{box-shadow:inset 0 0 0 1px #ffffff18,0 2px 6px #0002!important}'}`:'')+
         ((state.reducedMotion||motion.matches)?'*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}':'')+
@@ -372,7 +375,7 @@ var ColorShift = (() => {
     function showUpdate(latest) {
       host.removeAttribute('data-update-available');fab.title='ColorShift for '+site.name;
       if(!state.updateNotifications||!newer(latest,version))return;
-      host.dataset.updateAvailable=latest;fab.title='ColorShift '+latest+' for '+site.name+' is available';notice.textContent='Update available: '+latest;
+      host.dataset.updateAvailable=latest;fab.title='ColorShift '+latest+' for '+site.name+' is available';notice.textContent='Update available: '+latest+' — refreshed themes and accents, compact grids, improved diagnostics, and safer site coverage.';
     }
     async function checkForUpdate() {
       const cached=read('updateCheck',null),now=Date.now();
@@ -394,9 +397,10 @@ var ColorShift = (() => {
     }
     function refreshDiagnostics(){const out=panel?.querySelector('.diagnostics-output');if(out)out.textContent=diagnosticText();}
     const descriptions={
-      palette:'System follows your device: native site colours in light mode, dark gray in dark mode.',
+      palette:'Choose the page mood. System follows your device, while Original keeps native site colours.',
+      accent:'Choose the highlight colour used for links, focus rings, controls, and menu emphasis.',
       brighterLinks:'Use brighter blue links throughout the page.',hideAds:'Hide recognised advertising and promotional blocks.',
-      dense:'Reduce spacing between cards or products.',hideSoldOut:'Hide products identified as unavailable.',compactPrices:'Reduce the size and spacing of prices.',alwaysChips:'Keep product labels visible without hovering.',
+      dense:'Reduce spacing between cards or products.',compactGrids:'Reduce gaps between grid items while preserving the page layout.',hideSoldOut:'Hide products identified as unavailable.',compactPrices:'Reduce the size and spacing of prices.',alwaysChips:'Keep product labels visible without hovering.',
       dimWarnings:'Dim content warnings; hover or focus to reveal them.',hideEntered:'Hide giveaways you have already entered.',hideEnded:'Hide giveaways marked as ended.',softHideFeatured:'Collapse and dim pinned content; hover or focus to expand it.',highContrastEnter:'Make entry buttons easier to identify.',
       compactListings:'Reduce spacing in seller or condition rows.',stickyFilters:'Keep search filters visible while scrolling.',hideMerch:'Hide product recommendation carousels.',denseBooks:'Reduce spacing in book lists.',compactReviews:'Reduce review spacing.',hideRecommendations:'Hide recognised recommendation sections.',wideReading:'Allow a wider reading column.',focusLyrics:'Centre lyrics with larger text and comfortable line spacing.',compactAnnotations:'Reduce spacing around annotations.',dimMedia:'Dim embedded media; hover or focus to restore it.',
       reducedMotion:'Reduce animations and transitions on the page and in the menu.',highContrast:'Use stronger contrast on themed page surfaces and controls.',updateNotifications:'Check at most daily for a newer release; never installs automatically.'
@@ -450,6 +454,7 @@ var ColorShift = (() => {
       if(site.anywhere)toggles(panel,[['enabled','Enable on this site']]);
       const appearance=section('Appearance');
       const pickers=element('div',{class:'theme-pickers'});appearance.append(pickers);
+      const appearanceSummary=element('p',{class:'appearance-summary','aria-live':'polite'});appearance.append(appearanceSummary);
       const sortedChoices=(values,key)=>Object.entries(values).sort(([a,av],[b,bv])=>{if(a==='pride'||b==='pride')return a==='pride'?1:-1;if(['system','original','site'].includes(a)||['system','original','site'].includes(b))return ['system','original','site'].includes(a)?(['system','original','site'].includes(b)?0:-1):1;const rgb=v=>v.slice(1).match(/../g).map(n=>parseInt(n,16));return luminance(rgb(bv[1]))-luminance(rgb(av[1]));});
       for(const [key,label,values] of [['palette','Theme',palettes],['accent','Accent',accents]]) {
         const select=element('select',{'aria-label':label,class:'color-select'});
@@ -477,7 +482,7 @@ var ColorShift = (() => {
         picker.addEventListener('keydown',event=>{if(event.key==='Escape'){event.stopPropagation();picker.open=false;endPreview();summary.focus();}});
 
       }
-      const appearanceTools=element('div',{class:'group-tools'});groupReset(appearanceTools,'appearance',['palette','accent','intensity']);
+      const appearanceTools=element('div',{class:'group-tools'});groupReset(appearanceTools,'appearance',['palette','accent','intensity']);action(appearanceTools,'Reset accent',()=>resetGroup(['accent'],'Accent'));appearance.append(appearanceSummary);
       const pageTools=element('div',{class:'group-tools'});groupReset(pageTools,'page settings',shared.map(([key])=>key));const pageOptions=appearance;toggles(pageOptions,shared);const resetTools=element('div',{class:'group-tools reset-tools'});resetTools.append(...appearanceTools.children,...pageTools.children);appearance.append(resetTools);
       const moduleOptions=site.options.filter(([key])=>key!=='enabled');const siteOptions=site.anywhere&&!site.moduleName?null:section(site.anywhere?'Site tweaks':site.name);if(siteOptions){toggles(siteOptions,moduleOptions);groupReset(siteOptions,(site.moduleName||site.name)+' options',moduleOptions.map(([key])=>key));}
       const disclosure=section('Accessibility');toggles(disclosure,accessibility);groupReset(disclosure,'accessibility',accessibility.map(([key])=>key));

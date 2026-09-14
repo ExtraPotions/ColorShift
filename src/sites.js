@@ -10,6 +10,7 @@
       ${surfaces}{background:${surface}!important;color:#d0d0cc!important;border-color:#ffffff20!important}
       header,footer,.header,.footer,.nav__outer-wrap,.nav__inner-wrap,.nav__button-container{background:${header}!important;color:#ddd!important}
       ${siteId==='steamgifts'?'a:not(.esgst-gc):not(.esgst-gc *)':'a'}{color:${accent}!important}a:hover{filter:brightness(1.15)}
+      :is(button,a[role=button],a.btn,a.btn-sm,a.button,input[type=submit]){background:${header}!important;background-image:none!important;color:#fff!important;text-shadow:none!important;border-color:#888!important}
       input:not([type=checkbox]):not([type=radio]),textarea,select{background:${surface}!important;color:#eee!important;border-color:#777!important}
       h1,h2,h3,h4,h5,h6{color:#bfcbd8!important}
       button:not([role=switch]):not(.gr-iconButton):not(.gr-buttonAsLink),.button-n,.btn,.form__submit-button{background:${header}!important;color:#ddd!important;border-color:#777!important}

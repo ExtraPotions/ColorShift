@@ -1,3 +1,11 @@
+## 0.2.3
+
+- Renamed themes and accents for a consistent naming system.
+- Normalized accent colors and preserved hover preview with click-to-commit selection.
+- Added appearance summaries, accent reset, Compact grids, privacy guidance, support tiers, and diagnostics documentation.
+- Enabled update notices by default with concise change summaries.
+- Added schema migration that resets upgraded installations to System, Site default, and cleared optional settings.
+
 # Changelog
 
 ## 0.2.3

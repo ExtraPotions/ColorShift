@@ -1,3 +1,8 @@
+## 0.2.5
+
+- Added a manual verification workflow trigger so release candidates can be rechecked without a new code change.
+- Includes the 0.2.4 menu, toast, migration, and integrated-site fixes.
+
 ## 0.2.4
 
 - Fixed menu application after initialization so themes, accents, accessibility controls, update settings, and footer status remain interactive.
@@ -108,4 +113,5 @@ Simplified distribution, removed old compatibility files, and refreshed build an
 ## 0.0.1
 
 Initial ColorShift release for ManaPool, Scryfall, SteamGifts, TCGPlayer, Card Kingdom, Goodreads, and Genius.
+
 

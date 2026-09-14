@@ -4,7 +4,7 @@
 
 One local palette for the web, with optional site profiles for pages that need extra care.
 
-**0.2.4** · [Install ColorShift Anywhere](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-anywhere.user.js)
+**0.2.5** · [Install ColorShift Anywhere](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-anywhere.user.js)
 
 ## Get started
 
@@ -32,4 +32,5 @@ Open **Diagnostics** and run **Scan theme coverage** after the page settles. Rev
 ## License
 
 [CC BY-NC 4.0](LICENSE) · By [ExtraPotions](https://github.com/ExtraPotions).
+
 

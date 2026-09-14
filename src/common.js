@@ -3,7 +3,7 @@
   'use strict';
   const ColorShiftCore=window.ColorShiftCore||{name:'ColorShift Core',version:'1.0.0',plugins:new Map(),registerPlugin(id,meta={}){if(!id)return null;const entry={id,...meta,core:'ColorShift Core'};this.plugins.set(id,entry);window.dispatchEvent(new CustomEvent('colorshift-core:plugin-registered',{detail:entry}));return entry;}};
   window.ColorShiftCore=ColorShiftCore;
-  const version = '0.4.0';
+  const version = '0.4.1';
   const SETTINGS_SCHEMA = 2;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -47,7 +47,50 @@
     announce(detail={}){const payload={protocol:this.protocol,version:this.version,...detail};window.dispatchEvent(new CustomEvent('userscript-launcher:announce',{detail:payload}));return payload;}
   };
   window.ExtraPotionsLauncher=LauncherBridge;
+
+  // Badge-grid v1: each participant positions its own control using DOM state.
+  // Equal-priority launchers elect the same anchor regardless of script load order.
+  function attachBadgeGrid(node, badge) {
+    node.dataset.badgeGrid='1';
+    badge.dataset.badgeGridControl='1';
+    let pending=0;
+    const layout=()=>{
+      pending=0;
+      const peers=[...document.querySelectorAll('[data-badge-grid="1"]')]
+        .map(host=>({host,control:host.shadowRoot?.querySelector('[data-badge-grid-control="1"]')||host.querySelector('[data-badge-grid-control="1"]')}))
+        .filter(p=>p.control?.isConnected&&p.control.getBoundingClientRect().width>0)
+        .sort((a,b)=>Number(b.host.dataset.launcherPriority||0)-Number(a.host.dataset.launcherPriority||0)||(a.host.dataset.launcherId||a.host.id).localeCompare(b.host.dataset.launcherId||b.host.id));
+      const index=peers.findIndex(p=>p.host===node);
+      if(index<0)return;
+      const leader=peers[0],origin=leader.control.getBoundingClientRect();
+      node.dataset.badgeGridLeader=leader.host.dataset.launcherId;
+      node.dataset.badgeGridIndex=String(index);
+      if(index){
+        const width=Math.max(...peers.map(p=>p.control.getBoundingClientRect().width));
+        const height=Math.max(...peers.map(p=>p.control.getBoundingClientRect().height));
+        const rows=Math.max(1,Math.floor((innerHeight-16)/(height+8)));
+        const row=index%rows,col=Math.floor(index/rows);
+        const bottom=origin.top>innerHeight/2,right=origin.left>innerWidth/2;
+        const rect=badge.getBoundingClientRect();
+        const x=Math.max(8,Math.min(innerWidth-rect.width-8,origin.left+(right?-1:1)*col*(width+8)));
+        const y=Math.max(8,Math.min(innerHeight-rect.height-8,origin.top+(bottom?-1:1)*row*(height+8)));
+        for(const [key,value]of Object.entries({left:x+'px',top:y+'px',right:'auto',bottom:'auto'}))if(badge.style.getPropertyValue(key)!==value)badge.style.setProperty(key,value,'important');
+      }
+      const r=badge.getBoundingClientRect(),value=JSON.stringify({left:r.left,top:r.top,right:r.right,bottom:r.bottom});
+      if(node.dataset.launcherBadgeArea!==value){node.dataset.launcherBadgeArea=value;window.dispatchEvent(new Event('userscript-badge-grid:change'));}
+    };
+    const schedule=()=>{if(!pending)pending=requestAnimationFrame(layout);};
+    window.addEventListener('userscript-badge-grid:change',schedule);
+    window.addEventListener('userscript-launcher:change',schedule);
+    window.addEventListener('resize',schedule);
+    const observer=new MutationObserver(schedule);observer.observe(badge,{attributes:true,attributeFilter:['style','class']});
+    window.addEventListener('pagehide',()=>{observer.disconnect();window.removeEventListener('userscript-badge-grid:change',schedule);window.removeEventListener('userscript-launcher:change',schedule);window.removeEventListener('resize',schedule);},{once:true});
+    schedule();
+    return {refresh:schedule};
+  }
+
   function declareLauncher(node,controls,meta) {
+    attachBadgeGrid(node,controls()[0]);
     const watched=()=>controls().filter(el=>el?.isConnected&&el.getClientRects().length);
     node.dataset.userscriptLauncher=LAUNCHER_PROTOCOL;
     node.dataset.launcherProtocolVersion=String(LAUNCHER_PROTOCOL_VERSION);

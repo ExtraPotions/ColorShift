@@ -141,3 +141,7 @@ Simplified distribution, removed old compatibility files, and refreshed build an
 Initial ColorShift release for ManaPool, Scryfall, SteamGifts, TCGPlayer, Card Kingdom, Goodreads, and Genius.
 
 
+
+## 0.4.0
+
+- Add the ColorShift Core plugin boundary and versioned launcher hooks for future ColorShift plugins.

@@ -1,4 +1,10 @@
-## 0.2.5
+## 0.2.6
+
+- Fixed menu controls staying inside the panel boundary with visible themed borders for tabs, reset actions, and section buttons.
+- Refreshed stale browser tests for collapsed menus and Anywhere's enabled-by-default startup state.
+- Verification now passes locally and in GitHub Actions.
+
+## 0.2.6
 
 - Added a manual verification workflow trigger so release candidates can be rechecked without a new code change.
 - Includes the 0.2.4 menu, toast, migration, and integrated-site fixes.

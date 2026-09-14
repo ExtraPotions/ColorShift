@@ -1,7 +1,7 @@
 /* ColorShift: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ColorShift = (() => {
   'use strict';
-  const version = '0.2.5';
+  const version = '0.2.6';
   const SETTINGS_SCHEMA = 2;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {

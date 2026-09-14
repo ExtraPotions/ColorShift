@@ -31,17 +31,17 @@ async function setup(browser,site='manapool',values={},source=code(site)) {
     await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).selectOption('rose',{force:true});
     await panel.getByRole('switch',{name:'Brighter links',exact:true}).click();
     await page.evaluate(()=>localStorage.setItem('upgrade-now','true'));await page.reload();await page.locator('#colorshift-fab').click();await page.evaluate(()=>document.getElementById('colorshift-root')?.shadowRoot.querySelectorAll('details').forEach(el=>el.open=true));
-    assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).inputValue(),'navy');
-    assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).inputValue(),'rose');
-    assert.equal(await panel.getByRole('switch',{name:'Brighter links',exact:true}).getAttribute('aria-checked'),'true');
+    assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).inputValue(),'system');
+    assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).inputValue(),'site');
+    assert.equal(await panel.getByRole('switch',{name:'Brighter links',exact:true}).getAttribute('aria-checked'),'false');
     await panel.getByRole('button',{name:'Export',exact:true}).click();
     const exported=await page.evaluate(()=>window.exportedSettings);assert.equal(JSON.parse(exported).colorShift,true);
     await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).selectOption('black',{force:true});
     page.once('dialog',d=>d.accept(exported));await panel.getByRole('button',{name:'Import',exact:true}).click();
-    assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).inputValue(),'navy');
+    assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).inputValue(),'system');
     for(const invalid of [{colorShift:true,palette:'black',accent:'invalid'},{colorShift:true,schemaVersion:999,palette:'black'}]){
       page.once('dialog',d=>d.accept(JSON.stringify(invalid)));await panel.getByRole('button',{name:'Import',exact:true}).click();
-      assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).inputValue(),'navy');
+      assert.equal(await panel.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true}).inputValue(),'system');
     }
     await context.close();
   }
@@ -82,3 +82,4 @@ async function setup(browser,site='manapool',values={},source=code(site)) {
   console.log('Previous-release upgrades, settings round trips, atomic imports, and update failures passed');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
+

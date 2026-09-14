@@ -5,7 +5,7 @@ const luminance=c=>c.match(/[\d.]+/g).slice(0,3).map(Number).map(v=>v/255).map(v
     const page=await browser.newPage();await page.route('https://example.org/**',r=>r.fulfill({contentType:'text/html',body:`<style>sample-sidebar{display:block;background:rgb(14,17,19)}.annotation{color:rgb(217,57,0)!important}</style><sample-sidebar><div id="annotation" class="annotation">BETA</div><div id="protected" class="annotation" data-colorshift-preserve>Protected label</div></sample-sidebar>`}));
     await page.addInitScript({content:fs.readFileSync(require('./edition-path.cjs')('colorshift-'+site+'.user.js'),'utf8')});await page.goto('https://example.org');
     if(!await page.getByRole('dialog').isVisible())await page.locator('#colorshift-fab').click();
-    if(site==='anywhere')await page.getByRole('switch',{name:'Enable on this site',exact:true}).click();
+    if(site==='anywhere'){const master=page.getByRole('switch',{name:'Enable on this site',exact:true});if((await master.getAttribute('aria-checked'))!=='true')await master.click();}
     await page.getByRole('button',{name:'Appearance',exact:true}).click();const theme=page.getByRole('combobox',{includeHidden:true,name:'Theme',exact:true});
     for(const palette of ['lightGray','darkGray','navy','black','fireRed','leafGreen','heartGold','pride']){
       await theme.selectOption(palette,{force:true});const fg=await page.locator('#annotation').evaluate(e=>getComputedStyle(e).color),bg=await page.locator('sample-sidebar').evaluate(e=>getComputedStyle(e).backgroundColor);

@@ -51,7 +51,7 @@ async function setup(browser,site='manapool',values={},source=code(site)) {
       requests++;if(scenario==='offline')return route.abort();
       await route.fulfill({status:scenario==='rate-limit'?403:200,contentType:'application/json',body:JSON.stringify({tag_name:scenario==='malformed'?'oops':scenario==='current'?'colorshift-'+require('../package.json').version:'colorshift-9.0.0'})});
     });
-    if(scenario!=='disabled')await panel.getByRole('switch',{name:'Quiet update notifications',exact:true}).click();
+    const updateToggle=panel.getByRole('switch',{name:'Quiet update notifications',exact:true});if(scenario==='disabled'){if((await updateToggle.getAttribute('aria-checked'))==='true')await updateToggle.click();}else if((await updateToggle.getAttribute('aria-checked'))!=='true')await updateToggle.click();
     await page.waitForTimeout(150);
     for(let i=0;i<3;i++)await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).selectOption(i%2?'rose':'blue',{force:true});
     assert.equal(requests,scenario==='disabled'?0:1,scenario+' caches/throttles checks');
@@ -82,4 +82,5 @@ async function setup(browser,site='manapool',values={},source=code(site)) {
   console.log('Previous-release upgrades, settings round trips, atomic imports, and update failures passed');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
+
 

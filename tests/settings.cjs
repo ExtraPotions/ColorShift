@@ -51,13 +51,13 @@ async function setup(browser,site='manapool',values={},source=code(site)) {
       requests++;if(scenario==='offline')return route.abort();
       await route.fulfill({status:scenario==='rate-limit'?403:200,contentType:'application/json',body:JSON.stringify({tag_name:scenario==='malformed'?'oops':scenario==='current'?'colorshift-'+require('../package.json').version:'colorshift-9.0.0'})});
     });
-    const updateToggle=panel.getByRole('switch',{name:'Quiet update notifications',exact:true});if(scenario==='disabled'){if((await updateToggle.getAttribute('aria-checked'))==='true')await updateToggle.click();}else if((await updateToggle.getAttribute('aria-checked'))!=='true')await updateToggle.click();
+    const updateToggle=panel.getByRole('switch',{name:'Allow update notifications',exact:true});if(scenario==='disabled'){if((await updateToggle.getAttribute('aria-checked'))==='true')await updateToggle.click();}else if((await updateToggle.getAttribute('aria-checked'))!=='true')await updateToggle.click();
     await page.waitForTimeout(150);
     for(let i=0;i<3;i++)await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).selectOption(i%2?'rose':'blue',{force:true});
     assert(requests<=1,scenario+' update checks are throttled');
     if(scenario==='new'){await page.waitForTimeout(250);const marker=await page.locator('#colorshift-root').getAttribute('data-update-available');assert(marker===null||marker==='9.0.0');}else assert.equal(await page.locator('#colorshift-root').getAttribute('data-update-available'),null);
     if(scenario==='new'){
-      await panel.getByRole('switch',{name:'Quiet update notifications',exact:true}).click();
+      await panel.getByRole('switch',{name:'Allow update notifications',exact:true}).click();
       assert.equal(await page.locator('#colorshift-root').getAttribute('data-update-available'),null);
     }
     await context.close();
@@ -70,12 +70,12 @@ async function setup(browser,site='manapool',values={},source=code(site)) {
       if(timeout)window.setTimeout=(fn,delay,...args)=>originalTimeout(fn,delay===8000?20:delay,...args);
       window.fetch=(_,options)=>{window.updateFetches++;return new Promise((resolve,reject)=>{window.resolveUpdate=()=>resolve({ok:true,json:async()=>({tag_name:'colorshift-9.0.0'})});options.signal.addEventListener('abort',()=>reject(new Error('aborted')));});};
     },timeout);
-    await panel.getByRole('switch',{name:'Quiet update notifications',exact:true}).click();
+    await panel.getByRole('switch',{name:'Allow update notifications',exact:true}).click();
     await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).selectOption('blue',{force:true});
     await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).selectOption('rose',{force:true});
     assert(await page.evaluate(()=>window.updateFetches)<=1);
     if(timeout)await page.waitForTimeout(80);
-    else {await panel.getByRole('switch',{name:'Quiet update notifications',exact:true}).click();await page.evaluate(()=>window.resolveUpdate?.());}
+    else {await panel.getByRole('switch',{name:'Allow update notifications',exact:true}).click();await page.evaluate(()=>window.resolveUpdate?.());}
     assert.equal(await page.locator('#colorshift-root').getAttribute('data-update-available'),null);
     await context.close();
   }

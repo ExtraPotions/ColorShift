@@ -4,7 +4,7 @@
 
 One local palette for the web, with optional site profiles for pages that need extra care.
 
-**0.2.6** · [Install ColorShift Anywhere](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-anywhere.user.js)
+**0.2.7** · [Install ColorShift Anywhere](https://github.com/ExtraPotions/ColorShift/releases/latest/download/colorshift-anywhere.user.js)
 
 ## Get started
 
@@ -12,7 +12,7 @@ One local palette for the web, with optional site profiles for pages that need e
 2. Install the userscript above and reload a page.
 3. Open the ColorShift button and turn on **Enable on this site**.
 
-Choose a theme and accent from the menu. Themes include Graphite, Charcoal, Midnight, Obsidian, Ember, Pine, Cinder, and Pride. Accents include Sky, Mint, Amber, Amethyst, Blush, Aqua, Coral, Silver, and Pride. Settings are saved per site in your browser. Turn the site switch off to restore the original appearance. The menu keeps its title and close button visible, repositions near its launcher, and uses a bottom sheet on small screens. Update notices are enabled by default and include a short change summary; they never install automatically.
+Choose a theme and accent from the menu. Themes include Graphite, Charcoal, Midnight, Obsidian, Ember, Pine, Cinder, and Pride. Accents include Sky, Mint, Amber, Amethyst, Blush, Aqua, Coral, Silver, and Pride. Settings are saved per site in your browser. Turn the site switch off to restore the original appearance. The menu keeps its title and close button visible, repositions near its launcher, and uses a bottom sheet on small screens. Update notifications are enabled by default, appear as a quiet in-menu message with a short change summary, and never install automatically.
 
 ColorShift Anywhere includes focused profiles for ManaPool, Scryfall, SteamGifts, Card Kingdom, Goodreads, Genius, and TCGPlayer. Other pages use the generic best-effort theme pipeline, with an optional Compact grids control for tighter layouts.
 

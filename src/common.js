@@ -1,7 +1,7 @@
 /* ColorShift: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ColorShift = (() => {
   'use strict';
-  const version = '0.2.6';
+  const version = '0.2.7';
   const SETTINGS_SCHEMA = 2;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -375,7 +375,7 @@ var ColorShift = (() => {
     function showUpdate(latest) {
       host.removeAttribute('data-update-available');fab.title='ColorShift for '+site.name;if(updateToast)updateToast.hidden=true;
       if(!state.updateNotifications||!newer(latest,version))return;
-      host.dataset.updateAvailable=latest;fab.title='ColorShift '+latest+' for '+site.name+' is available';const message='Update available: '+latest+' — refreshed themes and accents, compact grids, improved diagnostics, and safer site coverage.';notice.textContent=message;if(updateToast){updateToast.textContent=message;updateToast.hidden=false;}
+      host.dataset.updateAvailable=latest;fab.title='ColorShift '+latest+' for '+site.name+' is available';const message='Update available: '+latest+' — refreshed themes and accents, clearer notification settings, compact grids, improved diagnostics, and safer site coverage.';notice.textContent=message;if(updateToast){updateToast.textContent=message;updateToast.hidden=false;}
     }
     async function checkForUpdate() {
       const cached=read('updateCheck',null),now=Date.now();
@@ -403,7 +403,7 @@ var ColorShift = (() => {
       dense:'Reduce spacing between cards or products.',compactGrids:'Reduce gaps between grid items while preserving the page layout.',hideSoldOut:'Hide products identified as unavailable.',compactPrices:'Reduce the size and spacing of prices.',alwaysChips:'Keep product labels visible without hovering.',
       dimWarnings:'Dim content warnings; hover or focus to reveal them.',hideEntered:'Hide giveaways you have already entered.',hideEnded:'Hide giveaways marked as ended.',softHideFeatured:'Collapse and dim pinned content; hover or focus to expand it.',highContrastEnter:'Make entry buttons easier to identify.',
       compactListings:'Reduce spacing in seller or condition rows.',stickyFilters:'Keep search filters visible while scrolling.',hideMerch:'Hide product recommendation carousels.',denseBooks:'Reduce spacing in book lists.',compactReviews:'Reduce review spacing.',hideRecommendations:'Hide recognised recommendation sections.',wideReading:'Allow a wider reading column.',focusLyrics:'Centre lyrics with larger text and comfortable line spacing.',compactAnnotations:'Reduce spacing around annotations.',dimMedia:'Dim embedded media; hover or focus to restore it.',
-      reducedMotion:'Reduce animations and transitions on the page and in the menu.',highContrast:'Use stronger contrast on themed page surfaces and controls.',updateNotifications:'Check at most daily for a newer release; never installs automatically.'
+      reducedMotion:'Reduce animations and transitions on the page and in the menu.',highContrast:'Use stronger contrast on themed page surfaces and controls.',updateNotifications:'Check once daily for a newer release and show a quiet in-menu message. Enabled by default; never installs automatically.'
     };
     function resetGroup(keys,message){for(const key of keys){state[key]=defaults[key];write(key,defaults[key]);}apply();notice.textContent=message;}
     function groupReset(block,title,keys){const button=action(block,'Reset '+title,()=>resetGroup(keys,title+' reset.'));button.className='section-reset';return button;}
@@ -488,7 +488,7 @@ var ColorShift = (() => {
       const disclosure=section('Accessibility');toggles(disclosure,accessibility);groupReset(disclosure,'accessibility',accessibility.map(([key])=>key));
       if(site.actions) { const group=siteOptions;for(const [title,fn] of site.actions)action(group,title,()=>fn(api)); }
       const tools=section('Settings');
-      toggles(tools,[['updateNotifications','Quiet update notifications']]);
+      toggles(tools,[['updateNotifications','Allow update notifications']]);
       action(tools,'Export',async()=>{
         const json=JSON.stringify({colorShift:true,schemaVersion:SETTINGS_SCHEMA,...state},null,2);
         try { await navigator.clipboard.writeText(json);notice.textContent='Settings copied.'; } catch { window.prompt('Copy settings JSON',json); }

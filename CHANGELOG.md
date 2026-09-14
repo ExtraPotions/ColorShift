@@ -1,3 +1,9 @@
+## 0.2.4
+
+- Fixed menu application after initialization so themes, accents, accessibility controls, update settings, and footer status remain interactive.
+- Added a badge-anchored update toast that follows a repositioned launcher.
+- Preserved launcher position across migration while resetting legacy appearance options.
+
 ## 0.2.3
 
 - Renamed themes and accents for a consistent naming system.
@@ -102,3 +108,4 @@ Simplified distribution, removed old compatibility files, and refreshed build an
 ## 0.0.1
 
 Initial ColorShift release for ManaPool, Scryfall, SteamGifts, TCGPlayer, Card Kingdom, Goodreads, and Genius.
+

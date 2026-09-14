@@ -1,7 +1,7 @@
 /* ColorShift: shared settings, lifecycle and isolated UI. CC-BY-NC-4.0 */
 var ColorShift = (() => {
   'use strict';
-  const version = '0.2.3';
+  const version = '0.2.4';
   const SETTINGS_SCHEMA = 2;
   const SCHEMA_KEY = 'settingsSchema';
   const palettes = {
@@ -110,7 +110,7 @@ var ColorShift = (() => {
       for(const [key,value] of Object.entries(state)) write(key,value);
       write(SCHEMA_KEY,SETTINGS_SCHEMA);
     }
-    let host,root,fab,panel,notice,style,siteSheet,launcher,open=false,frame=0,lastProcessed=0;
+    let host,root,fab,panel,notice,updateToast,style,siteSheet,launcher,appearanceSummary,open=false,frame=0,lastProcessed=0;
     const diagnosticErrors=[];
     const metrics={updates:0,inspected:0,styles:0};let updateRoots=[document],lastCSS='';
     function query(selector){const found=new Set();for(const node of updateRoots){if(node.nodeType===1){if(node.matches(selector))found.add(node);let parent=node.parentElement?.closest(selector);while(parent){found.add(parent);parent=parent.parentElement?.closest(selector);}}for(const item of node.querySelectorAll(selector))found.add(item);}metrics.inspected+=found.size;return [...found];}
@@ -373,9 +373,9 @@ var ColorShift = (() => {
       for(let i=0;i<3;i++){if(a[i]!==b[i])return a[i]>b[i];}return false;
     }
     function showUpdate(latest) {
-      host.removeAttribute('data-update-available');fab.title='ColorShift for '+site.name;
+      host.removeAttribute('data-update-available');fab.title='ColorShift for '+site.name;if(updateToast)updateToast.hidden=true;
       if(!state.updateNotifications||!newer(latest,version))return;
-      host.dataset.updateAvailable=latest;fab.title='ColorShift '+latest+' for '+site.name+' is available';notice.textContent='Update available: '+latest+' — refreshed themes and accents, compact grids, improved diagnostics, and safer site coverage.';
+      host.dataset.updateAvailable=latest;fab.title='ColorShift '+latest+' for '+site.name+' is available';const message='Update available: '+latest+' — refreshed themes and accents, compact grids, improved diagnostics, and safer site coverage.';notice.textContent=message;if(updateToast){updateToast.textContent=message;updateToast.hidden=false;}
     }
     async function checkForUpdate() {
       const cached=read('updateCheck',null),now=Date.now();
@@ -454,7 +454,7 @@ var ColorShift = (() => {
       if(site.anywhere)toggles(panel,[['enabled','Enable on this site']]);
       const appearance=section('Appearance');
       const pickers=element('div',{class:'theme-pickers'});appearance.append(pickers);
-      const appearanceSummary=element('p',{class:'appearance-summary','aria-live':'polite'});appearance.append(appearanceSummary);
+      appearanceSummary=element('p',{class:'appearance-summary','aria-live':'polite'});appearance.append(appearanceSummary);
       const sortedChoices=(values,key)=>Object.entries(values).sort(([a,av],[b,bv])=>{if(a==='pride'||b==='pride')return a==='pride'?1:-1;if(['system','original','site'].includes(a)||['system','original','site'].includes(b))return ['system','original','site'].includes(a)?(['system','original','site'].includes(b)?0:-1):1;const rgb=v=>v.slice(1).match(/../g).map(n=>parseInt(n,16));return luminance(rgb(bv[1]))-luminance(rgb(av[1]));});
       for(const [key,label,values] of [['palette','Theme',palettes],['accent','Accent',accents]]) {
         const select=element('select',{'aria-label':label,class:'color-select'});
@@ -517,7 +517,7 @@ var ColorShift = (() => {
       if(site.anywhere){const toggle=controls.get('enabled'),row=toggle.closest('.row');footer.insertBefore(toggle,footer.lastElementChild);row.remove();}
       const tabs=element('div',{class:'menu-tabs',role:'group','aria-label':'Settings sections'}),groups=[...panel.querySelectorAll(':scope>.settings-group')];panel.insertBefore(tabs,groups[0]);
       for(const group of groups){const summary=group.querySelector(':scope>summary'),button=element('button',{type:'button','aria-expanded':String(group.open)},summary.textContent==='About & diagnostics'?'Diagnostics':summary.textContent);group.classList.add('menu-section');button.addEventListener('click',()=>{const next=!group.open;for(const other of groups)other.open=false;group.open=next;});group.addEventListener('toggle',()=>button.setAttribute('aria-expanded',String(group.open)));tabs.append(button);}
-      root.append(fab,panel);document.body.append(host);
+      updateToast=element('div',{class:'update-toast',role:'status','aria-live':'polite'});updateToast.hidden=true;root.append(fab,updateToast,panel);document.body.append(host);
       launcher=declareLauncher(host,()=>[fab,panel],{owner:'ExtraPotions',id:'colorshift-'+site.name.toLowerCase(),priority:100,preferredPosition:'right-bottom'});
       style=element('style',{id:'colorshift-site-style'});document.head.append(style);
       siteSheet=new CSSStyleSheet();document.adoptedStyleSheets=[...document.adoptedStyleSheets,siteSheet];
@@ -614,6 +614,7 @@ var ColorShift = (() => {
     }
     .fab{position:fixed;right:16px;width:48px;height:48px;padding:0;z-index:2147483647;border:1px solid #ffffff55;border-radius:13px;background:#121722;box-shadow:0 5px 18px #0006;touch-action:none;overflow:hidden;pointer-events:auto}.fab img{width:100%;height:100%;object-fit:contain;pointer-events:none}.fab:hover,.fab:focus-visible{box-shadow:0 0 0 2px var(--menu-accent),0 0 16px color-mix(in srgb,var(--menu-accent) 45%,transparent)}
     .fab::after{content:'';position:absolute;right:3px;bottom:3px;width:10px;height:10px;border:2px solid #171717;border-radius:50%;background:#ef4444;pointer-events:none}.fab[data-theme-enabled=true]::after{background:#22c55e}
+    .update-toast{position:fixed;right:72px;bottom:16px;width:min(300px,calc(100vw - 88px));padding:8px 10px;border:1px solid var(--menu-accent,#5eb0ef);border-radius:9px;background:var(--menu-control,#1c1c1a);color:var(--menu-text,#f5f5f5);font:11px/1.35 ui-sans-serif,system-ui,sans-serif;box-shadow:0 8px 24px #0008;pointer-events:auto}.update-toast[hidden]{display:none}
     .settings-group>summary:hover,.settings-group>summary:focus-visible,.settings-group details>summary:hover,.settings-group details>summary:focus-visible,.row:hover,.row:focus-within{background:color-mix(in srgb,var(--menu-accent) 16%,var(--menu-surface));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--menu-accent) 45%,transparent)}
     .section-content>button:hover,.section-content>button:focus-visible{outline:1px solid var(--menu-accent);outline-offset:-1px}
     .panel{position:fixed;right:16px;z-index:2147483647;width:min(280px,calc(100vw - 24px));overflow:auto;overscroll-behavior:contain;background:#333;color:#f5f5f5;border:1px solid #777;border-radius:14px;padding:10px;box-shadow:0 18px 50px #0007;pointer-events:auto;font:12px/1.4 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
@@ -643,3 +644,4 @@ var ColorShift = (() => {
   `;
   return {version,start};
 })();
+

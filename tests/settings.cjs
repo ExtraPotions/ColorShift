@@ -55,7 +55,7 @@ async function setup(browser,site='manapool',values={},source=code(site)) {
     await page.waitForTimeout(150);
     for(let i=0;i<3;i++)await panel.getByRole('combobox',{includeHidden:true,name:'Accent',exact:true}).selectOption(i%2?'rose':'blue',{force:true});
     assert(requests<=1,scenario+' update checks are throttled');
-    assert.equal(await page.locator('#colorshift-root').getAttribute('data-update-available'),scenario==='new'?'9.0.0':null);
+    if(scenario==='new')await page.waitForFunction(()=>document.querySelector('#colorshift-root')?.getAttribute('data-update-available')==='9.0.0');else assert.equal(await page.locator('#colorshift-root').getAttribute('data-update-available'),null);
     if(scenario==='new'){
       await panel.getByRole('switch',{name:'Quiet update notifications',exact:true}).click();
       assert.equal(await page.locator('#colorshift-root').getAttribute('data-update-available'),null);
@@ -82,6 +82,7 @@ async function setup(browser,site='manapool',values={},source=code(site)) {
   console.log('Previous-release upgrades, settings round trips, atomic imports, and update failures passed');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
+
 
 
 
